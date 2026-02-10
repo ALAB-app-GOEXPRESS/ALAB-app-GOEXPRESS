@@ -1,0 +1,19 @@
+services:
+  db:
+    container_name: goexpress-db
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: goexpress
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${DB_HOST_MACHINE_PORT:-5432}:5432"
+    # 初期化SQLを使う場合は公式推奨のディレクトリへ
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d
+ 
+volumes:
+  db_data:
