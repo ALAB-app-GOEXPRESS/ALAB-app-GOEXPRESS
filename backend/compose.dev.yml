@@ -1,0 +1,21 @@
+services:
+  app-dev:
+    image: eclipse-temurin:21-jdk
+    working_dir: /workspace
+    volumes:
+      - ./:/workspace
+      - gradle-cache:/root/.gradle
+    depends_on:
+      - db
+    command: ["bash", "-lc", "./gradlew --no-daemon bootRun"]
+    environment:
+      DEBUG: "true"
+      SPRING_DATASOURCE_URL: ${DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+
+volumes:
+  gradle-cache:

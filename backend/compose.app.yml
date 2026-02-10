@@ -1,22 +1,22 @@
 services:
   app:
-    container_name: goexpress-app
-    build:
-      context: .
-      # プロジェクト直下の Dockerfile を使用（ファイル名: Dockerfile.gradle）
-      dockerfile: Dockerfile.gradle
+  container_name: goexpress-app
+  build:
+    context: .
+    # プロジェクト直下の Dockerfile を使用（ファイル名: Dockerfile.gradle）
+    dockerfile: Dockerfile.gradle
 
-    depends_on:
-      - db # docker-compose.db.yml 側のサービス名に合わせる
+  depends_on:
+    - db # docker-compose.db.yml 側のサービス名に合わせる
 
-    ports:
-      - "8080:8080" # アプリ
-      - "5005:5005" # リモートデバッグ（JDWP）
+  ports:
+    - "8080:8080" # アプリ
+    - "5005:5005" # リモートデバッグ（JDWP）
 
-    environment:
-      # Postgres 接続（DB名 goexpress 固定）
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/goexpress
-      SPRING_DATASOURCE_USERNAME: ${DB_USER}
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-      # リモートデバッグを有効化（必要に応じてコメントアウトでOFF）
-      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+  environment:
+    # Postgres 接続（DB名 goexpress 固定）
+    SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/goexpress
+    SPRING_DATASOURCE_USERNAME: ${DB_USER}
+    SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    # リモートデバッグを有効化（必要に応じてコメントアウトでOFF）
+    JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
