@@ -21,6 +21,7 @@
 ## ポート
 
 - 8080 で待ち受ける前提です（Dockerfile/App Runnerともに 8080 を前提）
+- 5005 でデバッガーを待ち受ける。
 
 ## Dockerfile について
 
@@ -28,6 +29,12 @@
   - 実習の最初に、BE未実装でもデプロイの流れだけ確認したいとき用
 - `Dockerfile.gradle`:
   - Spring Boot の Gradle ビルド（`bootJar`）を実行して jar を起動します
+- `docker-compose.db.yml`:
+  - postgresqlのコンテナ
+- `compose.app.yml`:
+  - Spring BootのコンテナとDBコンテナを紐づけ
+- `.env`:
+  - DB接続PWなどの機微情報を記載(リポジトリには入っていない)
 
 ## よくある注意
 
@@ -38,3 +45,27 @@
 
 - GitHub Actions の `Build & Push backend image, then deploy to App Runner` を手動実行します
 - App Runner が存在する場合は `start-deployment` が実行されます。存在しない場合はスキップされます
+
+## IDEの設定
+
+- IntelliJの「自動ビルド」をONにする
+  - 開く: 設定（Ctrl+Alt+S）
+    - Build, Execution, Deployment > Compiler
+    - 「自動的にプロジェクトをビルド（Build project automatically）」にチェック
+- IntelliJ のビルドをIDE側に委譲
+  - 設定（Ctrl+Alt+S）
+    - 「ビルドと実行」「テストの実行」を “IntelliJ IDEA” にする(既定:Gradle)
+
+## ローカル実行
+
+- 起動（前回すでに up 済みなら -d でデタッチに切り替え可）
+  - docker compose -f docker-compose.db.yml -f compose.dev.yml up
+  - またはバックグラウンド: docker compose -f docker-compose.db.yml -f compose.dev.yml up -d
+- 稼働状況
+  - docker compose -f docker-compose.db.yml -f compose.dev.yml ps
+- 停止
+  - docker compose -f docker-compose.db.yml -f compose.dev.yml down
+- IntelliJ IDEA からデバッグ接続
+  - 実行 > 構成の編集… > ＋ > リモート JVM デバッグ
+    - ホスト: localhost
+    - ポート: 5005
