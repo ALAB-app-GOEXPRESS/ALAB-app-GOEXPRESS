@@ -136,7 +136,6 @@ CREATE TABLE T_TICKET (
     FOREIGN KEY (train_cd,train_car_cd) REFERENCES M_TRAIN_CAR (train_cd,train_car_cd),
     FOREIGN KEY (departure_station_cd) REFERENCES M_STATION (station_cd),
     FOREIGN KEY (arrival_station_cd) REFERENCES M_STATION (station_cd)
-
 );
 
 CREATE TABLE T_SEAT (
@@ -154,5 +153,4 @@ CREATE TABLE T_SEAT (
     FOREIGN KEY (departure_station_cd) REFERENCES M_STATION (station_cd),
     FOREIGN KEY (arrival_station_cd) REFERENCES M_STATION (station_cd),
     FOREIGN KEY (reservation_id) REFERENCES T_RESERVATION (reservation_id)
-
 );

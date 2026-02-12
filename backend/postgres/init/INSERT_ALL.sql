@@ -123,3 +123,4 @@ VALUES
 INSERT INTO T_SEAT (train_cd, departure_date, train_car_cd, seat_cd, departure_station_cd, arrival_station_cd,reservation_id)
 VALUES
     ('3001B','2026-02-10','10', '012', '01','04',1);
+    
