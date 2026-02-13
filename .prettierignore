@@ -1,0 +1,18 @@
+# ‹¤’Ê
+node_modules/
+dist/
+coverage/
+
+# frontend
+frontend/.next/
+frontend/build/
+
+# backend
+backend/target/
+backend/build/
+backend/out/
+backend/.gradle/
+backend/.mvn/
+
+# ‚»‚Ì‘¼¶¬•¨
+**/*.class
