@@ -10,17 +10,17 @@
 ## 前提（先にinfraをデプロイ）
 
 - 別リポジトリ（`app-infra`）で、少なくとも以下のスタックがデプロイ済みであること
-    - `${APP_NAME}-fe`（S3/CloudFront）
-    - `${APP_NAME}-ecr`（ECR）
-    - `${APP_NAME}-be`（App Runner）※ 初回は後から作ってもOK
+  - `${APP_NAME}-fe`（S3/CloudFront）
+  - `${APP_NAME}-ecr`（ECR）
+  - `${APP_NAME}-be`（App Runner）※ 初回は後から作ってもOK
 
 > このリポジトリの Actions は、CloudFormation の Outputs を参照してデプロイ先を特定します（`<APP_NAME>-fe`, `<APP_NAME>-be`）。
 
 ## AWS 上での設定
 
 - `IAM` -> `ロール`を選択し、Github から AWS リソースに接続するための IAM ロールを作成します
-    - ロール名 : `Github-OIDC-<サービス名>`
-    - 許可ポリシー : `SD-Github-Actions-OIDC`(作成済みです)
+  - ロール名 : `Github-OIDC-<サービス名>`
+  - 許可ポリシー : `SD-Github-Actions-OIDC`(作成済みです)
   - 信頼関係(信頼ポリシーと書かれていることもあります) : 以下をコピペして一部書き換えてください
     ```
     {
@@ -68,6 +68,19 @@
 
 ## プロジェクト作成（実習スタート時）
 
+### Linterの初期設定
+
+- プロジェクト直下(ALAB-app-GOEXPRESS`\`)でPrettierの関連モジュールをインストール
+
+```bash
+ npm ci
+```
+
+- Prettier - Code formatter
+  フォーマッター
+  VSCodeの設定を変更すれば、保存したときに自動でフォーマットしてくれる
+- 設定参考：[https://qiita.com/mitashun/items/e2f118a9ca7b96b97840](https://qiita.com/mitashun/items/e2f118a9ca7b96b97840)
+
 ### Frontend（React）
 
 - `frontend` ディレクトリは初期状態では空です。Vite(React) などで作成し、`package-lock.json` までコミットしてください。
@@ -109,8 +122,8 @@ npm run build
 ### 2) Backend イメージを ECR に push
 
 - GitHub の Actions から `Build & Push backend image, then deploy to App Runner` を実行します
-    - Spring Boot 未作成の間は `dockerfile=stub` でOK
-    - Spring Boot 作成後は `dockerfile=gradle`
+  - Spring Boot 未作成の間は `dockerfile=stub` でOK
+  - Spring Boot 作成後は `dockerfile=gradle`
 
 > App Runner サービス（`${APP_NAME}-be`）がまだ作られていない場合でも、ECR への push は可能です。その場合 `start-deployment` はスキップされます。
 

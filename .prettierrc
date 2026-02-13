@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json.schemastore.org/prettierrc",
+  "plugins": ["prettier-plugin-java"],
+  "overrides": [
+    {
+      "files": "frontend/**/*.{js,jsx,ts,tsx,json,css,scss,md,yml,yaml}",
+      "options": {
+        "printWidth": 120,
+        "tabWidth": 2,
+        "useTabs": false,
+        "semi": true,
+        "singleQuote": true,
+        "jsxSingleQuote": true,
+        "trailingComma": "all",
+        "singleAttributePerLine": true,
+        "endOfLine": "lf"
+      }
+    },
+    {
+      "files": "backend/**/*.java",
+      "options": {
+        "printWidth": 120,
+        "tabWidth": 2,
+        "useTabs": false,
+        "endOfLine": "lf"
+      }
+    }
+  ]
+}
