@@ -8,9 +8,14 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import style from './ResultsPage.module.css';
+import style from './ResultPage.module.css';
 
-export const TrainCard: React.FC = () => {
+type props = {
+  departureStation: string;
+  arrivalStation: string;
+}
+
+export const TrainCard: React.FC<props> = ({ departureStation, arrivalStation }) => {
   return (
     <Card>
       <CardContent>
@@ -26,19 +31,19 @@ export const TrainCard: React.FC = () => {
           <div style={{ flex: '1 1 70%', display: 'flex' }}>
             <div style={{ flex: '1 1 20%', display: 'flex', flexDirection: 'column' }}>
               <span className={style.time}>06:32</span>
-              <span style={{ color: 'gray' }}>東京</span>
+              <span style={{ color: 'gray' }}>{departureStation}</span>
             </div>
             <div className={style.timeLine}>
               <span>＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿</span>
             </div>
             <div style={{ flex: '1 1 20%', display: 'flex', flexDirection: 'column' }}>
               <span className={style.time}>06:39</span>
-              <span style={{ color: 'gray' }}>上野</span>
+              <span style={{ color: 'gray' }}>{arrivalStation}</span>
             </div>
           </div>
 
-          <div style={{ flex: '1 1 15%', display: 'flex', flexDirection: 'column', gap: '5px' }}>
-            <div style={{ display: 'flex', gap: '3px', justifyContent: 'end' }}>
+          <div style={{ flex: '1 1 15%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ display: 'flex', gap: '5px', justifyContent: 'end' }}>
               <Button
                 variant='outline'
                 size='sm'
