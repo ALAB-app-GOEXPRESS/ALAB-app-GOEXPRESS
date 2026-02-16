@@ -59,17 +59,14 @@ CREATE TABLE M_CHARGE (
 
 CREATE TABLE M_PLAN (
     train_cd CHAR(5),
-    departure_station_cd CHAR(2),
     arrival_station_cd CHAR(2),
-    departure_time TIME NOT NULL,
     arrival_time TIME NOT NULL,
-    departure_track_number CHAR(2) NOT NULL,
-    arrival_track_number CHAR(2) NOT NULL,
+    departure_time TIME NOT NULL,
+    track_number CHAR(2) NOT NULL,
 
-    PRIMARY KEY (train_cd,departure_station_cd, arrival_station_cd),
+    PRIMARY KEY (train_cd, arrival_station_cd),
 
     FOREIGN KEY (train_cd) REFERENCES M_TRAIN (train_cd),
-    FOREIGN KEY (departure_station_cd) REFERENCES M_STATION (station_cd),
     FOREIGN KEY (arrival_station_cd) REFERENCES M_STATION (station_cd)
 );
 
