@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/prettierrc",
-  "plugins": ["prettier-plugin-java"],
+  // "plugins": ["prettier-plugin-java"],
   "overrides": [
     {
       "files": "frontend/**/*.{js,jsx,ts,tsx,json,css,scss,md,yml,yaml}",
