@@ -69,7 +69,7 @@ export const ResultPage: React.FC = () => {
 
   return (
     <div className='min-h-[calc(100vh-64px)] bg-background'>
-      <div className='mx-auto w-full max-w-3xl px-4 py-6'>
+      <div className='mx-auto w-full max-w-4xl px-4 py-6'>
         <div className='flex items-center justify-between gap-3'>
           <div className='flex items-center gap-2'>
             <div className='text-lg font-bold'>

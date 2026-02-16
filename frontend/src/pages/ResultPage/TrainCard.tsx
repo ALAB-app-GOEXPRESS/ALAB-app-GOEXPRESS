@@ -32,37 +32,62 @@ export const TrainCard: React.FC<Props> = ({
 }) => {
   return (
     <Card>
-      <CardContent className={styles.trainCardContent}>
-        <div className={styles.trainCardRow}>
-          <div className={styles.trainCardLeft}>
-            <span className={styles.trainTypeMarker}>■</span>
-            <div className={styles.trainTypeBlock}>
-              <span className={styles.trainTypeName}>{trainTypeName}</span>
-              <span className={styles.trainNumber}>{trainNumber}</span>
+      <CardContent>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ flex: '1 1 15%', display: 'flex' }}>
+            <span style={{ color: 'green', fontSize: '30px' }}>■</span>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{ fontFamily: 'san-serif' }}>{trainTypeName}</span>
+              <span style={{ color: 'gray' }}>{trainNumber}</span>
             </div>
           </div>
 
-          <div className={styles.trainCardCenter}>
-            <div className={styles.stationBlock}>
+          <div style={{ flex: '1 1 70%', display: 'flex' }}>
+            <div style={{ flex: '1 1 20%', display: 'flex', flexDirection: 'column' }}>
               <span className={styles.time}>{departureTime}</span>
-              <span className={styles.stationName}>{departureStation}</span>
+              <span style={{ color: 'gray' }}>{departureStation}</span>
             </div>
 
             <div
-              className={styles.timeLine}
-              aria-hidden='true'
+              style={{
+                flex: '1 1 60%',
+                display: 'flex',
+                position: 'relative',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
             >
-              <span className={styles.timeLineText}>＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿</span>
+              <hr
+                style={{
+                  position: 'absolute',
+                  borderColor: '#008803',
+                  borderWidth: '1px',
+                  width: '100%',
+                  zIndex: '10',
+                }}
+              />
+              <span
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  borderColor: '#000000',
+                  borderWidth: '3px',
+                  backgroundColor: '#ffffff',
+                  position: 'absolute',
+                  zIndex: '20',
+                }}
+              />
             </div>
 
-            <div className={styles.stationBlock}>
+            <div style={{ flex: '1 1 20%', display: 'flex', flexDirection: 'column' }}>
               <span className={styles.time}>{arrivalTime}</span>
-              <span className={styles.stationName}>{arrivalStation}</span>
+              <span style={{ color: 'gray' }}>{arrivalStation}</span>
             </div>
           </div>
 
-          <div className={styles.trainCardRight}>
-            <div className={styles.badgeRow}>
+          <div style={{ flex: '1 1 15%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ display: 'flex', gap: '5px', justifyContent: 'end' }}>
               <Button
                 variant='outline'
                 size='sm'
@@ -83,7 +108,7 @@ export const TrainCard: React.FC<Props> = ({
               </Button>
             </div>
 
-            <div className={styles.detailRow}>
+            <div style={{ display: 'flex', justifyContent: 'end' }}>
               <Button onClick={onClickDetail}>詳細を見る</Button>
             </div>
           </div>
