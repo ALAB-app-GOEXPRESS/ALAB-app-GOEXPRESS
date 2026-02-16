@@ -1,10 +1,9 @@
-import './App.css';
-import { SearchPage } from './pages/Search/SearchPage';
+import { Outlet } from 'react-router-dom';
 
 function App() {
   return (
     <>
-      <SearchPage />
+      <Outlet />
     </>
   );
 }

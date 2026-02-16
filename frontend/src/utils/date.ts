@@ -12,3 +12,9 @@ export function nowHHMM() {
   const mm = String(d.getMinutes()).padStart(2, '0');
   return `${hh}:${mm}`;
 }
+
+export function formatJapaneseDate(dateYYYYMMDD: string) {
+  const [y, m, d] = dateYYYYMMDD.split('-').map(Number);
+  if (!y || !m || !d) return dateYYYYMMDD;
+  return `${y}年${m}月${d}日`;
+}

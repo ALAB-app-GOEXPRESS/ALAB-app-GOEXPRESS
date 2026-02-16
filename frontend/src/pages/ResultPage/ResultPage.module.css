@@ -1,0 +1,21 @@
+.time {
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.time-line {
+  flex: 1 1 60%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.time-line span {
+  position: absolute;
+  width: 100%;
+  margin: 0;
+  font-size: 100px;
+  color: #008803;
+  z-index: 10;
+}
