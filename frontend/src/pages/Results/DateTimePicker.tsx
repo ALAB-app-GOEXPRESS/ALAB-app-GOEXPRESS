@@ -57,7 +57,7 @@ export function DateTimePicker() {
       </Field>
 
       <Field style={{flex:"1 1 0", display:"flex", marginTop:"auto", justifyContent:"end", width:"100%"}}>
-        <Button style={{maxWidth:"1in"}}>日時指定</Button>
+        <Button style={{maxWidth:"1in", backgroundColor:"#008803"}}>日時指定</Button>
       </Field>
     </FieldGroup>
   )

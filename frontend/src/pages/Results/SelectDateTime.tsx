@@ -9,7 +9,7 @@ export const SelectDateTime: React.FC = () => {
                 <DateTimePicker />
             </div>
             <div style={{flex:"1 1 10%", marginBottom:"0"}}>
-                <Button>日時指定</Button>
+                <Button style={{backgroundColor:"#008803"}}>日時指定</Button>
             </div>
         </div>
     )

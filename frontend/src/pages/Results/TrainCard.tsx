@@ -33,8 +33,9 @@ export const TrainCard: React.FC<props> = ({ departureStation, arrivalStation })
               <span className={style.time}>06:32</span>
               <span style={{ color: 'gray' }}>{departureStation}</span>
             </div>
-            <div className={style.timeLine}>
-              <span>＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿</span>
+            <div style={{ flex:"1 1 60%", display:"flex", position:"relative", justifyContent:"center", alignItems:"center" }}>
+              <hr style={{ position:"absolute", borderColor:"#008803", borderWidth:"1px", width:"100%", zIndex:"10" }} />
+              <span style={{width:"20px", height:"20px", borderRadius:"50%", borderColor:"#000000", borderWidth:"3px", backgroundColor:"#ffffff", position:"absolute", zIndex:"20"}} />
             </div>
             <div style={{ flex: '1 1 20%', display: 'flex', flexDirection: 'column' }}>
               <span className={style.time}>06:39</span>
@@ -64,7 +65,7 @@ export const TrainCard: React.FC<props> = ({ departureStation, arrivalStation })
               </Button>
             </div>
             <div style={{ display: 'flex', justifyContent: 'end' }}>
-              <Button>詳細を見る</Button>
+              <Button style={{backgroundColor:"#008803"}}>詳細を見る</Button>
             </div>
           </div>
         </div>
