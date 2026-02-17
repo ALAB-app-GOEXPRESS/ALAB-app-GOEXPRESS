@@ -2,8 +2,7 @@ import React from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-
-import styles from './ResultPage.module.css';
+import { Clock, TramFront } from 'lucide-react';
 
 type Props = {
   trainTypeName: string;
@@ -25,90 +24,55 @@ export const TrainCard: React.FC<Props> = ({
   arrivalTime,
   departureStation,
   arrivalStation,
-  reservedSeats,
-  greenSeats,
-  grandclassSeats,
+  // reservedSeats,
+  // greenSeats,
+  // grandclassSeats,
   onClickDetail,
 }) => {
   return (
     <Card>
-      <CardContent>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ flex: '1 1 15%', display: 'flex' }}>
-            <span style={{ color: 'green', fontSize: '30px' }}>■</span>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontFamily: 'san-serif' }}>{trainTypeName}</span>
-              <span style={{ color: 'gray' }}>{trainNumber}</span>
+      <CardContent className='p-4'>
+        <div className='grid grid-cols-[15%_70%_15%] items-center'>
+          <div className='flex gap-2'>
+            <TramFront className='bg-black text-white text-[30px] ' />
+
+            <div className='flex flex-col'>
+              <span className='font-sans text-[20px] font-bold'>{trainTypeName}</span>
+              <span className='text-gray-500'>{trainNumber}</span>
             </div>
           </div>
 
-          <div style={{ flex: '1 1 70%', display: 'flex' }}>
-            <div style={{ flex: '1 1 20%', display: 'flex', flexDirection: 'column' }}>
-              <span className={styles.time}>{departureTime}</span>
-              <span style={{ color: 'gray' }}>{departureStation}</span>
+          <div className='grid grid-cols-[20%_60%_20%] items-center'>
+            <div className='flex justify-center'>
+              <div className='flex flex-col'>
+                <span className='font-bold text-[28px]'>{departureTime}</span>
+                <span className='text-gray-500'>{departureStation}</span>
+              </div>
             </div>
 
-            <div
-              style={{
-                flex: '1 1 60%',
-                display: 'flex',
-                position: 'relative',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <hr
-                style={{
-                  position: 'absolute',
-                  borderColor: '#008803',
-                  borderWidth: '1px',
-                  width: '100%',
-                  zIndex: '10',
-                }}
-              />
-              <span
-                style={{
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  borderColor: '#000000',
-                  borderWidth: '3px',
-                  backgroundColor: '#ffffff',
-                  position: 'absolute',
-                  zIndex: '20',
-                }}
-              />
+            <div className='relative flex items-center justify-center'>
+              <hr className='absolute z-10 w-full border-[#008803]' />
+              <Clock className='absolute z-20 bg-white' />
             </div>
 
-            <div style={{ flex: '1 1 20%', display: 'flex', flexDirection: 'column' }}>
-              <span className={styles.time}>{arrivalTime}</span>
-              <span style={{ color: 'gray' }}>{arrivalStation}</span>
+            <div className='flex justify-center'>
+              <div className='flex flex-col'>
+                <span className='font-bold text-[28px]'>{arrivalTime}</span>
+                <span className='text-gray-500'>{arrivalStation}</span>
+              </div>
             </div>
           </div>
 
-          <div style={{ flex: '1 1 15%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <div style={{ display: 'flex', gap: '5px', justifyContent: 'end' }}>
-              <Button
-                variant='outline'
-                size='sm'
-              >
-                指定 {reservedSeats}
-              </Button>
-              <Button
-                variant='outline'
-                size='sm'
-              >
-                G {greenSeats}
-              </Button>
-              <Button
-                variant='outline'
-                size='sm'
-              >
-                グラン {grandclassSeats}
-              </Button>
+          <div className='flex flex-col gap-2'>
+            {/* 
+            <div className="flex justify-end gap-1">
+              <Button variant="outline" size="sm">指定 {reservedSeats}</Button>
+              <Button variant="outline" size="sm">G {greenSeats}</Button>
+              <Button variant="outline" size="sm">グラン {grandclassSeats}</Button>
             </div>
+            */}
 
-            <div style={{ display: 'flex', justifyContent: 'end' }}>
+            <div className='flex justify-end'>
               <Button onClick={onClickDetail}>詳細を見る</Button>
             </div>
           </div>

@@ -1,14 +1,14 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+// import { Input } from '@/components/ui/input';
+// import { Label } from '@/components/ui/label';
+// import { Separator } from '@/components/ui/separator';
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import { Clock } from 'lucide-react';
+// import { Clock } from 'lucide-react';
 import { nowHHMM, todayYYYYMMDD } from '@/utils/date';
 
 import { stationNameMap, type SeatClass, type TrainSearchParams } from '@/api/mockTrainApi';
@@ -36,20 +36,20 @@ export const ResultPage: React.FC = () => {
     };
   }, []);
 
-  const [paramsUi, setParamsUi] = useState<TrainSearchParams>(defaultParams);
+  // const [paramsUi, setParamsUi] = useState<TrainSearchParams>(defaultParams);
 
   const pageSize = 10;
 
   const {
-    seatClassFilter,
-    handleSeatClassFilterChange,
+    // seatClassFilter,
+    // handleSeatClassFilterChange,
     currentPage,
     totalPages,
     pageItems,
     setPageToQuery,
     isLoading,
     apiErrorMessage,
-    totalCount,
+    // totalCount,
     pageResults,
   } = useTrainResults({
     defaultParams,
@@ -63,25 +63,22 @@ export const ResultPage: React.FC = () => {
   const departureStationName = stationNameMap[defaultParams.from];
   const arrivalStationName = stationNameMap[defaultParams.to];
 
-  const handleMockReseacrhClick = () => {
-    alert('（モック）日時指定：現状は見た目だけで、検索処理・API再呼び出しはしません');
-  };
+  // const handleMockReseacrhClick = () => {
+  //   alert('（モック）日時指定：現状は見た目だけで、検索処理・API再呼び出しはしません');
+  // };
 
   return (
     <div className='min-h-[calc(100vh-64px)] bg-background'>
       <div className='mx-auto w-full max-w-4xl px-4 py-6'>
         <div className='flex items-center justify-between gap-3'>
           <div className='flex items-center gap-2'>
-            <div className='text-lg font-bold'>
+            <div className='text-[28px] font-bold'>
               {departureStationName} → {arrivalStationName}
-            </div>
-            <div className='text-muted-foreground'>
-              <Clock className='inline-block h-4 w-4 translate-y-[-1px]' />
             </div>
           </div>
         </div>
 
-        <Card className='mt-4 border-muted/60 shadow-sm'>
+        {/* <Card className='mt-4 border-muted/60 shadow-sm'>
           <CardContent className='p-4'>
             <div className='grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto] md:items-end'>
               <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
@@ -157,7 +154,7 @@ export const ResultPage: React.FC = () => {
               </div>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
 
         {apiErrorMessage && (
           <div className='mt-4'>
@@ -174,29 +171,86 @@ export const ResultPage: React.FC = () => {
             </Card>
           )}
 
-          {!isLoading &&
-            pageResults.map((result) => {
-              const departureName = stationNameMap[result.departureStationCd];
-              const arrivalName = stationNameMap[result.arrivalStationCd];
+          {!isLoading && (
+            <div>
+              <ul>
+                {pageResults.map((result) => {
+                  const departureName = stationNameMap[result.departureStationCd];
+                  const arrivalName = stationNameMap[result.arrivalStationCd];
 
-              return (
-                <TrainCard
-                  key={result.trainCd}
-                  trainTypeName={result.trainTypeName}
-                  trainNumber={result.trainNumber}
-                  departureTime={result.departureTime}
-                  arrivalTime={result.arrivalTime}
-                  departureStation={departureName}
-                  arrivalStation={arrivalName}
-                  reservedSeats={result.remainSeatNumber.reserved}
-                  greenSeats={result.remainSeatNumber.green}
-                  grandclassSeats={result.remainSeatNumber.grandclass}
-                  onClickDetail={() => {
-                    alert(`（モック）詳細: ${result.trainTypeName} ${result.departureTime} 発`);
-                  }}
-                />
-              );
-            })}
+                  return (
+                    <li key={result.trainCd}>
+                      <TrainCard
+                        trainTypeName={result.trainTypeName}
+                        trainNumber={result.trainNumber}
+                        departureTime={result.departureTime}
+                        arrivalTime={result.arrivalTime}
+                        departureStation={departureName}
+                        arrivalStation={arrivalName}
+                        reservedSeats={result.remainSeatNumber.reserved}
+                        greenSeats={result.remainSeatNumber.green}
+                        grandclassSeats={result.remainSeatNumber.grandclass}
+                        onClickDetail={() => {
+                          alert(`（モック）詳細: ${result.trainTypeName} ${result.departureTime} 発`);
+                        }}
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
+              <ul className='mt-6 flex items-center justify-center gap-2'>
+                <li key={'forward'}>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    disabled={currentPage <= 1}
+                    onClick={() => setPageToQuery(currentPage - 1)}
+                  >
+                    前へ
+                  </Button>
+                </li>
+
+                {pageItems.map((item, index) => {
+                  if (item === '...') {
+                    return (
+                      <li key={item}>
+                        <span
+                          key={`ellipsis-${index}`}
+                          className='px-2 text-sm text-muted-foreground'
+                        >
+                          …
+                        </span>
+                      </li>
+                    );
+                  }
+
+                  return (
+                    <li key={item}>
+                      <Button
+                        key={item}
+                        size='sm'
+                        variant={item === currentPage ? 'default' : 'outline'}
+                        onClick={() => setPageToQuery(item)}
+                      >
+                        {item}
+                      </Button>
+                    </li>
+                  );
+                })}
+
+                <li key={'back'}>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    disabled={currentPage >= totalPages}
+                    onClick={() => setPageToQuery(currentPage + 1)}
+                  >
+                    次へ
+                  </Button>
+                </li>
+              </ul>
+            </div>
+          )}
 
           {!isLoading && pageResults.length === 0 && !apiErrorMessage && (
             <Card className='border-muted/60'>
@@ -205,51 +259,6 @@ export const ResultPage: React.FC = () => {
               </CardContent>
             </Card>
           )}
-        </div>
-
-        <div className='mt-6 flex items-center justify-center gap-2'>
-          <Button
-            variant='outline'
-            size='sm'
-            disabled={currentPage <= 1}
-            onClick={() => setPageToQuery(currentPage - 1)}
-          >
-            前へ
-          </Button>
-
-          {pageItems.map((item, index) => {
-            if (item === '...') {
-              return (
-                <span
-                  key={`ellipsis-${index}`}
-                  className='px-2 text-sm text-muted-foreground'
-                >
-                  …
-                </span>
-              );
-            }
-
-            return (
-              <Button
-                key={item}
-                size='sm'
-                variant={item === currentPage ? 'default' : 'outline'}
-                className={item === currentPage ? 'bg-emerald-600 text-white hover:bg-emerald-700' : ''}
-                onClick={() => setPageToQuery(item)}
-              >
-                {item}
-              </Button>
-            );
-          })}
-
-          <Button
-            variant='outline'
-            size='sm'
-            disabled={currentPage >= totalPages}
-            onClick={() => setPageToQuery(currentPage + 1)}
-          >
-            次へ
-          </Button>
         </div>
       </div>
     </div>
