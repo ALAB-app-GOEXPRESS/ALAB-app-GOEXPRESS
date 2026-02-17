@@ -2,6 +2,9 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.10'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'checkstyle'
+	id 'pmd'
+	id 'com.github.spotbugs' version '6.0.26'
 }
 
 group = 'com.alab'
@@ -38,4 +41,73 @@ if (System.getenv('DEBUG') == 'true') {
 		jvmArgs += ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005']
 	}
 }
+
+// ===== Checkstyle 設定 =====
+checkstyle {
+	toolVersion = '10.12.5'
+	configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+	ignoreFailures = true  // 警告のみ表示（ビルドは続行）
+	maxWarnings = 0
+	maxErrors = 0
+}
+
+checkstyleMain {
+	source = 'src/main/java'
+}
+
+checkstyleTest {
+	source = 'src/test/java'
+}
+
+// ===== PMD 設定 =====
+pmd {
+	toolVersion = '7.0.0'
+	consoleOutput = true
+	ignoreFailures = true  // 警告のみ表示（ビルドは続行）
+	ruleSetFiles = files("${rootDir}/config/pmd/ruleset.xml")
+	ruleSets = [] // デフォルトのルールセットを無効化
+}
+
+pmdMain {
+	source = 'src/main/java'
+}
+
+pmdTest {
+	source = 'src/test/java'
+}
+
+// ===== SpotBugs 設定 =====
+spotbugs {
+	toolVersion = '4.8.3'
+	ignoreFailures = true  // 警告のみ表示（ビルドは続行）
+	effort = 'max'
+	reportLevel = 'low'
+	excludeFilter = file("${rootDir}/config/spotbugs/exclude.xml")
+}
+
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
+	reports {
+		html {
+			required = true
+			outputLocation = file("$buildDir/reports/spotbugs/${name}.html")
+			stylesheet = 'fancy-hist.xsl'
+		}
+		xml {
+			required = false
+		}
+	}
+}
+
+// ===== 統合タスク =====
+task lint {
+	group = 'verification'
+	description = 'すべてのLinterを実行'
+	dependsOn 'checkstyleMain', 'checkstyleTest', 'pmdMain', 'pmdTest', 'spotbugsMain', 'spotbugsTest'
+}
+
+// build時はlintを実行しない（開発中）
+// 本番環境では以下のコメントを外す
+// tasks.named('build') {
+// 	dependsOn 'lint'
+// }
 
