@@ -11,6 +11,10 @@
     },
   ],
   "settings": {
+    // ターミナルの文字化け対策　起動時UTF-8で動作するように変更
+    "terminal.integrated.shell.windows": "C:\\Windows\\system32\\cmd.exe",
+    "terminal.integrated.shellArgs.windows": ["/k", "chcp", "65001"],
+
     "java.format.enabled": false,
     "java.compile.nullAnalysis.mode": "automatic",
     "editor.tabSize": 2,
@@ -28,5 +32,18 @@
     "editor.codeActionsOnSave": {
       "source.organizeImports": "explicit",
     },
+
+    // ===== 以下、Linter設定のみ追加 =====
+    "java.checkstyle.configuration": "${workspaceFolder}/backend/config/checkstyle/checkstyle.xml",
+    "java.checkstyle.version": "10.12.5",
+    "java.checkstyle.autocheck": true,
+    "java.saveActions.organizeImports": true,
+  },
+  "extensions": {
+    "recommendations": [
+      "esbenp.prettier-vscode",
+      "vscjava.vscode-java-pack",
+      "shengchen.vscode-checkstyle",
+    ],
   },
 }

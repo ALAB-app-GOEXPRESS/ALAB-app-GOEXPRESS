@@ -70,10 +70,34 @@
 
 ### Linterの初期設定
 
-- プロジェクト直下(ALAB-app-GOEXPRESS`\`)でPrettierの関連モジュールをインストール
+- 依存拡張（VS Code）のインストール
+  - Prettier – Code formatter（esbenp.prettier-vscode）
+  - ESLint（dbaeumer.vscode-eslint）
+  - Extension Pack for Java（または Language Support for Java by Red Hat）
+  - Checkstyle for Java（shengchen.vscode-checkstyle）
+
+- プロジェクト直下(`ALAB-app-GOEXPRESS\`)でPrettierの関連モジュールをインストール
+
+```bash
+ npm install
+```
+
+- frontendプロジェクト直下(`ALAB-app-GOEXPRESS\frontend`)でESLintの関連モジュールをインストール
 
 ```bash
  npm ci
+```
+
+- frontend,backendのVSCodeのsettings.jsonに以下の内容を追加
+```
+    "prettier.configPath": "../.prettierrc",
+    "prettier.prettierPath": "../node_modules/prettier/index.js",
+    "prettier.ignorePath": "../.prettierignore",
+```
+
+- frontendのVSCodeのsettings.jsonに以下の内容を追加
+```
+    "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
 ```
 
 - Prettier - Code formatter

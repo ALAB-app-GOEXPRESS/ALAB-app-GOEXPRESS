@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter xmlns="https://github.com/spotbugs/filter/3.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/3.1.0/spotbugs/etc/findbugsfilter.xsd">
+
+  <description>GOEXPRESS project SpotBugs exclusions</description>
+
+  <!-- Spring Boot自動生成クラス -->
+  <Match>
+    <Class name="~.*Application"/>
+    <Bug pattern="SPRING_FILE_DISCLOSURE"/>
+  </Match>
+
+  <!-- テストクラスの特定パターン除外 -->
+  <Match>
+    <Class name="~.*Test"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+  
+  <!-- テストクラス：finalizeメソッド除外 -->
+  <Match>
+    <Class name="~.*Test"/>
+    <Bug pattern="FI_PUBLIC_SHOULD_BE_PROTECTED"/>
+  </Match>
+
+  <!-- DTOクラス：Serializableでの警告除外 -->
+  <Match>
+    <Class name="~.*Dto"/>
+    <Bug pattern="SE_NO_SERIALVERSIONID"/>
+  </Match>
+  
+  <!-- Entityクラス：equals/hashCode除外（JPAで管理） -->
+  <Match>
+    <Class name="~.*Entity"/>
+    <Bug pattern="EQ_DOESNT_OVERRIDE_EQUALS"/>
+  </Match>
+
+  <!-- Spring: Field injection警告（規約でコンストラクタインジェクション必須のため除外不要） -->
+  <!-- 規約違反を検出するため除外しない -->
+
+</FindBugsFilter>
