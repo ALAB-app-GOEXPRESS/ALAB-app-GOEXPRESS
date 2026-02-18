@@ -1,4 +1,5 @@
 import React from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -56,6 +57,18 @@ export const ReservationDetailPage: React.FC = () => {
   const departureName = stationNameMap[selectedTrain.departureStationCd];
   const arrivalName = stationNameMap[selectedTrain.arrivalStationCd];
 
+  const qrCodeData = {
+    departureTime: selectedTrain.departureTime,
+    arrivalTime: selectedTrain.arrivalTime,
+    departureStation: departureName,
+    arrivalStation: arrivalName,
+    date: searchDate,
+    seat: seatNumber ?? '指定なし',
+  };
+
+  // 作成したデータをJSON文字列に変換します
+  const qrCodeValue = JSON.stringify(qrCodeData);
+
   return (
     <div className='min-h-[calc(100vh-64px)] bg-background'>
       <div className='mx-auto w-full max-w-md px-4 py-6'>
@@ -77,6 +90,7 @@ export const ReservationDetailPage: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-2 pt-2">
+            <QRCodeSVG value={qrCodeValue} size={180} />
             <p className="text-xs text-muted-foreground">QRコード</p>
           </CardContent>
         </Card>
