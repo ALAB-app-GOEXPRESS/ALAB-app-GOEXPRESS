@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
 
+import { useNavigate } from 'react-router-dom';
+
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -27,6 +29,8 @@ const seatClassFilterOptions = [
 ] as const;
 
 export const ResultPage: React.FC = () => {
+  const navigate = useNavigate();
+
   const defaultParams = useMemo<TrainSearchParams>(() => {
     return {
       from: '01',
@@ -191,7 +195,13 @@ export const ResultPage: React.FC = () => {
                         greenSeats={result.remainSeatNumber.green}
                         grandclassSeats={result.remainSeatNumber.grandclass}
                         onClickDetail={() => {
-                          alert(`（モック）詳細: ${result.trainTypeName} ${result.departureTime} 発`);
+                          navigate('/reservation-detail', {
+                            state: {
+                              selectedTrain: result,
+                              searchDate: defaultParams.date,
+                              seatNumber: '7号車 12番 A席' // モックデータ
+                            }
+                          });
                         }}
                       />
                     </li>
