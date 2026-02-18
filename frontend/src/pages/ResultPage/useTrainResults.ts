@@ -50,7 +50,7 @@ function parsePositiveInt(value: string | null, fallback: number): number {
 function getPageItems(currentPage: number, totalPages: number): Array<number | '...'> {
   const items: Array<number | '...'> = [];
 
-  if (totalPages <= 7) {
+  if (totalPages <= 4) {
     for (let page = 1; page <= totalPages; page += 1) {
       items.push(page);
     }
