@@ -30,7 +30,7 @@ export const TrainCard: React.FC<Props> = ({
   onClickDetail,
 }) => {
   return (
-    <Card>
+    <Card className='mb-4 border-brand-green-light'>
       <CardContent className='p-4'>
         <div className='grid grid-cols-[15%_70%_15%] items-center'>
           <div className='flex gap-2'>
@@ -73,7 +73,7 @@ export const TrainCard: React.FC<Props> = ({
             */}
 
             <div className='flex justify-end'>
-              <Button onClick={onClickDetail}>詳細を見る</Button>
+              <Button onClick={onClickDetail}>予約する</Button>
             </div>
           </div>
         </div>

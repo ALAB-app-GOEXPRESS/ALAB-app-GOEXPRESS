@@ -82,7 +82,7 @@ export const ReservationDetailPage: React.FC = () => {
             検索結果へ戻る
           </Button>
         </div>
-        <Card>
+        <Card className='border-brand-green-light'>
           <CardHeader className="pb-2">
             <CardTitle className="text-center flex flex-col space-y-0.5">
               <p className='text-xl font-semibold'>{selectedTrain.trainTypeName}</p>
@@ -95,7 +95,7 @@ export const ReservationDetailPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="mt-4">
+        <Card className="mt-4 border-brand-green-light">
           <CardContent className="py-4 px-6">
             <div className="grid grid-cols-2 items-start">
               <div>
@@ -110,7 +110,7 @@ export const ReservationDetailPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="border-t my-4"></div>
+            <div className="my-4"></div>
 
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-3">
