@@ -56,12 +56,11 @@ export const ReservationDetailPage: React.FC = () => {
     );
   }
 
-  const { trainDetails, confirmedSeat, reservationDate, trackNumber, reservationId } = reservationDetails;
+  const { trainDetails, confirmedSeat, reservationDate, trackNumber } = reservationDetails;
   const departureStationCd = stationNameMap[trainDetails.departureStationCd];
   const arrivalStationCd = stationNameMap[trainDetails.arrivalStationCd];
 
   const qrCodeData = {
-    reservationId,
     date: reservationDate,
     departure: `${trainDetails.departureTime} ${departureStationCd}`,
     arrival: `${trainDetails.arrivalTime} ${arrivalStationCd}`,
