@@ -2,12 +2,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import {
-  fetchTrainsMock,
+  fetchTrains,
   type FetchTrainsResponse,
   type SeatClass,
   type TrainResult,
   type TrainSearchParams,
-} from '@/api/mockTrainApi';
+} from '@/api/TrainListApi';
 
 type SeatClassFilter = 'all' | SeatClass;
 
@@ -127,7 +127,7 @@ export function useTrainResults(args: UseTrainResultsArgs): UseTrainResultsRetur
         setIsLoading(true);
         setApiErrorMessage('');
 
-        const response: FetchTrainsResponse = await fetchTrainsMock(defaultParams, pageSize, offset, seatClassForApi);
+        const response: FetchTrainsResponse = await fetchTrains(defaultParams, pageSize, offset, seatClassForApi);
 
         if (isCancelled) {
           return;
@@ -141,7 +141,7 @@ export function useTrainResults(args: UseTrainResultsArgs): UseTrainResultsRetur
           return;
         }
 
-        setApiErrorMessage('検索に失敗しました（モック）。時間をおいて再度お試しください。');
+        setApiErrorMessage('検索に失敗しました。時間をおいて再度お試しください。');
         setIsLoading(false);
       }
     };
