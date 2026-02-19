@@ -34,8 +34,7 @@ const formatSeat = (seatCode: string): string => {
 };
 
 export const createReservation = async (train: TrainResult, date: string): Promise<ReservationDetails> => {
-  // Todo:バックエンドAPIのエンドポイントURL
-  const API_ENDPOINT = 'http://localhost:8080/api/reservations';
+  const API_ENDPOINT = 'api/ticket-reservations';
 
   const payload = {
     trainCd: train.trainCd,
