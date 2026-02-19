@@ -8,8 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @MapperScan("com.alab.goexpress.repository")
 public class GoexpressApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(GoexpressApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(GoexpressApplication.class, args);
+  }
 }
