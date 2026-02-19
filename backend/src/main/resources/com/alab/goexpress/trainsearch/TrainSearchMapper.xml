@@ -7,27 +7,38 @@
 
     <select id="findTrainsBetweenStations"
             resultType="com.alab.goexpress.model.dto.TrainBetweenStationsDto">
-
         SELECT
-        p_from.train_cd AS trainCd,
+        t.train_cd                         AS trainCd,
+        t.train_number                     AS trainNumber,
+        t.train_type_cd                    AS trainTypeCd,
+        tt.train_type_name                 AS trainTypeName,
 
-        p_from.arrival_station_cd AS fromStationCd,
-        p_to.arrival_station_cd   AS toStationCd,
+        pf.arrival_station_cd              AS fromStationCd,
+        sf.station_name                    AS fromStationName,
 
-        p_from.departure_time AS fromDepartureTime,
-        p_to.arrival_time     AS toArrivalTime,
+        pt.arrival_station_cd              AS toStationCd,
+        st.station_name                    AS toStationName,
 
-        p_from.track_number AS fromTrackNumber,
-        p_to.track_number   AS toTrackNumber
+        pf.departure_time                  AS departureTime,
+        pt.arrival_time                    AS arrivalTime
 
-        FROM M_PLAN p_from
-        JOIN M_PLAN p_to
-        ON p_from.train_cd = p_to.train_cd
-        AND p_from.arrival_station_cd = #{fromStationCd}
-        AND p_to.arrival_station_cd   = #{toStationCd}
+        FROM M_PLAN pf
+        JOIN M_PLAN pt
+        ON pt.train_cd = pf.train_cd
+        JOIN M_TRAIN t
+        ON t.train_cd = pf.train_cd
+        JOIN M_TRAIN_TYPE tt
+        ON tt.train_type_cd = t.train_type_cd
+        JOIN M_STATION sf
+        ON sf.station_cd = pf.arrival_station_cd
+        JOIN M_STATION st
+        ON st.station_cd = pt.arrival_station_cd
 
-        WHERE p_from.departure_time &lt; p_to.arrival_time
-        ORDER BY p_from.departure_time ASC, p_from.train_cd ASC
+        WHERE pf.arrival_station_cd = #{fromStationCd}
+        AND pt.arrival_station_cd = #{toStationCd}
+        AND pf.departure_time &lt; pt.arrival_time
+
+        ORDER BY pf.departure_time
     </select>
 
 </mapper>
