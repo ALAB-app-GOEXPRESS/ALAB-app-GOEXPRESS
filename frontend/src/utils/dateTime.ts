@@ -18,3 +18,19 @@ export function formatJapaneseDate(dateYYYYMMDD: string) {
   if (!y || !m || !d) return dateYYYYMMDD;
   return `${y}年${m}月${d}日`;
 }
+
+export function toHHMM(time: string): string {
+  const [hh, mm] = time.split(':');
+  return `${hh}:${mm}`;
+}
+
+export function calcDurationMin(departureHHMM: string, arrivalHHMM: string): number {
+  const [dh, dm] = departureHHMM.split(':').map(Number);
+  const [ah, am] = arrivalHHMM.split(':').map(Number);
+
+  const dep = dh * 60 + dm;
+  const arr = ah * 60 + am;
+
+  const diff = arr >= dep ? arr - dep : arr + 24 * 60 - dep;
+  return diff;
+}
