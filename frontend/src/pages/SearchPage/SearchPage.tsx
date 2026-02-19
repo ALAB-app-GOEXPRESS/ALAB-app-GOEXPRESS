@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import { nowHHMM, todayYYYYMMDD } from '@/utils/date';
+import { nowHHMM, todayYYYYMMDD } from '@/utils/dateTime';
 import { isValidDateYYYYMMDD, isValidTimeHHMM } from '@/utils/validators';
 
 import { ArrowRight } from 'lucide-react';

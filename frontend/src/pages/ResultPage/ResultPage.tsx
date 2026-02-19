@@ -9,9 +9,9 @@ import { Card, CardContent } from '@/components/ui/card';
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 // import { Clock } from 'lucide-react';
-import { nowHHMM, todayYYYYMMDD } from '@/utils/date';
+import { nowHHMM, todayYYYYMMDD } from '@/utils/dateTime';
 
-import { stationNameMap, type SeatClass, type TrainSearchParams } from '@/api/mockTrainApi';
+import { stationNameMap, type SeatClass, type TrainSearchParams } from '@/api/TrainListApi';
 
 import { useTrainResults } from './useTrainResults';
 
