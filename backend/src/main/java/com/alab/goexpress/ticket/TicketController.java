@@ -2,13 +2,11 @@ package com.alab.goexpress.ticket;
 
 import com.alab.goexpress.model.entity.ticket.Ticket;
 import com.alab.goexpress.model.entity.ticket.TicketId;
-import com.alab.goexpress.model.entity.ticket.TicketStatus;
 import com.alab.goexpress.model.request.TicketCreateRequest;
 import com.alab.goexpress.model.request.TicketStatusPatchRequest;
 import com.alab.goexpress.model.request.TicketUpdateRequest;
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
