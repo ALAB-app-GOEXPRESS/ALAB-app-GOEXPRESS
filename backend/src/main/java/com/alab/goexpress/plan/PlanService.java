@@ -2,11 +2,10 @@ package com.alab.goexpress.plan;
 
 import com.alab.goexpress.model.entity.plan.Plan;
 import com.alab.goexpress.model.entity.plan.PlanId;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +21,7 @@ public class PlanService {
 
   @Transactional(readOnly = true)
   public Plan get(PlanId id) {
-    return planRepo.findById(id)
-      .orElseThrow(() -> new IllegalArgumentException("Plan not found: " + id));
+    return planRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Plan not found: " + id));
   }
 
   @Transactional

@@ -2,11 +2,10 @@ package com.alab.goexpress.plan;
 
 import com.alab.goexpress.model.entity.plan.Plan;
 import com.alab.goexpress.model.entity.plan.PlanId;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor

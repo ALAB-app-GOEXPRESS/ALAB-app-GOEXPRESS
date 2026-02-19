@@ -1,10 +1,9 @@
 package com.alab.goexpress.trainsearch;
 
 import com.alab.goexpress.model.dto.TrainBetweenStationsDto;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/trains")
