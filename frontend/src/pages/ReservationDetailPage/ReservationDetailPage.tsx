@@ -117,7 +117,7 @@ export const ReservationDetailPage: React.FC = () => {
             <div className='space-y-2 text-sm'>
               <div className='flex items-center gap-3'>
                 <MapPin className='h-4 w-4 text-muted-foreground flex-shrink-0' />
-                <p>{trackNumber} 番線</p>
+                <p>{trackNumber}番線</p>
               </div>
               <div className='flex items-center gap-3'>
                 <Clock className='h-4 w-4 text-muted-foreground flex-shrink-0' />

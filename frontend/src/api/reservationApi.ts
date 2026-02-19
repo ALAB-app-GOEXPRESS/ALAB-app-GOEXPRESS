@@ -1,10 +1,10 @@
 import type { TrainResult } from './TrainListApi';
 
 interface ApiReservationResponse {
-  departureDate: string;
   departureTime: string;
   arrivalTime: string;
-  trackNumber: string;
+  departureTrackNumber: string;
+  departureDate: string;
   seatCd: string;
 }
 
@@ -71,7 +71,7 @@ export const createReservation = async (train: TrainResult, date: string): Promi
 
     const formattedData: ReservationDetails = {
       confirmedSeat: formatSeat(responseData.seatCd),
-      trackNumber: responseData.trackNumber,
+      trackNumber: responseData.departureTrackNumber,
       reservationDate: responseData.departureDate,
       trainDetails: {
         ...train,
