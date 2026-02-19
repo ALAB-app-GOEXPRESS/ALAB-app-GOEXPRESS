@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.alab.goexpress.trainsearch.TrainSearchMapper">
+
+    <select id="findTrainsBetweenStations"
+            resultType="com.alab.goexpress.model.dto.TrainBetweenStationsDto">
+        SELECT
+        t.train_cd                         AS trainCd,
+        t.train_number                     AS trainNumber,
+        t.train_type_cd                    AS trainTypeCd,
+        tt.train_type_name                 AS trainTypeName,
+
+        pf.arrival_station_cd              AS fromStationCd,
+        sf.station_name                    AS fromStationName,
+
+        pt.arrival_station_cd              AS toStationCd,
+        st.station_name                    AS toStationName,
+
+        pf.departure_time                  AS departureTime,
+        pt.arrival_time                    AS arrivalTime
+
+        FROM M_PLAN pf
+        JOIN M_PLAN pt
+        ON pt.train_cd = pf.train_cd
+        JOIN M_TRAIN t
+        ON t.train_cd = pf.train_cd
+        JOIN M_TRAIN_TYPE tt
+        ON tt.train_type_cd = t.train_type_cd
+        JOIN M_STATION sf
+        ON sf.station_cd = pf.arrival_station_cd
+        JOIN M_STATION st
+        ON st.station_cd = pt.arrival_station_cd
+
+        WHERE pf.arrival_station_cd = #{fromStationCd}
+        AND pt.arrival_station_cd = #{toStationCd}
+        AND pf.departure_time &lt; pt.arrival_time
+
+        ORDER BY pf.departure_time
+    </select>
+
+</mapper>
