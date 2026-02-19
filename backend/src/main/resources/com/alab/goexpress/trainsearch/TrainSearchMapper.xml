@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.alab.goexpress.plan.TrainSearchMapper">
+<mapper namespace="com.alab.goexpress.trainsearch.TrainSearchMapper">
 
     <select id="findTrainsBetweenStations"
             resultType="com.alab.goexpress.model.dto.TrainBetweenStationsDto">

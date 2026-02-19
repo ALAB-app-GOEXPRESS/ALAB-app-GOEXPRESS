@@ -1,4 +1,4 @@
-package com.alab.goexpress.plan;
+package com.alab.goexpress.trainsearch;
 
 import com.alab.goexpress.model.dto.TrainBetweenStationsDto;
 import org.apache.ibatis.annotations.Mapper;
