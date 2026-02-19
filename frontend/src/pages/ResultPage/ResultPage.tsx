@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-
+import React, { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,7 +11,9 @@ import { Card, CardContent } from '@/components/ui/card';
 // import { Clock } from 'lucide-react';
 import { nowHHMM, todayYYYYMMDD } from '@/utils/dateTime';
 
-import { stationNameMap, type SeatClass, type TrainSearchParams } from '@/api/TrainListApi';
+import { stationNameMap, type SeatClass, type TrainSearchParams, type TrainResult } from '@/api/TrainListApi';
+
+import { createReservation } from '@/api/reservationApi';
 
 import { useTrainResults } from './useTrainResults';
 
@@ -27,6 +29,10 @@ const seatClassFilterOptions = [
 ] as const;
 
 export const ResultPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const [reservingTrainCd, setReservingTrainCd] = useState<string | null>(null);
+
   const defaultParams = useMemo<TrainSearchParams>(() => {
     return {
       from: '01',
@@ -63,9 +69,23 @@ export const ResultPage: React.FC = () => {
   const departureStationName = stationNameMap[defaultParams.from];
   const arrivalStationName = stationNameMap[defaultParams.to];
 
-  // const handleMockReseacrhClick = () => {
-  //   alert('（モック）日時指定：現状は見た目だけで、検索処理・API再呼び出しはしません');
-  // };
+  const handleReserveClick = async (train: TrainResult) => {
+    if (reservingTrainCd) return; // 二重クリック防止
+
+    try {
+      setReservingTrainCd(train.trainCd);
+      const reservationDetails = await createReservation(train, defaultParams.date);
+
+      navigate('/reservation-detail', {
+        state: { reservationDetails },
+      });
+    } catch (error) {
+      console.error(error);
+      alert(error instanceof Error ? error.message : '予期せぬエラーが発生しました。');
+    } finally {
+      setReservingTrainCd(null);
+    }
+  };
 
   return (
     <div className='min-h-[calc(100vh-64px)] bg-background'>
@@ -190,9 +210,8 @@ export const ResultPage: React.FC = () => {
                         reservedSeats={result.remainSeatNumber.reserved}
                         greenSeats={result.remainSeatNumber.green}
                         grandclassSeats={result.remainSeatNumber.grandclass}
-                        onClickDetail={() => {
-                          alert(`（モック）詳細: ${result.trainTypeName} ${result.departureTime} 発`);
-                        }}
+                        onClickDetail={() => handleReserveClick(result)}
+                        isReserving={reservingTrainCd === result.trainCd}
                       />
                     </li>
                   );
