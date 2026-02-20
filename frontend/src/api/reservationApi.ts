@@ -62,7 +62,9 @@ export const createReservation = async (train: TrainResult, date: string): Promi
         if (errorData && errorData.message) {
           errorMessage = errorData.message;
         }
-      } catch {}
+      } catch (parseError) {
+        console.warn('APIエラーレスポンスのJSON解析に失敗しました：', parseError);
+      }
       throw new Error(errorMessage);
     }
 
