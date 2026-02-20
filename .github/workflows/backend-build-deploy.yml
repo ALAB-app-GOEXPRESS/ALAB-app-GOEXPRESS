@@ -11,11 +11,11 @@ on:
     inputs:
       dockerfile:
         description: "backend Dockerfile (gradle/stub)"
-        default: "stub" # Springbootプロジェクトが作られたら「gradle」を指定する
+        default: "gradle" # Springbootプロジェクトが作られたら「gradle」を指定する
         required: true
       app_name:
         description: "App name (must match infra APP_NAME)"
-        default: "sample-app"
+        default: "goexpress-app"
         required: true
 
 concurrency:
