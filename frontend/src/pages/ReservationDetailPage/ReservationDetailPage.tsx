@@ -105,11 +105,11 @@ export const ReservationDetailPage: React.FC = () => {
 
             <div className='space-y-2 text-sm'>
               <div className='flex items-center gap-3'>
-                <MapPin className='h-4 w-4 text-muted-foreground flex-shrink-0' />
+                <MapPin className='h-4 w-4 text-muted-foreground shrink-0' />
                 <p>{trackNumber}番線</p>
               </div>
               <div className='flex items-center gap-3'>
-                <Clock className='h-4 w-4 text-muted-foreground flex-shrink-0' />
+                <Clock className='h-4 w-4 text-muted-foreground shrink-0' />
                 <p>{formatDateToJapanese(reservationDate)}</p>
               </div>
             </div>
@@ -117,7 +117,7 @@ export const ReservationDetailPage: React.FC = () => {
             <figure className='mt-4'>
               <figcaption className='text-sm text-muted-foreground mb-2'>座席</figcaption>
               <div className='inline-flex items-center gap-2 rounded-md bg-green-50 px-3 py-1'>
-                <TrainFront className='h-4 w-4 text-green-700 flex-shrink-0' />
+                <TrainFront className='h-4 w-4 text-green-700 shrink-0' />
                 <p className='text-sm font-semibold text-green-700'>{confirmedSeat}</p>
               </div>
             </figure>
