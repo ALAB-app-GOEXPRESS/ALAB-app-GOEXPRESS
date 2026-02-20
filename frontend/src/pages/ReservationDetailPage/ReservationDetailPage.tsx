@@ -84,7 +84,6 @@ export const ReservationDetailPage: React.FC = () => {
               value={qrCodeJson}
               size={180}
             />
-            <p className='text-xs text-muted-foreground'>QRコード</p>
           </CardContent>
         </Card>
 
@@ -103,7 +102,7 @@ export const ReservationDetailPage: React.FC = () => {
               </div>
             </div>
 
-            <div className='space-y-2 text-sm'>
+            <div className='mt-4 space-y-2 text-sm'>
               <div className='flex items-center gap-3'>
                 <MapPin className='h-4 w-4 text-muted-foreground shrink-0' />
                 <p>{trackNumber}番線</p>
