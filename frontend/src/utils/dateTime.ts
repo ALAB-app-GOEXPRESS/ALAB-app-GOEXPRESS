@@ -14,9 +14,20 @@ export function nowHHMM() {
 }
 
 export function formatJapaneseDate(dateYYYYMMDD: string) {
-  const [y, m, d] = dateYYYYMMDD.split('-').map(Number);
-  if (!y || !m || !d) return dateYYYYMMDD;
-  return `${y}年${m}月${d}日`;
+  try {
+    const parts = dateYYYYMMDD.split('-');
+    if (parts.length !== 3) return dateYYYYMMDD;
+
+    const [year, month, day] = parts.map(Number);
+
+    const isValidDate =
+      !isNaN(year) && !isNaN(month) && !isNaN(day) && month >= 1 && month <= 12 && day >= 1 && day <= 31;
+
+    return isValidDate ? `${year}年${month}月${day}日` : dateYYYYMMDD;
+  } catch (e) {
+    console.error('日付のフォーマット中にエラーが発生しました:', e);
+    return dateYYYYMMDD;
+  }
 }
 
 export function toHHMM(time: string): string {

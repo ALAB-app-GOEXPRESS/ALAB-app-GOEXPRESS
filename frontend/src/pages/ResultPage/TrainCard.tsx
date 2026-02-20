@@ -15,6 +15,7 @@ type Props = {
   greenSeats: number;
   grandclassSeats: number;
   onClickDetail: () => void;
+  isReserving: boolean;
 };
 
 export const TrainCard: React.FC<Props> = ({
@@ -28,9 +29,10 @@ export const TrainCard: React.FC<Props> = ({
   // greenSeats,
   // grandclassSeats,
   onClickDetail,
+  isReserving = false,
 }) => {
   return (
-    <Card>
+    <Card className='mb-4 border-brand-green-light'>
       <CardContent className='p-4'>
         <div className='grid grid-cols-[15%_70%_15%] items-center'>
           <div className='flex gap-2'>
@@ -73,7 +75,12 @@ export const TrainCard: React.FC<Props> = ({
             */}
 
             <div className='flex justify-end'>
-              <Button onClick={onClickDetail}>詳細を見る</Button>
+              <Button
+                onClick={onClickDetail}
+                disabled={isReserving}
+              >
+                {isReserving ? '予約処理中...' : '予約する'}
+              </Button>
             </div>
           </div>
         </div>
