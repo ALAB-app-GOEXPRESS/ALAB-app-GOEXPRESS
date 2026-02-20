@@ -2,9 +2,7 @@ package com.alab.goexpress.master;
 
 import java.time.LocalTime;
 
-
 public interface MasterRepositoryPort {
-  record DepartureInfo(LocalTime departureTime, String trackNumber) {};
 
   String getTrainTypeCd(String trainCd);
 
