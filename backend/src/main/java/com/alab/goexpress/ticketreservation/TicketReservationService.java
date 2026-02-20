@@ -9,9 +9,8 @@ import com.alab.goexpress.model.response.TicketReservationResponse;
 import com.alab.goexpress.reservation.ReservationRepositoryPort;
 import com.alab.goexpress.ticket.TicketService;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
+import com.alab.goexpress.master.MasterRepositoryPort;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -26,6 +25,7 @@ public class TicketReservationService {
   private final EntityManager em;
   private final ReservationRepositoryPort reservationRepo;
   private final TicketService ticketService;
+  private final MasterRepositoryPort masterRepo;
 
   @Transactional
   public TicketReservationResponse createReservationWithTicketAndSeat(TicketReservationRequest req) {
@@ -35,17 +35,17 @@ public class TicketReservationService {
     String arrSt = req.getArrivalStationCd();
 
     // 1) マスタ参照: 列車種別
-    String trainTypeCd = getTrainTypeCd(trainCd);
+    String trainTypeCd = masterRepo.getTrainTypeCd(trainCd);
 
     // 2) マスタ参照: 出発・到着時刻、番線
-    DepartureInfo depInfo = getDepartureInfo(trainCd, depSt);
-    LocalTime arrivalTime = getArrivalTime(trainCd, arrSt);
+    var depInfo = masterRepo.getDepartureInfo(trainCd, depSt);
+    LocalTime arrivalTime = masterRepo.getArrivalTime(trainCd, arrSt);
 
     // 3) 座席選択（seat_type_cd = '10' 優先）
     SeatChoice seat = chooseSeat(trainCd, depDate);
 
     // 4) 料金取得
-    int charge = getCharge(depSt, arrSt, trainTypeCd, seat.seatTypeCd());
+    int charge = masterRepo.getCharge(depSt, arrSt, trainTypeCd, seat.seatTypeCd());
 
     // 5) 予約作成（Account の最小IDを買い手に採用）
     Account buyer = getDefaultBuyerAccount();
@@ -86,47 +86,6 @@ public class TicketReservationService {
       depDate,
       seat.seatCd()
     );
-  }
-
-  private String getTrainTypeCd(String trainCd) {
-    try {
-      Object v = em.createNativeQuery("SELECT train_type_cd FROM M_TRAIN WHERE train_cd = :trainCd")
-        .setParameter("trainCd", trainCd)
-        .getSingleResult();
-      return Objects.toString(v, null);
-    } catch (NoResultException e) {
-      throw new IllegalArgumentException("train not found: " + trainCd);
-    }
-  }
-
-  private record DepartureInfo(LocalTime departureTime, String trackNumber) {}
-
-  private DepartureInfo getDepartureInfo(String trainCd, String stationCd) {
-    try {
-      Object[] row = (Object[]) em.createNativeQuery(
-          "SELECT departure_time, track_number FROM M_PLAN WHERE train_cd = :trainCd AND arrival_station_cd = :st")
-        .setParameter("trainCd", trainCd)
-        .setParameter("st", stationCd)
-        .getSingleResult();
-      LocalTime depTime = ((Time) row[0]).toLocalTime();
-      String track = Objects.toString(row[1], null);
-      return new DepartureInfo(depTime, track);
-    } catch (NoResultException e) {
-      throw new IllegalArgumentException("plan (departure) not found: train=" + trainCd + ", station=" + stationCd);
-    }
-  }
-
-  private LocalTime getArrivalTime(String trainCd, String stationCd) {
-    try {
-      Object v = em.createNativeQuery(
-          "SELECT arrival_time FROM M_PLAN WHERE train_cd = :trainCd AND arrival_station_cd = :st")
-        .setParameter("trainCd", trainCd)
-        .setParameter("st", stationCd)
-        .getSingleResult();
-      return ((Time) v).toLocalTime();
-    } catch (NoResultException e) {
-      throw new IllegalArgumentException("plan (arrival) not found: train=" + trainCd + ", station=" + stationCd);
-    }
   }
 
   private record SeatChoice(String trainCarCd, String seatCd, String seatTypeCd) {}
@@ -174,24 +133,6 @@ public class TicketReservationService {
       }
     }
     throw new IllegalArgumentException("no free seat found for train " + trainCd + " on " + depDate);
-  }
-
-  private int getCharge(String depSt, String arrSt, String trainTypeCd, String seatTypeCd) {
-    try {
-      Object v = em.createNativeQuery(
-          "SELECT charge FROM M_CHARGE " +
-          "WHERE departure_station_cd = :dep AND arrival_station_cd = :arr " +
-          "AND train_type_cd = :type AND seat_type_cd = :seat")
-        .setParameter("dep", depSt)
-        .setParameter("arr", arrSt)
-        .setParameter("type", trainTypeCd)
-        .setParameter("seat", seatTypeCd)
-        .getSingleResult();
-      return ((Number) v).intValue();
-    } catch (NoResultException e) {
-      throw new IllegalArgumentException("charge not found: dep=" + depSt + ", arr=" + arrSt +
-        ", trainTypeCd=" + trainTypeCd + ", seatTypeCd=" + seatTypeCd);
-    }
   }
 
   private Account getDefaultBuyerAccount() {
