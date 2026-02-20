@@ -1,8 +1,9 @@
 package com.alab.goexpress.model.entity.master;
 
 import jakarta.persistence.*;
-import java.time.LocalTime;
 import lombok.*;
+
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "M_PLAN")
@@ -15,11 +16,11 @@ import lombok.*;
 public class Plan {
 
   @Id
-  @Column(name = "train_cd", length = 5)
+  @Column(name = "train_cd", nullable = false, length = 5)
   private String trainCd;
 
   @Id
-  @Column(name = "arrival_station_cd", length = 2)
+  @Column(name = "arrival_station_cd", nullable = false, length = 2)
   private String arrivalStationCd;
 
   @Column(name = "arrival_time", nullable = false)
@@ -30,4 +31,8 @@ public class Plan {
 
   @Column(name = "track_number", nullable = false, length = 2)
   private String trackNumber;
+
+  public PlanId toId() {
+    return new PlanId(trainCd, arrivalStationCd);
+  }
 }
