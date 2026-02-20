@@ -2,20 +2,20 @@ name: Build & Push backend image, then deploy to App Runner
 on:
   # 自動実行を有効にする場合はコメントアウトを外す
   # （infraのApp Runnerサービス作成後に有効化すること）
-  # push:
-  #   branches: [main]
-  #   paths:
-  #     - "backend/**"
-  #     - ".github/workflows/backend-build-deploy.yml"
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-build-deploy.yml"
   workflow_dispatch:
     inputs:
       dockerfile:
         description: "backend Dockerfile (gradle/stub)"
-        default: "stub" # Springbootプロジェクトが作られたら「gradle」を指定する
+        default: "gradle" # Springbootプロジェクトが作られたら「gradle」を指定する
         required: true
       app_name:
         description: "App name (must match infra APP_NAME)"
-        default: "sample-app"
+        default: "goexpress-app"
         required: true
 
 concurrency:
