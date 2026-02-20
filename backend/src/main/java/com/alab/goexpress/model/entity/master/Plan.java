@@ -1,0 +1,33 @@
+package com.alab.goexpress.model.entity.master;
+
+import jakarta.persistence.*;
+import java.time.LocalTime;
+import lombok.*;
+
+@Entity
+@Table(name = "M_PLAN")
+@IdClass(PlanId.class)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Plan {
+
+  @Id
+  @Column(name = "train_cd", length = 5)
+  private String trainCd;
+
+  @Id
+  @Column(name = "arrival_station_cd", length = 2)
+  private String arrivalStationCd;
+
+  @Column(name = "arrival_time", nullable = false)
+  private LocalTime arrivalTime;
+
+  @Column(name = "departure_time", nullable = false)
+  private LocalTime departureTime;
+
+  @Column(name = "track_number", nullable = false, length = 2)
+  private String trackNumber;
+}
