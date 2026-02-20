@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { stationNameMap } from '@/api/TrainListApi';
 import type { ReservationDetails } from '@/api/reservationApi';
 import { ArrowLeft, Clock, MapPin, TrainFront } from 'lucide-react';
-import { formatDateToJapanese } from '@/utils/date';
+import { formatJapaneseDate } from '@/utils/dateTime';
 
 const ErrorDisplay: React.FC = () => {
   const navigate = useNavigate();
@@ -110,7 +110,7 @@ export const ReservationDetailPage: React.FC = () => {
               </div>
               <div className='flex items-center gap-3'>
                 <Clock className='h-4 w-4 text-muted-foreground shrink-0' />
-                <p>{formatDateToJapanese(reservationDate)}</p>
+                <p>{formatJapaneseDate(reservationDate)}</p>
               </div>
             </div>
 
