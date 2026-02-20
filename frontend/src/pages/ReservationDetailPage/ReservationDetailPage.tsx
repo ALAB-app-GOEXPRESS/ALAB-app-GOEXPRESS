@@ -6,17 +6,7 @@ import { Button } from '@/components/ui/button';
 import { stationNameMap } from '@/api/TrainListApi';
 import type { ReservationDetails } from '@/api/reservationApi';
 import { ArrowLeft, Clock, MapPin, TrainFront } from 'lucide-react';
-
-const formatDateToJapanese = (dateString: string) => {
-  try {
-    const date = new Date(dateString);
-    const userTimezoneOffset = date.getTimezoneOffset() * 60000;
-    const adjustedDate = new Date(date.getTime() + userTimezoneOffset);
-    return `${adjustedDate.getFullYear()}年${adjustedDate.getMonth() + 1}月${adjustedDate.getDate()}日`;
-  } catch (e) {
-    return dateString;
-  }
-};
+import { formatDateToJapanese } from '@/utils/date';
 
 const ErrorDisplay: React.FC = () => {
   const navigate = useNavigate();
@@ -25,7 +15,7 @@ const ErrorDisplay: React.FC = () => {
       <h1 className='text-2xl font-bold'>エラー</h1>
       <Card className='mt-6'>
         <CardContent className='p-6'>
-          <p>予約情報が見つかりませんでした。お手数ですが、前の画面から再度操作をしてください。</p>
+          <p>予約処理に失敗しました。お手数ですが、前の画面から再度操作をしてください。</p>
         </CardContent>
       </Card>
       <div className='mt-6'>
@@ -67,8 +57,7 @@ export const ReservationDetailPage: React.FC = () => {
     seat: confirmedSeat,
   };
 
-  // 作成したデータをJSON文字列に変換します
-  const qrCodeValue = JSON.stringify(qrCodeData);
+  const qrCodeJson = JSON.stringify(qrCodeData);
 
   return (
     <div className='min-h-[calc(100vh-64px)] bg-background'>
@@ -92,7 +81,7 @@ export const ReservationDetailPage: React.FC = () => {
           </CardHeader>
           <CardContent className='flex flex-col items-center gap-2 pt-2'>
             <QRCodeSVG
-              value={qrCodeValue}
+              value={qrCodeJson}
               size={180}
             />
             <p className='text-xs text-muted-foreground'>QRコード</p>
