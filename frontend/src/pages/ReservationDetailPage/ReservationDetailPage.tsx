@@ -28,7 +28,7 @@ const ErrorDisplay: React.FC = () => {
   );
 };
 
-export const ReservationResultPage: React.FC = () => {
+export const ReservationDetailPage: React.FC = () => {
   const location = useLocation();
 
   const { reservationDetails } = (location.state || {}) as {
