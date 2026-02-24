@@ -1,7 +1,7 @@
 package com.alab.goexpress.plan;
 
-import com.alab.goexpress.model.entity.plan.Plan;
-import com.alab.goexpress.model.entity.plan.PlanId;
+import com.alab.goexpress.model.entity.master.Plan;
+import com.alab.goexpress.model.entity.master.PlanId;
 import com.alab.goexpress.model.request.PlanCreateRequest;
 import com.alab.goexpress.model.request.PlanUpdateRequest;
 import java.net.URI;

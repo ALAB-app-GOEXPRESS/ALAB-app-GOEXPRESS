@@ -1,4 +1,4 @@
-package com.alab.goexpress.model.entity.plan;
+package com.alab.goexpress.model.entity.master;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
