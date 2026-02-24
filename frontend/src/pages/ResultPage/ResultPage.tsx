@@ -76,7 +76,7 @@ export const ResultPage: React.FC = () => {
       setReservingTrainCd(train.trainCd);
       const reservationDetails = await createReservation(train, defaultParams.date);
 
-      navigate('/reservation-detail', {
+      navigate('/reservation-result', {
         state: { reservationDetails },
       });
     } catch (error) {

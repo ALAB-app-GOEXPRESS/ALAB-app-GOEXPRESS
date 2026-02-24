@@ -28,12 +28,12 @@ const ErrorDisplay: React.FC = () => {
   );
 };
 
-export const ReservationDetailPage: React.FC = () => {
+export const ReservationResultPage: React.FC = () => {
   const location = useLocation();
 
   const { reservationDetails } = (location.state || {}) as {
     reservationDetails?: ReservationDetails;
-  };
+  };[]
 
   if (!reservationDetails) {
     return (
