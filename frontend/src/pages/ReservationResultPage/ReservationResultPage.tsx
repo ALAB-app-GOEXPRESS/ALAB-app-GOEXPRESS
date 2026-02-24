@@ -30,7 +30,7 @@ const ErrorDisplay: React.FC = () => {
   );
 };
 
-export const ReservationDetailPage: React.FC = () => {
+export const ReservationResultPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 

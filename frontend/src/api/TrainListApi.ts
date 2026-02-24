@@ -11,6 +11,7 @@ export type TrainBetweenApiItem = {
   toStationName: string;
   departureTime: string;
   arrivalTime: string;
+  trackNumber: string;
 };
 
 //残席数表示機能の破壊を防ぐための仮部分
@@ -61,6 +62,7 @@ export type TrainResult = {
   arrivalStationCd: StationCode;
   durationMin: number;
   remainSeatNumber: RemainSeatNumber;
+  trackNumber: string;
 };
 
 export type FetchTrainsResponse = {
@@ -115,6 +117,8 @@ export async function fetchTrains(
 
   const data = (await res.json()) as TrainBetweenApiItem[];
 
+  console.log('[APIレスポンス確認生データ]', data);
+
   const dateSeed = Number(params.date.replaceAll('-', '')) || 0;
 
   const converted: TrainResult[] = data.map((item, index) => {
@@ -136,6 +140,7 @@ export async function fetchTrains(
       arrivalStationCd: item.toStationCd as StationCode,
       durationMin,
       remainSeatNumber,
+      trackNumber: item.trackNumber,
     };
   });
 

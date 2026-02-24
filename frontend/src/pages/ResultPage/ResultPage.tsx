@@ -87,6 +87,20 @@ export const ResultPage: React.FC = () => {
     }
   };
 
+  const handleDetailClick = async (train: TrainResult) => {
+    navigate('/train-detail', {
+      state: {
+        trainCd: train.trainCd,
+        searchParams: {
+          from: train.departureStationCd,
+          to: train.arrivalStationCd,
+          date: defaultParams.date,
+          time: train.departureTime,
+        },
+      },
+    });
+  };
+
   return (
     <div className='min-h-[calc(100vh-64px)] bg-background'>
       <div className='mx-auto w-full max-w-4xl px-4 py-6'>
@@ -210,7 +224,8 @@ export const ResultPage: React.FC = () => {
                         reservedSeats={result.remainSeatNumber.reserved}
                         greenSeats={result.remainSeatNumber.green}
                         grandclassSeats={result.remainSeatNumber.grandclass}
-                        onClickDetail={() => handleReserveClick(result)}
+                        onClickReservation={() => handleReserveClick(result)}
+                        onClickDetail={() => handleDetailClick(result)}
                         isReserving={reservingTrainCd === result.trainCd}
                       />
                     </li>
