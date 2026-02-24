@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Ticket, Search } from 'lucide-react';
 
 export function Header() {
   return (
@@ -17,12 +18,14 @@ export function Header() {
             to='search'
             className='font-bold text-lg'
           >
+            <Search />
             新幹線でさがす
           </Link>
           <Link
             to='reservation-list'
             className='font-bold text-lg'
           >
+            <Ticket />
             予約確認
           </Link>
         </nav>
