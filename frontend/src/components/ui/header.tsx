@@ -16,14 +16,14 @@ export function Header() {
         <nav className='hidden md:flex items-center gap-6 text-sm font-medium'>
           <Link
             to='search'
-            className='font-bold text-lg'
+            className='inline-flex items-center gap-2 font-bold text-lg'
           >
             <Search />
             新幹線でさがす
           </Link>
           <Link
             to='reservation-list'
-            className='font-bold text-lg'
+            className='inline-flex items-center gap-2 font-bold text-lg'
           >
             <Ticket />
             予約確認
