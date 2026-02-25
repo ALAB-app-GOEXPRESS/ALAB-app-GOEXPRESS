@@ -26,4 +26,10 @@ public class TrainCar {
 
   @Column(name = "max_seat_number", nullable = false)
   private Integer maxSeatNumber;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "seat_type_cd", insertable = false, updatable = false)
+  @ToString.Exclude // 循環参照によるStackOverflowErrorを防ぎます
+  @EqualsAndHashCode.Exclude // 同上
+  private SeatType seatType;
 }

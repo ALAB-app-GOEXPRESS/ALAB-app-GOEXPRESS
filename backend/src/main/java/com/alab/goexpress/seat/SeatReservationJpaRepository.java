@@ -19,12 +19,18 @@ public interface SeatReservationJpaRepository extends JpaRepository<Seat, SeatId
     String getSeatCd();
   }
 
-  @Query("""
+  @Query("
          select s.trainCarCd as trainCarCd, s.seatCd as seatCd
          from Seat s
          where s.trainCd = :trainCd and s.departureDate = :depDate
-         """)
+         ")
   List<UsedSeatView> findUsedSeats(
       @Param("trainCd") String trainCd,
       @Param("depDate") LocalDate depDate);
+
+  @Query(
+    """ SELECT COUNT(s) FROM Seat s JOIN TrainCar tc ON s.trainCd = tc.trainCd AND s.trainCarCd = tc.trainCarCd WHERE s.trainCd = :trainCd AND s.departureDate = :date AND tc.seatTypeCd = :seatTypeCd """
+    )
+  long countReservedSeatsBySeatType(@Param("trainCd") String trainCd, @Param("date") LocalDate date, @Param("seatTypeCd") String seatTypeCd);
+ 
 }

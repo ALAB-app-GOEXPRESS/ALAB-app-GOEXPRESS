@@ -21,4 +21,10 @@ public class Train {
 
   @Column(name = "train_number", nullable = false, length = 4)
   private String trainNumber;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "train_type_cd", insertable = false, updatable = false)
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
+  private TrainType trainType;
 }

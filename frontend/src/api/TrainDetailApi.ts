@@ -1,5 +1,5 @@
-import { stationNameMap, type StationCode } from './TrainListApi';
-import { toHHMM } from '@/utils/dateTime';
+import type { StationCode } from './TrainListApi';
+import { stationNameMap } from './TrainListApi';
 
 export type TrainDetailApiItem = {
   trainCd: string;
@@ -7,8 +7,8 @@ export type TrainDetailApiItem = {
   trainNumber: string;
   fromStationCd: StationCode;
   toStationCd: StationCode;
-  departureTime: string;
-  arrivalTime: string;
+  departureTime: string; // "HH:mm"
+  arrivalTime: string; // "HH:mm"
   trackNumber: string;
   seatClasses: Array<{
     seatTypeCd: string;
@@ -56,7 +56,7 @@ function normalizeTrainNumber(raw: string): string {
 }
 
 function toSeatClassType(seatTypeCd: string): SeatClassDetail['type'] {
-  if (seatTypeCd === '01') return 'reserved';
+  if (seatTypeCd === '01' || seatTypeCd === '10') return 'reserved'; // '10'も指定席として扱う
   if (seatTypeCd === '02') return 'green';
   if (seatTypeCd === '03') return 'grandclass';
   return 'reserved';
@@ -70,27 +70,27 @@ const seatClassDescriptions: Record<SeatClassDetail['type'], string> = {
 
 export async function fetchTrainDetail(params: TrainDetailParams): Promise<TrainDetailResult> {
   const endpoint = `/api/trains/detail?trainCd=${encodeURIComponent(params.trainCd)}&from=${encodeURIComponent(params.from)}&to=${encodeURIComponent(params.to)}&date=${encodeURIComponent(params.date)}`;
+
   console.log(`[API通信] 列車詳細情報をリクエストします: ${endpoint}`);
 
-  const mockData: TrainDetailApiItem = {
-    trainCd: params.trainCd,
-    trainTypeName: 'はやぶさ',
-    trainNumber: '1',
-    fromStationCd: params.from,
-    toStationCd: params.to,
-    departureTime: `${params.date}T06:32:00`,
-    arrivalTime: `${params.date}T06:37:00`,
-    trackNumber: '20',
-    seatClasses: [{ seatTypeCd: '01', seatTypeName: '指定席', charge: 13320, remainingSeats: 15 }],
-  };
-  const data = mockData;
+  const res = await fetch(endpoint, {
+    method: 'GET',
+    headers: { Accept: 'application/json' },
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`列車詳細の取得に失敗しました: ${res.status} ${res.statusText} ${text}`);
+  }
+
+  const data = (await res.json()) as TrainDetailApiItem;
 
   const converted: TrainDetailResult = {
     trainCd: data.trainCd,
     trainTypeName: data.trainTypeName,
     trainNumber: `${normalizeTrainNumber(data.trainNumber)}号`,
-    departureTime: toHHMM(data.departureTime.substring(11, 16)),
-    arrivalTime: toHHMM(data.arrivalTime.substring(11, 16)),
+    departureTime: data.departureTime,
+    arrivalTime: data.arrivalTime,
     departureStationName: stationNameMap[data.fromStationCd],
     arrivalStationName: stationNameMap[data.toStationCd],
     trackNumber: data.trackNumber,
