@@ -3,12 +3,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { fetchTrainDetail } from '@/api/TrainDetailApi';
-import type { TrainDetailResult } from '@/api/TrainDetailApi';
 import { formatJapaneseDate } from '@/utils/dateTime';
 import { ArrowLeft, MapPin, TramFront, Loader2 } from 'lucide-react';
 import { specifyTrainTypeIconColor } from '@/utils/train';
-import type { StationCode } from '@/api/TrainListApi';
 import { SeatClassCard } from './SeatClassCard';
+
+import type { TrainDetailResult } from '@/api/TrainDetailApi';
+import type { StationCode } from '@/api/TrainListApi';
 
 export const TrainDetailPage: React.FC = () => {
   const location = useLocation();

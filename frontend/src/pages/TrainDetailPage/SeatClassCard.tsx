@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import type { SeatClassDetail } from '@/api/TrainDetailApi';
 import { formatCurrency } from '@/utils/currency';
+
+import type { SeatClassDetail } from '@/api/TrainDetailApi';
 
 export const SeatClassCard: React.FC<{ seatInfo: SeatClassDetail }> = ({ seatInfo }) => {
   const handleSelect = () => {
@@ -22,6 +23,15 @@ export const SeatClassCard: React.FC<{ seatInfo: SeatClassDetail }> = ({ seatInf
         >
           座席を選択
         </Button>
+        {/* QRコード表示のための仮ボタン*/}
+        <div className='mb-1'></div>
+        <Button
+          onClick={handleSelect}
+          className='w-full bg-green-600 hover:bg-green-700'
+        >
+          予約
+        </Button>
+        {/* QRコード表示のための仮ボタン*/}
       </CardContent>
     </Card>
   );
