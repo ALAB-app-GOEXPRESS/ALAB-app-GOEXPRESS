@@ -1,10 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { SeatClassDetail } from '@/api/TrainDetailApi';
-
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(amount);
-};
+import { formatCurrency } from '@/utils/currency';
 
 export const SeatClassCard: React.FC<{ seatInfo: SeatClassDetail }> = ({ seatInfo }) => {
   const handleSelect = () => {
