@@ -1,10 +1,10 @@
-package com.alab.goexpress.reservation.dto;
+package com.alab.goexpress.reservation.adapter.in.web.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record ReservationItemDto(
+public record ReservationListItemDto(
   Integer reservationId,
   Boolean invalidFlg,
   LocalDate departureDate,

@@ -1,5 +1,4 @@
-package com.alab.goexpress.reservation.dto;
-
+package com.alab.goexpress.reservation.adapter.in.web.dto;
 
 import java.time.LocalDateTime;
 
