@@ -1,9 +1,8 @@
-package com.alab.goexpress.reservation.dto;
-
+package com.alab.goexpress.reservation.application.query;
 
 import java.time.LocalDate;
 
-public record TicketWithOperationDto(
+public record TicketWithOperationView(
   String trainCd,
   LocalDate departureDate,
   String trainCarCd,
@@ -12,5 +11,5 @@ public record TicketWithOperationDto(
   String userName,
   String emailAddress,
   String status,
-  OperationDto operation
+  OperationView operation
 ) {}
