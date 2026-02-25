@@ -3,9 +3,8 @@ import { Ticket, Search } from 'lucide-react';
 
 export function Header() {
   return (
-    <header className='px-15 sticky top-0 z-50 border-b bg-background/80 backdrop-blur'>
-      <div className='container flex h-16 items-center justify-between'>
-        {/* Left: ロゴ */}
+    <header className='sticky top-0 z-50 border-b bg-white'>
+      <div className='mx-auto px-4 sm:px-6 lg:px-8 max-w-screen-2xl flex h-16 items-center'>
         <NavLink
           to='results'
           className='font-bold text-lg'
@@ -13,13 +12,13 @@ export function Header() {
           <img src='/images/goexpress.png' />
         </NavLink>
 
-        <nav className='hidden md:flex items-center gap-6 text-sm font-medium'>
+        <nav className='hidden md:flex items-center gap-1 text-sm font-medium ml-auto'>
           <NavLink
             to='results'
             className={({ isActive }) =>
               isActive
-                ? 'p-2 inline-flex items-center gap-2 font-bold text-lg rounded-lg bg-primary text-white'
-                : 'p-2 inline-flex items-center gap-2 font-bold text-lg rounded-lg'
+                ? 'py-1.5 px-4 inline-flex items-center gap-2 text-13 rounded-lg bg-primary text-white'
+                : 'py-1.5 px-4 inline-flex items-center gap-2 text-13 rounded-lg'
             }
           >
             <Search />
@@ -29,8 +28,8 @@ export function Header() {
             to='reservation-list'
             className={({ isActive }) =>
               isActive
-                ? 'p-2 inline-flex items-center gap-2 font-bold text-lg rounded-lg bg-primary text-white'
-                : 'p-2 inline-flex items-center gap-2 font-bold text-lg rounded-lg'
+                ? 'py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg bg-primary text-white'
+                : 'py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg'
             }
           >
             <Ticket />
