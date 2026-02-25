@@ -13,7 +13,7 @@ const ErrorDisplay: React.FC = () => {
       <h1 className='text-2xl font-bold'>エラー</h1>
       <Card className='mt-6'>
         <CardContent className='p-6'>
-          <p>予約情報の取得に失敗しました。お手数ですが、時間を空けて再操作をお願いいたします。</p>
+          <p>予約処理に失敗しました。お手数ですが、前の画面から再度操作をしてください。</p>
         </CardContent>
       </Card>
       <div className='mt-6'>
@@ -28,7 +28,7 @@ const ErrorDisplay: React.FC = () => {
   );
 };
 
-export const ReservationDetailPage: React.FC = () => {
+export const ReservationResultPage: React.FC = () => {
   const location = useLocation();
 
   const { reservationDetails } = (location.state || {}) as {
