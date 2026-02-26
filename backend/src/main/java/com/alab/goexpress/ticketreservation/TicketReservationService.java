@@ -1,16 +1,15 @@
 package com.alab.goexpress.ticketreservation;
 
 import com.alab.goexpress.account.Account;
-import com.alab.goexpress.model.entity.reservation.Reservation;
+import com.alab.goexpress.master.MasterRepositoryPort;
 import com.alab.goexpress.model.entity.ticket.Ticket;
 import com.alab.goexpress.model.entity.ticket.TicketStatus;
 import com.alab.goexpress.model.request.TicketReservationRequest;
 import com.alab.goexpress.model.response.TicketReservationResponse;
-import com.alab.goexpress.reservation.ReservationRepositoryPort;
+import com.alab.goexpress.reservation.application.port.out.ReservationStorePort;
+import com.alab.goexpress.reservation.domain.model.Reservation;
 import com.alab.goexpress.ticket.TicketService;
 import jakarta.persistence.EntityManager;
-import com.alab.goexpress.master.MasterRepositoryPort;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -23,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TicketReservationService {
 
   private final EntityManager em;
-  private final ReservationRepositoryPort reservationRepo;
+  private final ReservationStorePort reservationRepo;
   private final TicketService ticketService;
   private final MasterRepositoryPort masterRepo;
   private final com.alab.goexpress.seat.SeatService seatService;
@@ -52,7 +51,7 @@ public class TicketReservationService {
     Account buyer = getDefaultBuyerAccount();
     Reservation r = new Reservation();
     r.setInvalidFlg(false);
-    r.setAccount(buyer);
+    r.setAccountId(buyer.getAccountId());
     r.setDepartureDate(depDate);
     r.setBuyerName(buyer.getAccountName());
     r.setEmailAddress(buyer.getEmailAddress());
@@ -62,7 +61,7 @@ public class TicketReservationService {
 
     // 6) チケット作成（TicketService で unused デフォルト設定）
     Ticket t = Ticket.builder()
-      .reservationId(savedReservation.getReservationId())
+      .reservationId(savedReservation.getReservationId().value())
       .trainCd(trainCd)
       .departureDate(depDate)
       .trainCarCd(seat.trainCarCd())
@@ -77,7 +76,15 @@ public class TicketReservationService {
     ticketService.create(t);
 
     // 7) 座席確保（T_SEAT へ登録）
-    seatService.reserveSeat(trainCd, depDate, seat.trainCarCd(), seat.seatCd(), depSt, arrSt, savedReservation.getReservationId());
+    seatService.reserveSeat(
+      trainCd,
+      depDate,
+      seat.trainCarCd(),
+      seat.seatCd(),
+      depSt,
+      arrSt,
+      savedReservation.getReservationId().value()
+    );
 
     // 8) レスポンス生成
     return new TicketReservationResponse(
@@ -90,7 +97,8 @@ public class TicketReservationService {
   }
 
   private Account getDefaultBuyerAccount() {
-    List<Account> list = em.createQuery("SELECT a FROM Account a ORDER BY a.accountId ASC", Account.class)
+    List<Account> list = em
+      .createQuery("SELECT a FROM Account a ORDER BY a.accountId ASC", Account.class)
       .setMaxResults(1)
       .getResultList();
     if (list.isEmpty()) {
