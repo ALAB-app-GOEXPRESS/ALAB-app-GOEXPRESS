@@ -74,7 +74,7 @@ export const TrainDetailPage: React.FC = () => {
             className='-ml-4 p-0 text-muted-foreground'
           >
             <ArrowLeft className='mr-1 h-4 w-4' />
-            検索結果へ戻る
+            戻る
           </Button>
           <Alert
             variant='destructive'
@@ -93,10 +93,10 @@ export const TrainDetailPage: React.FC = () => {
         <Button
           variant='link'
           onClick={() => navigate(-1)}
-          className='-ml-4 p-0 text-muted-foreground'
+          className='p-0 text-black'
         >
           <ArrowLeft className='mr-1 h-4 w-4' />
-          検索結果へ戻る
+          戻る
         </Button>
 
         <div className='mt-4 rounded-xl border bg-white p-6 shadow-sm'>
@@ -118,20 +118,18 @@ export const TrainDetailPage: React.FC = () => {
             <div>
               <p className='text-sm text-muted-foreground'>出発</p>
               <p className='text-4xl font-bold'>{trainDetail.departureTime}</p>
-              <div className='mt-1 flex items-center gap-1.5 text-muted-foreground'>
-                <MapPin className='h-4 w-4' />
+              <div className='mt-1 flex items-center gap-1.5 text-black'>
+                <MapPin className='h-4 w-4 text-muted-foreground' />
                 <span>{trainDetail.departureStationName}</span>
               </div>
               <p className='mt-1 text-sm text-muted-foreground'>{formatJapaneseDate(trainDetail.date)}</p>
-              {trainDetail.trackNumber && (
-                <p className='mt-1 text-sm text-muted-foreground'>{trainDetail.trackNumber}番線</p>
-              )}
+              {trainDetail.trackNumber && <p className='mt-1 text-sm text-black'>{trainDetail.trackNumber}番線</p>}
             </div>
             <div className='text-left'>
               <p className='text-sm text-muted-foreground'>到着</p>
               <p className='text-4xl font-bold'>{trainDetail.arrivalTime}</p>
-              <div className='mt-1 flex items-center gap-1.5 text-muted-foreground'>
-                <MapPin className='h-4 w-4' />
+              <div className='mt-1 flex items-center gap-1.5 text-black'>
+                <MapPin className='h-4 w-4 text-muted-foreground' />
                 <span>{trainDetail.arrivalStationName}</span>
               </div>
               <p className='mt-1 text-sm text-muted-foreground'>{formatJapaneseDate(trainDetail.date)}</p>
