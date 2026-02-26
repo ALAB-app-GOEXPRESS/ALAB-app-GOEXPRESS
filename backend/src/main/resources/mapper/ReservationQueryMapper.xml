@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.alab.goexpress.reservation.adapter.out.persistence.mybatis.ReservationQueryMapper">
+
+    <select id="selectReservationHeaders"
+            resultType="com.alab.goexpress.reservation.adapter.out.persistence.mybatis.row.ReservationHeaderRow">
+        SELECT
+        reservation_id AS reservationId,
+        invalid_flg    AS invalidFlg,
+        departure_date AS departureDate,
+        buy_datetime   AS buyDatetime,
+        buyer_name     AS buyerName,
+        email_address  AS emailAddress
+        FROM T_RESERVATION
+        ORDER BY
+        <choose>
+            <when test="sort == 'buyDatetime,asc'">buy_datetime ASC</when>
+            <when test="sort == 'buyDatetime,desc'">buy_datetime DESC</when>
+            <when test="sort == 'departureDate,asc'">departure_date ASC</when>
+            <when test="sort == 'departureDate,desc'">departure_date DESC</when>
+            <otherwise>buy_datetime DESC</otherwise>
+        </choose>
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countReservations" resultType="long">
+        SELECT COUNT(*) FROM T_RESERVATION
+    </select>
+
+    <select id="selectTicketsWithOperationByReservationIds"
+            resultType="com.alab.goexpress.reservation.adapter.out.persistence.mybatis.row.TicketOperationRow">
+
+        SELECT
+        tk.reservation_id AS reservationId,
+        tk.train_cd       AS trainCd,
+        tk.departure_date AS departureDate,
+        tk.train_car_cd   AS trainCarCd,
+        tk.seat_cd        AS seatCd,
+        tk.charge         AS charge,
+        tk.user_name      AS userName,
+        tk.email_address  AS ticketEmailAddress,
+        tk.status         AS status,
+
+        tk.departure_station_cd AS fromStationCd,
+        dep.station_name        AS fromStationName,
+        tk.arrival_station_cd   AS toStationCd,
+        arr.station_name        AS toStationName,
+
+        (tk.departure_date + p_dep.departure_time) AS departureDateTime,
+        (tk.departure_date + p_arr.arrival_time)   AS arrivalDateTime
+
+        FROM T_TICKET tk
+        JOIN M_STATION dep
+        ON dep.station_cd = tk.departure_station_cd
+        JOIN M_STATION arr
+        ON arr.station_cd = tk.arrival_station_cd
+
+        JOIN M_PLAN p_dep
+        ON p_dep.train_cd = tk.train_cd
+        AND p_dep.arrival_station_cd = tk.departure_station_cd
+
+        JOIN M_PLAN p_arr
+        ON p_arr.train_cd = tk.train_cd
+        AND p_arr.arrival_station_cd = tk.arrival_station_cd
+
+        WHERE tk.reservation_id IN
+        <foreach collection="reservationIds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+
+        ORDER BY tk.reservation_id, tk.train_cd, tk.train_car_cd, tk.seat_cd
+    </select>
+
+</mapper>
