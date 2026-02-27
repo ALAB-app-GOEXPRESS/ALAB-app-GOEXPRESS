@@ -6,7 +6,7 @@ import { formatJapaneseDate, calcDurationMin, toHHMM } from '@/utils/dateTime';
 import { formatSeat, normalizeTrainNumber } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from "@/components/ui/badge"
-import { Ticket } from 'lucide-react';
+import { Ticket, QrCode } from 'lucide-react';
 
 type props = {
   reservationItem: Reservation;
@@ -20,7 +20,7 @@ export const RreservationCard: React.FC<props> = ({ reservationItem }) => {
   const durationMin = calcDurationMin(departureTime, arrivalTime);
   const validation = reservationItem.invalidFlg === true? "無効" : "有効";
 
-  const FormattedReservationItem: ReservationDetails = {
+  const reservationDetails: ReservationDetails = {
     confirmedSeat: formatSeat(reservationItem.tickets[0].seatCd),
     trackNumber: reservationItem.tickets[0].operation.fromTrackNumber,
     reservationDate: reservationItem.departureDate,
@@ -92,7 +92,8 @@ export const RreservationCard: React.FC<props> = ({ reservationItem }) => {
         </p>
         <div className='flex grow-1 shrink-1 basis-0 justify-end gap-2'>
           {/* <Button>キャンセル</Button> */}
-          <Button onClick={() => navigate('/reservation-detail', { state: { FormattedReservationItem } })}>
+          <Button onClick={() => navigate('/reservation-detail', { state: { reservationDetails } })}>
+            <QrCode />
             チケットを表示
           </Button>
         </div>

@@ -1,4 +1,5 @@
 import { fetchReservations, type FetchReservationListResponse, type Operation, type TicketStatus } from '@/api/ReservationListApi';
+import { normalizeTrainNumber } from '@/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -125,7 +126,7 @@ export function useReservationList(size: number): UseReservationListReturn {
             return {
               trainCd: ticket.trainName.trainCd,
               trainTypeName: ticket.trainName.trainTypeName,
-              trainNumber: ticket.trainName.trainNumber,
+              trainNumber: normalizeTrainNumber(ticket.trainName.trainNumber),
               departureDate: ticket.departureDate,
               trainCarCd: ticket.trainCarCd,
               seatCd: ticket.seatCd,
@@ -137,8 +138,6 @@ export function useReservationList(size: number): UseReservationListReturn {
             };
           });
 
-          // console.log(tickets);
-
           return {
             reservationId: result.reservationId,
             invalidFlg: result.invalidFlg,
@@ -149,8 +148,6 @@ export function useReservationList(size: number): UseReservationListReturn {
             tickets: tickets
           };
         });
-
-        console.log(FormattedResults);
 
         setTotalCount(response.totalCount);
         setPageResults(FormattedResults);
@@ -188,10 +185,6 @@ export function useReservationList(size: number): UseReservationListReturn {
 
     setSearchParams(next);
   };
-    // const next = new URLSearchParams(searchParams);
-    // next.set('page', '1');
-
-    // setSearchParams(next);
 
   return {
     currentPage,

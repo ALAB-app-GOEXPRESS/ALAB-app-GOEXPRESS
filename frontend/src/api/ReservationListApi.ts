@@ -1,4 +1,4 @@
-import type { StationCode } from './TrainListApi';
+import type { StationCode } from "./TrainListApi";
 
 export type ReservationListItem = {
   items: ReservationItem[];
@@ -36,10 +36,10 @@ export type TrainName = {
 }
 
 export type Operation = {
-  fromStationCd: string;
+  fromStationCd: StationCode;
   fromStationName: string;
   fromTrackNumber: string;
-  toStationCd: string;
+  toStationCd: StationCode;
   toStationName: string;
   toTrackNumber: string;
   departureDateTime: string;
@@ -72,6 +72,8 @@ export async function fetchReservations(
   const safeSize = Math.max(0, size);
 
   const endpoint = `/api/reservations?page=${safePage}&size=${safeSize}`;
+  //神﨑環境だと、ページ・サイズ指定でのフェッチがうまくいきませんでした。ほかの環境では動作するか試してほしいです。
+  // const endpoint = `/api/reservations`;
 
   const res = await fetch(endpoint, {
     method: 'GET',
@@ -84,8 +86,6 @@ export async function fetchReservations(
   }
 
   const data = (await res.json()) as ReservationListItem;
-
-  console.log(data);
 
   const converted: ReservationItem[] = data.items;
 
