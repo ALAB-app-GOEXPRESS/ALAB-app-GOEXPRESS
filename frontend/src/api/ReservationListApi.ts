@@ -36,10 +36,10 @@ export type TrainName = {
 }
 
 export type Operation = {
-  fromStationCd: StationCode;
+  fromStationCd: string;
   fromStationName: string;
   fromTrackNumber: string;
-  toStationCd: StationCode;
+  toStationCd: string;
   toStationName: string;
   toTrackNumber: string;
   departureDateTime: string;
@@ -88,8 +88,6 @@ export async function fetchReservations(
   console.log(data);
 
   const converted: ReservationItem[] = data.items;
-
-  // console.log(converted);
 
   const totalCount = data.page.totalElements;
   
