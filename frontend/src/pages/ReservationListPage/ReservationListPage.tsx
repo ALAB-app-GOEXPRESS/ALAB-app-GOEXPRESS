@@ -4,7 +4,7 @@ import { useReservationList } from './useResavationList';
 import { Card, CardContent } from '@/components/ui/card';
 
 export const ReservationListPage: React.FC = () => {
-  const pageSize = 10;
+  const pageSize = 5;
 
   const {
     currentPage,

@@ -118,9 +118,8 @@ export function useReservationList(size: number): UseReservationListReturn {
 
         if (isCancelled) {
           return;
-        }
+        };
 
-        // console.log(response);
         const FormattedResults: Reservation[] = response.results.map((result) => {
           const tickets: FormattedTicket[] = result.tickets.map((ticket) => {
             return {
