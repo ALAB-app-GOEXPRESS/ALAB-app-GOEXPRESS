@@ -35,7 +35,6 @@
 
         SELECT
         tk.reservation_id AS reservationId,
-        tk.train_cd       AS trainCd,
         tk.departure_date AS departureDate,
         tk.train_car_cd   AS trainCarCd,
         tk.seat_cd        AS seatCd,
@@ -44,15 +43,27 @@
         tk.email_address  AS ticketEmailAddress,
         tk.status         AS status,
 
+        tk.train_cd         AS trainCd,
+        tp.train_type_name  AS trainTypeName,
+        tr.train_number     AS trainNumber,
+
         tk.departure_station_cd AS fromStationCd,
         dep.station_name        AS fromStationName,
+        p_dep.track_number      AS fromTrackNumber,
         tk.arrival_station_cd   AS toStationCd,
         arr.station_name        AS toStationName,
+        p_arr.track_number      AS toTrackNumber,
 
         (tk.departure_date + p_dep.departure_time) AS departureDateTime,
         (tk.departure_date + p_arr.arrival_time)   AS arrivalDateTime
 
         FROM T_TICKET tk
+        JOIN M_TRAIN tr
+        ON tr.train_cd = tr.train_cd
+
+        JOIN M_TRAIN_TYPE tp
+        ON tp.train_type_cd = tr.train_type_cd
+
         JOIN M_STATION dep
         ON dep.station_cd = tk.departure_station_cd
         JOIN M_STATION arr

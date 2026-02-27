@@ -11,6 +11,6 @@ public record ReservationListItemView(
   LocalDateTime buyDatetime,
   String buyerName,
   String emailAddress,
-  List<TicketWithOperationView> tickets,
+  List<TicketWithTrainNameAndOperationView> tickets,
   LinksView links
 ) {}
