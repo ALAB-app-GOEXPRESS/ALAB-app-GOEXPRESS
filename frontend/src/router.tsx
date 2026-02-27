@@ -5,7 +5,6 @@ import { ResultPage } from './pages/ResultPage/ResultPage';
 import { ReservationResultPage } from './pages/ReservationDetailPage/ReservationResultPage';
 import { ReservationListPage } from './pages/ReservationListPage/ReservationListPage';
 import { ReservationDetailPage } from './pages/ReservationDetailPage/ReservationDetailPage';
-import { ReservationListPage } from './pages/ReservationListPage/ReservationListPage';
 
 export const router = createBrowserRouter([
   {
@@ -17,7 +16,6 @@ export const router = createBrowserRouter([
       { path: 'reservation-result', element: <ReservationResultPage /> },
       { path: 'reservation-list', element: <ReservationListPage /> },
       { path: 'reservation-detail', element: <ReservationDetailPage /> },
-      { path: 'reservation-list', element: <ReservationListPage /> },
     ],
   },
 ]);
