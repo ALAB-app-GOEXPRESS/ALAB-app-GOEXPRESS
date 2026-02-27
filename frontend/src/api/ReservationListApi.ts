@@ -72,8 +72,6 @@ export async function fetchReservations(
   const safeSize = Math.max(0, size);
 
   const endpoint = `/api/reservations?page=${safePage}&size=${safeSize}`;
-  //神﨑環境だと、ページ・サイズ指定でのフェッチがうまくいきませんでした。ほかの環境では動作するか試してほしいです。
-  // const endpoint = `/api/reservations`;
 
   const res = await fetch(endpoint, {
     method: 'GET',
