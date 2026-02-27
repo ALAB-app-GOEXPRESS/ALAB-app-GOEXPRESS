@@ -1,4 +1,8 @@
+// TrainListApi.ts
+
 import { calcDurationMin, toHHMM } from '@/utils/dateTime';
+import { normalizeTrainNumber } from '@/utils/train';
+import type { SeatClass } from '@/utils/seatClass';
 
 export type TrainBetweenApiItem = {
   trainCd: string;
@@ -19,7 +23,8 @@ function pseudoRandom(seed: number): number {
   const x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
 }
-export type SeatClass = 'reserved' | 'green' | 'grandclass';
+
+// ★ インポートした SeatClass 型を使用
 export type RemainSeatNumber = Record<SeatClass, number>;
 
 function buildRemainSeatNumber(seed: number): RemainSeatNumber {
@@ -73,17 +78,6 @@ export type FetchTrainsResponse = {
 function filterBySeatClass(results: TrainResult[], seatClass?: SeatClass): TrainResult[] {
   if (!seatClass) return results;
   return results.filter((train) => train.remainSeatNumber[seatClass] !== 0);
-}
-
-function normalizeTrainNumber(raw: string): string {
-  const n = Number(raw);
-
-  if (Number.isNaN(n)) {
-    const stripped = raw.replace(/^0+(?=\d)/, '');
-    return stripped.length ? stripped : '0';
-  }
-
-  return String(n);
 }
 
 /**

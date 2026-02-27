@@ -1,5 +1,6 @@
 package com.alab.goexpress.model.entity.master;
 
+import com.alab.goexpress.model.entity.master.TrainType;
 import jakarta.persistence.*;
 import lombok.*;
 

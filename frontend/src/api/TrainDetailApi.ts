@@ -1,5 +1,6 @@
-import type { StationCode } from './TrainListApi';
-import { stationNameMap } from './TrainListApi';
+import { normalizeTrainNumber } from '@/utils/train';
+import { stationNameMap, type StationCode } from './TrainListApi';
+import { toSeatClassType, SEAT_CLASS_DESCRIPTIONS, type SeatClass } from '@/utils/seatClass';
 
 export type TrainDetailApiItem = {
   trainCd: string;
@@ -19,7 +20,7 @@ export type TrainDetailApiItem = {
 };
 
 export type SeatClassDetail = {
-  type: 'reserved' | 'green' | 'grandclass';
+  type: SeatClass;
   name: string;
   description: string;
   price: number;
@@ -46,30 +47,12 @@ export type TrainDetailParams = {
   date: string;
 };
 
-function normalizeTrainNumber(raw: string): string {
-  const n = Number(raw);
-  if (Number.isNaN(n)) {
-    const stripped = raw.replace(/^0+(?=\d)/, '');
-    return stripped.length ? stripped : '0';
-  }
-  return String(n);
-}
-
-function toSeatClassType(seatTypeCd: string): SeatClassDetail['type'] {
-  if (seatTypeCd === '01' || seatTypeCd === '10') return 'reserved'; // '10'も指定席として扱う
-  if (seatTypeCd === '02') return 'green';
-  if (seatTypeCd === '03') return 'grandclass';
-  return 'reserved';
-}
-
-const seatClassDescriptions: Record<SeatClassDetail['type'], string> = {
-  reserved: '普通車指定席',
-  green: '快適なシートでくつろぎの旅を',
-  grandclass: '最上級のおもてなしと体験を',
-};
-
 export async function fetchTrainDetail(params: TrainDetailParams): Promise<TrainDetailResult> {
-  const endpoint = `/api/trains/detail?trainCd=${encodeURIComponent(params.trainCd)}&from=${encodeURIComponent(params.from)}&to=${encodeURIComponent(params.to)}&date=${encodeURIComponent(params.date)}`;
+  const { date, trainCd, from, to } = params;
+
+  const endpoint = `/api/trains/${encodeURIComponent(date)}/${encodeURIComponent(
+    trainCd,
+  )}/detail?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
 
   console.log(`[API通信] 列車詳細情報をリクエストします: ${endpoint}`);
 
@@ -100,7 +83,7 @@ export async function fetchTrainDetail(params: TrainDetailParams): Promise<Train
       return {
         type: type,
         name: sc.seatTypeName,
-        description: seatClassDescriptions[type],
+        description: SEAT_CLASS_DESCRIPTIONS[type],
         price: sc.charge,
         remainingSeats: sc.remainingSeats,
       };

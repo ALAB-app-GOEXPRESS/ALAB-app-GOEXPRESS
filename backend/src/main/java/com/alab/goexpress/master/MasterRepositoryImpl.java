@@ -2,8 +2,10 @@ package com.alab.goexpress.master;
 
 import com.alab.goexpress.master.charge.ChargeMasterJpaRepository;
 import com.alab.goexpress.master.plan.PlanMasterJpaRepository;
+import com.alab.goexpress.master.train.TrainCarMasterJpaRepository;
 import com.alab.goexpress.master.train.TrainMasterJpaRepository;
 import java.time.LocalTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,7 @@ public class MasterRepositoryImpl implements MasterRepositoryPort {
   private final TrainMasterJpaRepository trainJpaRepository;
   private final PlanMasterJpaRepository planJpaRepository;
   private final ChargeMasterJpaRepository chargeJpaRepository;
+  private final TrainCarMasterJpaRepository trainCarMasterJpaRepository;
 
   @Override
   public String getTrainTypeCd(String trainCd) {
@@ -59,5 +62,17 @@ public class MasterRepositoryImpl implements MasterRepositoryPort {
             seatTypeCd
         )
       );
+  }
+
+  @Override
+  public List<SeatTypeInfoDTO> getSeatTypesForTrain(String trainCd) {
+    return trainCarMasterJpaRepository.findSeatTypesForTrain(trainCd);
+  }
+
+  @Override
+  public TrainInfoDTO getTrainInfo(String trainCd) {
+    return trainJpaRepository
+      .findTrainInfo(trainCd)
+      .orElseThrow(() -> new IllegalArgumentException("train info not found: " + trainCd));
   }
 }

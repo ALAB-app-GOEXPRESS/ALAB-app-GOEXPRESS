@@ -11,7 +11,9 @@ import { Card, CardContent } from '@/components/ui/card';
 // import { Clock } from 'lucide-react';
 import { nowHHMM, todayYYYYMMDD } from '@/utils/dateTime';
 
-import { stationNameMap, type SeatClass, type TrainSearchParams, type TrainResult } from '@/api/TrainListApi';
+import { stationNameMap, type TrainSearchParams, type TrainResult } from '@/api/TrainListApi';
+
+import { type SeatClass } from '@/utils/seatClass';
 
 import { createReservation } from '@/api/reservationApi';
 

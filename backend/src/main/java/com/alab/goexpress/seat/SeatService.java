@@ -1,39 +1,40 @@
 package com.alab.goexpress.seat;
 
+import com.alab.goexpress.master.train.TrainCarMasterJpaRepository;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class SeatService {
 
   private final SeatRepositoryPort seatRepo;
-  private final SeatReservationJpaRepository.SeatReservationJpaRepository;
-  private final TrainCarMasterJpaRepository TrainCarMasterJpaRepository;
+  private final SeatReservationJpaRepository seatReservationJpaRepository;
+  private final TrainCarMasterJpaRepository trainCarMasterJpaRepository;
 
   public SeatChoice chooseSeat(String trainCd, LocalDate depDate) {
     return seatRepo.chooseSeat(trainCd, depDate);
   }
 
   public void reserveSeat(
-      String trainCd,
-      LocalDate depDate,
-      String trainCarCd,
-      String seatCd,
-      String depSt,
-      String arrSt,
-      Integer reservationId
+    String trainCd,
+    LocalDate depDate,
+    String trainCarCd,
+    String seatCd,
+    String depSt,
+    String arrSt,
+    Integer reservationId
   ) {
     seatRepo.insertSeat(trainCd, depDate, trainCarCd, seatCd, depSt, arrSt, reservationId);
   }
 
   @Transactional(readOnly = true)
-public int countAvailableSeats(String trainCd, LocalDate date, String seatTypeCd) {
+  public int countAvailableSeats(String trainCd, LocalDate date, String seatTypeCd) {
     Long totalSeats = trainCarMasterJpaRepository.sumMaxSeatNumber(trainCd, seatTypeCd);
     if (totalSeats == null) {
-        return 0;
+      return 0;
     }
 
     long reservedSeats = seatReservationJpaRepository.countReservedSeatsBySeatType(trainCd, date, seatTypeCd);
@@ -41,5 +42,5 @@ public int countAvailableSeats(String trainCd, LocalDate date, String seatTypeCd
     int availableSeats = (int) (totalSeats - reservedSeats);
 
     return Math.max(0, availableSeats);
-}
+  }
 }

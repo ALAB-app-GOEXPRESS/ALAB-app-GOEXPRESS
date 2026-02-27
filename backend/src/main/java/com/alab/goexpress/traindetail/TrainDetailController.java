@@ -6,12 +6,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/train-detail") // フロントの呼び出しパス /api/trains に合わせます
+@RequestMapping("/api/trains")
 @RequiredArgsConstructor
 public class TrainDetailController {
 
@@ -19,19 +20,23 @@ public class TrainDetailController {
 
   /**
    * 列車詳細情報を取得するAPIエンドポイント
-   * GET /api/trains/detail?trainCd=...&from=...&to=...&date=...
+   * 例: GET /api/trains/2026-02-24/T0001/detail?from=S01&to=S02
+   *
+   * @param date 出発日 (パス変数)
+   * @param trainCd 列車コード (パス変数)
+   * @param fromStationCd 出発駅コード (クエリパラメータ)
+   * @param toStationCd 到着駅コード (クエリパラメータ)
+   * @return 列車詳細情報
    */
-  @GetMapping("/train-detail")
+  @GetMapping("/{date}/{trainCd}/detail")
   public ResponseEntity<TrainDetailResponse> getTrainDetail(
-    @RequestParam String trainCd,
-    @RequestParam("from") String fromStationCd, // フロントのパラメータ名 'from' に合わせる
-    @RequestParam("to") String toStationCd, // フロントのパラメータ名 'to' に合わせる
-    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+    @PathVariable String trainCd,
+    @RequestParam("from") String fromStationCd,
+    @RequestParam("to") String toStationCd
   ) {
-    // Serviceを呼び出してビジネスロジックを実行
-    TrainDetailResponse response = trainDetailService.getTrainDetail(trainCd, fromStationCd, toStationCd, date);
+    TrainDetailResponse response = trainDetailService.getTrainDetail(date, trainCd, fromStationCd, toStationCd);
 
-    // 結果をOKステータスで返す
     return ResponseEntity.ok(response);
   }
 }

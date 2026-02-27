@@ -5,3 +5,12 @@ export const specifyTrainTypeIconColor = (trainTypeName: string): string => {
 
   return 'bg-[oklch(0.28_0.125_300)]';
 };
+
+export function normalizeTrainNumber(raw: string): string {
+  const n = Number(raw);
+  if (Number.isNaN(n)) {
+    const stripped = raw.replace(/^0+(?=\d)/, '');
+    return stripped.length ? stripped : '0';
+  }
+  return String(n);
+}

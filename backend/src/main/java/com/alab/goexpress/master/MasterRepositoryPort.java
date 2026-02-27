@@ -1,5 +1,6 @@
 package com.alab.goexpress.master;
 
+import com.alab.goexpress.master.SeatTypeInfoDTO;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface MasterRepositoryPort {
 
   TrainInfoDTO getTrainInfo(String trainCd);
 
-  List<SeatTypeIndoDTO> getSeatTypesForTrain(String trainCd);
+  List<SeatTypeInfoDTO> getSeatTypesForTrain(String trainCd);
 }

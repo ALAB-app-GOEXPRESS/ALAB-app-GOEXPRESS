@@ -15,7 +15,7 @@ public interface TrainMasterJpaRepository extends JpaRepository<Train, String> {
   Optional<String> findTrainTypeCd(@Param("trainCd") String trainCd);
 
   @Query(
-    """ SELECT new com.alab.goexpress.master.TrainInfoDTO(tt.trainTypeName, t.trainNumber, t.trainTypeCd) FROM Train t JOIN t.trainType tt WHERE t.trainCd = :trainCd """
+    "SELECT new com.alab.goexpress.master.TrainInfoDTO(tt.trainTypeName, t.trainNumber, t.trainTypeCd) FROM Train t JOIN t.trainType tt WHERE t.trainCd = :trainCd"
   )
   Optional<TrainInfoDTO> findTrainInfo(@Param("trainCd") String trainCd);
 }
