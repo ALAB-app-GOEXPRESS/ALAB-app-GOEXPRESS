@@ -1,4 +1,9 @@
-import { fetchReservations, type FetchReservationListResponse, type Operation, type TicketStatus } from '@/api/ReservationListApi';
+import {
+  fetchReservations,
+  type FetchReservationListResponse,
+  type Operation,
+  type TicketStatus,
+} from '@/api/ReservationListApi';
 import { normalizeTrainNumber } from '@/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -25,7 +30,7 @@ export type Reservation = {
   buyerName: string;
   emailAddress: string;
   tickets: FormattedTicket[];
-}
+};
 
 export type FormattedTicket = {
   trainCd: string;
@@ -39,7 +44,7 @@ export type FormattedTicket = {
   emailAddress: string;
   status: TicketStatus;
   operation: Operation;
-}
+};
 
 function getPageItems(currentPage: number, totalPages: number): Array<number | '...'> {
   const items: Array<number | '...'> = [];
@@ -118,7 +123,7 @@ export function useReservationList(size: number): UseReservationListReturn {
 
         if (isCancelled) {
           return;
-        };
+        }
 
         const FormattedResults: Reservation[] = response.results.map((result) => {
           const tickets: FormattedTicket[] = result.tickets.map((ticket) => {
@@ -133,7 +138,7 @@ export function useReservationList(size: number): UseReservationListReturn {
               userName: ticket.userName,
               emailAddress: ticket.emailAddress,
               status: ticket.status,
-              operation: ticket.operation
+              operation: ticket.operation,
             };
           });
 
@@ -144,7 +149,7 @@ export function useReservationList(size: number): UseReservationListReturn {
             buyDatetime: result.buyDatetime,
             buyerName: result.buyerName,
             emailAddress: result.emailAddress,
-            tickets: tickets
+            tickets: tickets,
           };
         });
 
@@ -166,11 +171,11 @@ export function useReservationList(size: number): UseReservationListReturn {
     return () => {
       isCancelled = true;
     };
-  }, [currentPage]);
+  }, [currentPage, size]);
 
   const totalPages = useMemo(() => {
     return Math.max(1, Math.ceil(totalCount / size));
-  }, [totalCount]);
+  }, [totalCount, size]);
 
   const pageItems = useMemo(() => {
     return getPageItems(currentPage, totalPages);
@@ -198,4 +203,4 @@ export function useReservationList(size: number): UseReservationListReturn {
     totalCount,
     pageResults,
   };
-};
+}
