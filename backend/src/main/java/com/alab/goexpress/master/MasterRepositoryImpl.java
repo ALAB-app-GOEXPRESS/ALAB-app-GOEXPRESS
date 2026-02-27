@@ -7,7 +7,6 @@ import com.alab.goexpress.master.train.TrainMasterJpaRepository;
 import com.alab.goexpress.seat.SeatReservationJpaRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
