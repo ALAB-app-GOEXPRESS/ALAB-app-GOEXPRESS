@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservationResponse {
+
   private Integer reservationId;
   private boolean invalidFlg;
   private Integer accountId;

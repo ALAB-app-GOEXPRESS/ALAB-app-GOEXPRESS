@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class TicketReservationResponse {
+
   private LocalTime departureTime;
   private LocalTime arrivalTime;
   private String departureTrackNumber;

@@ -1,11 +1,10 @@
 package com.alab.goexpress.account;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -13,6 +12,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "t_account")
 public class Account {
+
   @Id
   @Column(name = "account_id")
   private Integer accountId; // IDENTITY指定がないためアプリ/既存DB運用に従い採番

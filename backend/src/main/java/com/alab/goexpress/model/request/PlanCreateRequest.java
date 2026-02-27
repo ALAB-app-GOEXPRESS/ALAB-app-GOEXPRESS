@@ -1,11 +1,11 @@
 package com.alab.goexpress.model.request;
 
-import lombok.Data;
-
 import java.time.LocalTime;
+import lombok.Data;
 
 @Data
 public class PlanCreateRequest {
+
   private String trainCd;
   private String arrivalStationCd;
   private LocalTime arrivalTime;
