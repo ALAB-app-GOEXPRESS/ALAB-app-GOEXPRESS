@@ -1,8 +1,9 @@
-import type { ReservationDetails } from '@/api/reservationApi';
+import type { ReservationDetails } from '@/api/ReservationApi';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatSeat, normalizeTrainNumber } from '@/lib/utils';
+import { formatSeat } from '@/lib/utils';
+import { normalizeTrainNumber } from '@/utils/train';
 import { calcDurationMin, formatJapaneseDate, toHHMM } from '@/utils/dateTime';
 import { QrCode, Ticket } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
