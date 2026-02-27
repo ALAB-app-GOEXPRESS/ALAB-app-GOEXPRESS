@@ -11,6 +11,6 @@ public record ReservationListItemDto(
   LocalDateTime buyDatetime,
   String buyerName,
   String emailAddress,
-  List<TicketWithOperationDto> tickets,
+  List<TicketWithTrainNameAndOperationDto> tickets,
   LinksDto _links
 ) {}

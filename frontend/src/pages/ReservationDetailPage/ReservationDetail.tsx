@@ -45,7 +45,7 @@ export const ReservationDetail: React.FC<props> = ({
             className='p-0 h-auto text-muted-foreground flex items-center gap-1 -ml-1'
           >
             <ArrowLeft className='h-4 w-4' />
-            検索結果へ戻る
+            前の画面へ戻る
           </Button>
         </div>
         <Card className='border-brand-green-light'>
