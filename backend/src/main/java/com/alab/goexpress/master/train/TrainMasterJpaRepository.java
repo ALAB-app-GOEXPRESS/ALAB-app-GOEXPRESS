@@ -13,9 +13,4 @@ import org.springframework.data.repository.query.Param;
 public interface TrainMasterJpaRepository extends JpaRepository<Train, String> {
   @Query("select t.trainTypeCd from Train t where t.trainCd = :trainCd")
   Optional<String> findTrainTypeCd(@Param("trainCd") String trainCd);
-
-  @Query(
-    "SELECT new com.alab.goexpress.master.TrainInfoDTO(tt.trainTypeName, t.trainNumber, t.trainTypeCd) FROM Train t JOIN t.trainType tt WHERE t.trainCd = :trainCd"
-  )
-  Optional<TrainInfoDTO> findTrainInfo(@Param("trainCd") String trainCd);
 }

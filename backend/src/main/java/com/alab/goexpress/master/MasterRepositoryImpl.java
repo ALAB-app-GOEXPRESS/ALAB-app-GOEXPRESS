@@ -55,13 +55,6 @@ public class MasterRepositoryImpl implements MasterRepositoryPort {
   }
 
   @Override
-  public TrainInfoDTO getTrainInfo(String trainCd) {
-    return trainJpaRepository
-      .findTrainInfo(trainCd)
-      .orElseThrow(() -> new IllegalArgumentException("train info not found: " + trainCd));
-  }
-
-  @Override
   public Long sumMaxSeatNumber(String trainCd, String seatTypeCd) {
     return trainCarMasterJpaRepository.sumMaxSeatNumber(trainCd, seatTypeCd);
   }

@@ -13,8 +13,6 @@ public interface MasterRepositoryPort {
 
   int getCharge(String depSt, String arrSt, String trainTypeCd, String seatTypeCd);
 
-  TrainInfoDTO getTrainInfo(String trainCd);
-
   Long sumMaxSeatNumber(String trainCd, String seatTypeCd);
 
   long countReservedSeatsBySeatType(String trainCd, LocalDate date, String seatTypeCd);
