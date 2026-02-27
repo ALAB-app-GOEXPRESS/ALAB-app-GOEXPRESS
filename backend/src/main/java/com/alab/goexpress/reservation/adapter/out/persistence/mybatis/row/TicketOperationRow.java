@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 
 public record TicketOperationRow(
   Integer reservationId,
-  String trainCd,
   LocalDate departureDate,
   String trainCarCd,
   String seatCd,
@@ -13,10 +12,15 @@ public record TicketOperationRow(
   String userName,
   String ticketEmailAddress,
   String status,
+  String trainCd,
+  String trainTypeName,
+  String trainNumber,
   String fromStationCd,
   String fromStationName,
+  String fromTrackNumber,
   String toStationCd,
   String toStationName,
+  String toTrackNumber,
   LocalDateTime departureDateTime,
   LocalDateTime arrivalDateTime
 ) {}
