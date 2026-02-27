@@ -11,7 +11,9 @@ import { Card, CardContent } from '@/components/ui/card';
 // import { Clock } from 'lucide-react';
 import { nowHHMM, todayYYYYMMDD } from '@/utils/dateTime';
 
-import { stationNameMap, type SeatClass, type TrainSearchParams, type TrainResult } from '@/api/TrainListApi';
+import { stationNameMap, type TrainSearchParams, type TrainResult } from '@/api/TrainListApi';
+
+import { type SeatClass } from '@/utils/seatClass';
 
 import { createReservation } from '@/api/reservationApi';
 
@@ -85,6 +87,20 @@ export const ResultPage: React.FC = () => {
     } finally {
       setReservingTrainCd(null);
     }
+  };
+
+  const handleDetailClick = async (train: TrainResult) => {
+    navigate('/train-detail', {
+      state: {
+        trainCd: train.trainCd,
+        searchParams: {
+          from: train.departureStationCd,
+          to: train.arrivalStationCd,
+          date: defaultParams.date,
+          time: train.departureTime,
+        },
+      },
+    });
   };
 
   return (
@@ -210,7 +226,8 @@ export const ResultPage: React.FC = () => {
                         reservedSeats={result.remainSeatNumber.reserved}
                         greenSeats={result.remainSeatNumber.green}
                         grandclassSeats={result.remainSeatNumber.grandclass}
-                        onClickDetail={() => handleReserveClick(result)}
+                        onClickReservation={() => handleReserveClick(result)}
+                        onClickDetail={() => handleDetailClick(result)}
                         isReserving={reservingTrainCd === result.trainCd}
                       />
                     </li>
