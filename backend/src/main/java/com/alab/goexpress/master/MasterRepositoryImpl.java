@@ -4,6 +4,8 @@ import com.alab.goexpress.master.charge.ChargeMasterJpaRepository;
 import com.alab.goexpress.master.plan.PlanMasterJpaRepository;
 import com.alab.goexpress.master.train.TrainCarMasterJpaRepository;
 import com.alab.goexpress.master.train.TrainMasterJpaRepository;
+import com.alab.goexpress.seat.SeatReservationJpaRepository;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ public class MasterRepositoryImpl implements MasterRepositoryPort {
   private final PlanMasterJpaRepository planJpaRepository;
   private final ChargeMasterJpaRepository chargeJpaRepository;
   private final TrainCarMasterJpaRepository trainCarMasterJpaRepository;
+  private final SeatReservationJpaRepository seatReservationJpaRepository;
 
   @Override
   public String getTrainTypeCd(String trainCd) {
@@ -48,20 +51,7 @@ public class MasterRepositoryImpl implements MasterRepositoryPort {
 
   @Override
   public int getCharge(String depSt, String arrSt, String trainTypeCd, String seatTypeCd) {
-    return chargeJpaRepository
-      .findCharge(depSt, arrSt, trainTypeCd, seatTypeCd)
-      .orElseThrow(() ->
-        new IllegalArgumentException(
-          "charge not found: dep=" +
-            depSt +
-            ", arr=" +
-            arrSt +
-            ", trainTypeCd=" +
-            trainTypeCd +
-            ", seatTypeCd=" +
-            seatTypeCd
-        )
-      );
+    return chargeJpaRepository.findCharge(depSt, arrSt, trainTypeCd, seatTypeCd).orElse(0);
   }
 
   @Override
@@ -74,5 +64,15 @@ public class MasterRepositoryImpl implements MasterRepositoryPort {
     return trainJpaRepository
       .findTrainInfo(trainCd)
       .orElseThrow(() -> new IllegalArgumentException("train info not found: " + trainCd));
+  }
+
+  @Override
+  public Long sumMaxSeatNumber(String trainCd, String seatTypeCd) {
+    return trainCarMasterJpaRepository.sumMaxSeatNumber(trainCd, seatTypeCd);
+  }
+
+  @Override
+  public long countReservedSeatsBySeatType(String trainCd, LocalDate date, String seatTypeCd) {
+    return seatReservationJpaRepository.countReservedSeatsBySeatType(trainCd, date, seatTypeCd);
   }
 }

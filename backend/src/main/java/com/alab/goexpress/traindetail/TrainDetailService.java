@@ -1,13 +1,10 @@
 package com.alab.goexpress.traindetail;
 
+import com.alab.goexpress.master.DepartureInfo;
+import com.alab.goexpress.master.MasterRepositoryPort;
 import com.alab.goexpress.master.SeatTypeInfoDTO;
-import com.alab.goexpress.master.charge.ChargeMasterJpaRepository;
-import com.alab.goexpress.master.plan.PlanMasterJpaRepository;
-import com.alab.goexpress.master.train.TrainCarMasterJpaRepository;
-import com.alab.goexpress.master.train.TrainMasterJpaRepository;
-import com.alab.goexpress.model.entity.master.Train;
+import com.alab.goexpress.master.TrainInfoDTO;
 import com.alab.goexpress.model.response.TrainDetailResponse;
-import com.alab.goexpress.seat.SeatReservationJpaRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -20,11 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TrainDetailService {
 
-  private final TrainMasterJpaRepository trainMasterRepository;
-  private final PlanMasterJpaRepository planMasterRepository;
-  private final TrainCarMasterJpaRepository trainCarMasterRepository;
-  private final ChargeMasterJpaRepository chargeMasterRepository;
-  private final SeatReservationJpaRepository seatReservationRepository;
+  private final MasterRepositoryPort masterRepositoryPort;
 
   /**
    * 列車詳細情報を取得するビジネスロジック
@@ -37,37 +30,35 @@ public class TrainDetailService {
    */
   @Transactional(readOnly = true)
   public TrainDetailResponse getTrainDetail(LocalDate date, String trainCd, String fromStationCd, String toStationCd) {
-    Train train = trainMasterRepository
-      .findById(trainCd)
-      .orElseThrow(() -> new RuntimeException("Train not found: " + trainCd));
+    TrainInfoDTO trainInfo = masterRepositoryPort.getTrainInfo(trainCd);
+    if (trainInfo == null) {
+      throw new RuntimeException("Train not found: " + trainCd);
+    }
 
-    PlanMasterJpaRepository.DepartureInfoView departureInfo = planMasterRepository
-      .findDepartureInfo(trainCd, fromStationCd)
-      .orElseThrow(() -> new RuntimeException("Departure info not found"));
+    DepartureInfo departureInfo = masterRepositoryPort.getDepartureInfo(trainCd, fromStationCd);
+    if (departureInfo == null) {
+      throw new RuntimeException("Departure info not found");
+    }
 
-    LocalTime arrivalTime = planMasterRepository
-      .findArrivalTime(trainCd, toStationCd)
-      .orElseThrow(() -> new RuntimeException("Arrival time not found"));
+    LocalTime arrivalTime = masterRepositoryPort.getArrivalTime(trainCd, toStationCd);
+    if (arrivalTime == null) {
+      throw new RuntimeException("Arrival time not found");
+    }
 
-    List<SeatTypeInfoDTO> seatTypes = trainCarMasterRepository.findSeatTypesForTrain(trainCd);
+    List<SeatTypeInfoDTO> seatTypes = masterRepositoryPort.getSeatTypesForTrain(trainCd);
 
     List<TrainDetailResponse.SeatClassInfo> seatClassInfos = seatTypes
       .stream()
       .map(seatType -> {
-        int charge = chargeMasterRepository
-          .findCharge(fromStationCd, toStationCd, train.getTrainTypeCd(), seatType.getSeatTypeCd())
-          .orElse(0);
+        String trainTypeCd = masterRepositoryPort.getTrainTypeCd(trainCd);
+        int charge = masterRepositoryPort.getCharge(fromStationCd, toStationCd, trainTypeCd, seatType.getSeatTypeCd());
 
-        Long maxSeats = trainCarMasterRepository.sumMaxSeatNumber(trainCd, seatType.getSeatTypeCd());
+        Long maxSeats = masterRepositoryPort.sumMaxSeatNumber(trainCd, seatType.getSeatTypeCd());
         if (maxSeats == null) {
           maxSeats = 0L;
         }
 
-        long reservedSeats = seatReservationRepository.countReservedSeatsBySeatType(
-          trainCd,
-          date,
-          seatType.getSeatTypeCd()
-        );
+        long reservedSeats = masterRepositoryPort.countReservedSeatsBySeatType(trainCd, date, seatType.getSeatTypeCd());
 
         int remainingSeats = (int) (maxSeats - reservedSeats);
 
@@ -81,14 +72,14 @@ public class TrainDetailService {
       .collect(Collectors.toList());
 
     return new TrainDetailResponse(
-      train.getTrainCd(),
-      train.getTrainType().getTrainTypeName(),
-      train.getTrainNumber(),
+      trainCd,
+      trainInfo.getTrainTypeName(),
+      trainInfo.getTrainNumber(),
       fromStationCd,
       toStationCd,
-      departureInfo.getDepartureTime(),
+      departureInfo.departureTime(),
       arrivalTime,
-      departureInfo.getTrackNumber(),
+      departureInfo.trackNumber(),
       seatClassInfos
     );
   }
