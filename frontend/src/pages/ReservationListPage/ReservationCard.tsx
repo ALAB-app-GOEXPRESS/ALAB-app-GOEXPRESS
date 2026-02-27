@@ -1,18 +1,18 @@
 import type { ReservationDetails } from '@/api/reservationApi';
-import type { Reservation } from './useResavationList';
+import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatJapaneseDate, calcDurationMin, toHHMM } from '@/utils/dateTime';
 import { formatSeat, normalizeTrainNumber } from '@/lib/utils';
+import { calcDurationMin, formatJapaneseDate, toHHMM } from '@/utils/dateTime';
+import { QrCode, Ticket } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Badge } from "@/components/ui/badge"
-import { Ticket, QrCode } from 'lucide-react';
+import type { Reservation } from './useReservationList';
 
 type props = {
   reservationItem: Reservation;
 };
 
-export const RreservationCard: React.FC<props> = ({ reservationItem }) => {
+export const ReservationCard: React.FC<props> = ({ reservationItem }) => {
   const navigate = useNavigate();
 
   const departureTime = toHHMM(reservationItem.tickets[0].operation.departureDateTime.slice(11, 17));
@@ -88,7 +88,7 @@ export const RreservationCard: React.FC<props> = ({ reservationItem }) => {
       <hr className='mx-4' />
       <CardFooter className='flex items-left gap-2 pt-2'>
         <p className='flex grow-1 shrink-1 text-xl font-semibold'>
-          合計:\{reservationItem.tickets[0].charge.toString()}
+          合計: {reservationItem.tickets[0].charge.toString()}
         </p>
         <div className='flex grow-1 shrink-1 basis-0 justify-end gap-2'>
           {/* <Button>キャンセル</Button> */}
