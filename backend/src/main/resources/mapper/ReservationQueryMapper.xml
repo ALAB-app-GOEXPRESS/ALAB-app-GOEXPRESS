@@ -59,7 +59,7 @@
 
         FROM T_TICKET tk
         JOIN M_TRAIN tr
-        ON tr.train_cd = tr.train_cd
+        ON tr.train_cd = tk.train_cd
 
         JOIN M_TRAIN_TYPE tp
         ON tp.train_type_cd = tr.train_type_cd
