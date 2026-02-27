@@ -4,7 +4,7 @@ import {
   type Operation,
   type TicketStatus,
 } from '@/api/ReservationListApi';
-import { normalizeTrainNumber } from '@/lib/utils';
+import { normalizeTrainNumber } from '@/utils/train';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
