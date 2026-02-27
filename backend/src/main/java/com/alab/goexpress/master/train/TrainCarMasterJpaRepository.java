@@ -1,6 +1,6 @@
 package com.alab.goexpress.master.train;
 
-import com.alab.goexpress.master.SeatTypeInfoDTO;
+import com.alab.goexpress.model.dto.SeatTypeInfoDTO;
 import com.alab.goexpress.model.entity.master.TrainCar;
 import com.alab.goexpress.model.entity.master.TrainCarId;
 import java.util.List;
