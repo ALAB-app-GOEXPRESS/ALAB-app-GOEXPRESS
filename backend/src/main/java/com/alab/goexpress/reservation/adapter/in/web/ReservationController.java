@@ -84,8 +84,7 @@ public class ReservationController {
             .tickets()
             .stream()
             .map(t ->
-              new TicketWithOperationDto(
-                t.trainCd(),
+              new TicketWithTrainNameAndOperationDto(
                 t.departureDate(),
                 t.trainCarCd(),
                 t.seatCd(),
@@ -93,11 +92,14 @@ public class ReservationController {
                 t.userName(),
                 t.emailAddress(),
                 t.status(),
+                new TrainNameDto(t.trainName().trainCd(), t.trainName().trainTypeName(), t.trainName().trainNumber()),
                 new OperationDto(
                   t.operation().fromStationCd(),
                   t.operation().fromStationName(),
+                  t.operation().fromTrackNumber(),
                   t.operation().toStationCd(),
                   t.operation().toStationName(),
+                  t.operation().toTrackNumber(),
                   t.operation().departureDateTime(),
                   t.operation().arrivalDateTime()
                 )

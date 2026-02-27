@@ -16,7 +16,7 @@ public class ReservationListAssembler {
     int size,
     long total
   ) {
-    Map<Integer, List<TicketWithOperationView>> ticketsByResId = ticketRows
+    Map<Integer, List<TicketWithTrainNameAndOperationView>> ticketsByResId = ticketRows
       .stream()
       .collect(
         Collectors.groupingBy(
@@ -29,7 +29,7 @@ public class ReservationListAssembler {
     List<ReservationListItemView> items = headers
       .stream()
       .map(h -> {
-        List<TicketWithOperationView> tickets = ticketsByResId.getOrDefault(h.reservationId(), List.of());
+        List<TicketWithTrainNameAndOperationView> tickets = ticketsByResId.getOrDefault(h.reservationId(), List.of());
         return new ReservationListItemView(
           h.reservationId(),
           h.invalidFlg(),
@@ -50,13 +50,12 @@ public class ReservationListAssembler {
     );
   }
 
-  private static TicketWithOperationView toTicketView(TicketOperationRow r) {
+  private static TicketWithTrainNameAndOperationView toTicketView(TicketOperationRow r) {
     var arrival = r.arrivalDateTime();
     if (arrival.isBefore(r.departureDateTime())) {
       arrival = arrival.plusDays(1);
     }
-    return new TicketWithOperationView(
-      r.trainCd(),
+    return new TicketWithTrainNameAndOperationView(
       r.departureDate(),
       r.trainCarCd(),
       r.seatCd(),
@@ -64,11 +63,14 @@ public class ReservationListAssembler {
       r.userName(),
       r.ticketEmailAddress(),
       r.status(),
+      new TrainNameView(r.trainCd(), r.trainTypeName(), r.trainNumber()),
       new OperationView(
         r.fromStationCd(),
         r.fromStationName(),
+        r.fromTrackNumber(),
         r.toStationCd(),
         r.toStationName(),
+        r.toTrackNumber(),
         r.departureDateTime(),
         arrival
       )
