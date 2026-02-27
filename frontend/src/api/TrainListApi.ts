@@ -1,8 +1,9 @@
 // TrainListApi.ts
 
 import { calcDurationMin, toHHMM } from '@/utils/dateTime';
-import { normalizeTrainNumber } from '@/utils/train';
 import type { SeatClass } from '@/utils/seatClass';
+import { normalizeTrainNumber } from '@/utils/train';
+export type { SeatClass } from '@/utils/seatClass';
 
 export type TrainBetweenApiItem = {
   trainCd: string;
@@ -24,7 +25,6 @@ function pseudoRandom(seed: number): number {
   return x - Math.floor(x);
 }
 
-// ★ インポートした SeatClass 型を使用
 export type RemainSeatNumber = Record<SeatClass, number>;
 
 function buildRemainSeatNumber(seed: number): RemainSeatNumber {

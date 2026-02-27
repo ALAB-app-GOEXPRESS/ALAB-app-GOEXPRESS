@@ -34,7 +34,6 @@ export const ReservationResultPage: React.FC = () => {
   const { reservationDetails } = (location.state || {}) as {
     reservationDetails?: ReservationDetails;
   };
-  [];
 
   if (!reservationDetails) {
     return (

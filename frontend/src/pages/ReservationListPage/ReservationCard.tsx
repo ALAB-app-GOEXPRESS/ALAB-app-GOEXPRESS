@@ -1,5 +1,5 @@
 import type { ReservationDetails } from '@/api/reservationApi';
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatSeat, normalizeTrainNumber } from '@/lib/utils';
@@ -8,17 +8,17 @@ import { QrCode, Ticket } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Reservation } from './useReservationList';
 
-type props = {
+type Props = {
   reservationItem: Reservation;
 };
 
-export const ReservationCard: React.FC<props> = ({ reservationItem }) => {
+export const ReservationCard: React.FC<Props> = ({ reservationItem }: Props) => {
   const navigate = useNavigate();
 
   const departureTime = toHHMM(reservationItem.tickets[0].operation.departureDateTime.slice(11, 17));
   const arrivalTime = toHHMM(reservationItem.tickets[0].operation.arrivalDateTime.slice(11, 17));
   const durationMin = calcDurationMin(departureTime, arrivalTime);
-  const validation = reservationItem.invalidFlg === true? "無効" : "有効";
+  const validation = reservationItem.invalidFlg === true ? '無効' : '有効';
 
   const reservationDetails: ReservationDetails = {
     confirmedSeat: formatSeat(reservationItem.tickets[0].seatCd),
@@ -38,6 +38,7 @@ export const ReservationCard: React.FC<props> = ({ reservationItem }) => {
         green: 0,
         grandclass: 0,
       },
+      trackNumber: reservationItem.tickets[0].operation.fromTrackNumber,
     },
   };
 
@@ -80,7 +81,7 @@ export const ReservationCard: React.FC<props> = ({ reservationItem }) => {
                 <li key={ticket.seatCd}>
                   <Badge variant='outline'>{formatSeat(ticket.seatCd)}</Badge>
                 </li>
-              )
+              );
             })}
           </ul>
         </div>
