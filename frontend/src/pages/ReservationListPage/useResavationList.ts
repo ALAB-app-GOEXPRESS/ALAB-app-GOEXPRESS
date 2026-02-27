@@ -1,4 +1,4 @@
-import { fetchReservations, type FetchReservationListResponse, type ReservationItem } from '@/api/ReservationListApi';
+import { fetchReservations, type FetchReservationListResponse, type Operation, type TicketStatus } from '@/api/ReservationListApi';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -13,8 +13,32 @@ type UseReservationListReturn = {
   apiErrorMessage: string;
 
   totalCount: number;
-  pageResults: ReservationItem[];
+  pageResults: Reservation[];
 };
+
+export type Reservation = {
+  reservationId: number;
+  invalidFlg: boolean;
+  departureDate: string;
+  buyDatetime: string;
+  buyerName: string;
+  emailAddress: string;
+  tickets: FormattedTicket[];
+}
+
+export type FormattedTicket = {
+  trainCd: string;
+  trainTypeName: string;
+  trainNumber: string;
+  departureDate: string;
+  trainCarCd: string;
+  seatCd: string;
+  charge: number;
+  userName: string;
+  emailAddress: string;
+  status: TicketStatus;
+  operation: Operation;
+}
 
 function getPageItems(currentPage: number, totalPages: number): Array<number | '...'> {
   const items: Array<number | '...'> = [];
@@ -63,23 +87,17 @@ function parsePositiveInt(value: string | null, fallback: number): number {
 }
 
 export function useReservationList(size: number): UseReservationListReturn {
-  const pageSize = size;
-
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = useMemo(() => {
     return parsePositiveInt(searchParams.get('page'), 1);
   }, [searchParams]);
 
-  const offset = useMemo(() => {
-    return (currentPage - 1) * pageSize;
-  }, [currentPage, pageSize]);
-
   const [isLoading, setIsLoading] = useState(true);
   const [apiErrorMessage, setApiErrorMessage] = useState('');
 
   const [totalCount, setTotalCount] = useState(0);
-  const [pageResults, setPageResults] = useState<ReservationItem[]>([]);
+  const [pageResults, setPageResults] = useState<Reservation[]>([]);
 
   useEffect(() => {
     let isCancelled = false;
@@ -95,14 +113,47 @@ export function useReservationList(size: number): UseReservationListReturn {
         setIsLoading(true);
         setApiErrorMessage('');
 
-        const response: FetchReservationListResponse = await fetchReservations(pageSize, offset);
+        const response: FetchReservationListResponse = await fetchReservations(currentPage, size);
 
         if (isCancelled) {
           return;
         }
 
+        // console.log(response);
+        const FormattedResults: Reservation[] = response.results.map((result) => {
+          const tickets: FormattedTicket[] = result.tickets.map((ticket) => {
+            return {
+              trainCd: ticket.trainName.trainCd,
+              trainTypeName: ticket.trainName.trainTypeName,
+              trainNumber: ticket.trainName.trainNumber,
+              departureDate: ticket.departureDate,
+              trainCarCd: ticket.trainCarCd,
+              seatCd: ticket.seatCd,
+              charge: ticket.charge,
+              userName: ticket.userName,
+              emailAddress: ticket.emailAddress,
+              status: ticket.status,
+              operation: ticket.operation
+            };
+          });
+
+          // console.log(tickets);
+
+          return {
+            reservationId: result.reservationId,
+            invalidFlg: result.invalidFlg,
+            departureDate: result.departureDate,
+            buyDatetime: result.buyDatetime,
+            buyerName: result.buyerName,
+            emailAddress: result.emailAddress,
+            tickets: tickets
+          };
+        });
+
+        console.log(FormattedResults);
+
         setTotalCount(response.totalCount);
-        setPageResults(response.results);
+        setPageResults(FormattedResults);
         setIsLoading(false);
       } catch {
         if (isCancelled) {
@@ -119,11 +170,11 @@ export function useReservationList(size: number): UseReservationListReturn {
     return () => {
       isCancelled = true;
     };
-  }, [offset, pageSize]);
+  }, [currentPage]);
 
   const totalPages = useMemo(() => {
-    return Math.max(1, Math.ceil(totalCount / pageSize));
-  }, [totalCount, pageSize]);
+    return Math.max(1, Math.ceil(totalCount / size));
+  }, [totalCount]);
 
   const pageItems = useMemo(() => {
     return getPageItems(currentPage, totalPages);
@@ -137,10 +188,10 @@ export function useReservationList(size: number): UseReservationListReturn {
 
     setSearchParams(next);
   };
-    const next = new URLSearchParams(searchParams);
-    next.set('page', '1');
+    // const next = new URLSearchParams(searchParams);
+    // next.set('page', '1');
 
-    setSearchParams(next);
+    // setSearchParams(next);
 
   return {
     currentPage,

@@ -1,9 +1,9 @@
 import type { StationCode } from './TrainListApi';
 
 export type ReservationListItem = {
-  item: ReservationItem;
+  items: ReservationItem[];
   page: Page;
-  _link: _link;
+  _links: _links;
 };
 
 export type ReservationItem = {
@@ -14,13 +14,10 @@ export type ReservationItem = {
   buyerName: string;
   emailAddress: string;
   tickets: Ticket[];
-  _link: _link;
+  _links: _links;
 };
 
 export type Ticket = {
-  trainCd: string;
-  trainTypeName: string;
-  trainNumber: string;
   departureDate: string;
   trainCarCd: string;
   seatCd: string;
@@ -28,18 +25,25 @@ export type Ticket = {
   userName: string;
   emailAddress: string;
   status: TicketStatus;
+  trainName: TrainName;
   operation: Operation;
 };
+
+export type TrainName = {
+  trainCd: string;
+  trainTypeName: string;
+  trainNumber: string;
+}
 
 export type Operation = {
   fromStationCd: StationCode;
   fromStationName: string;
+  fromTrackNumber: string;
   toStationCd: StationCode;
   toStationName: string;
+  toTrackNumber: string;
   departureDateTime: string;
   arrivalDateTime: string;
-  departureTrackNumber: string;
-  arrivalTrackNumber: string;
 };
 
 export type TicketStatus = "unused" | "used" | "canceled";
@@ -50,7 +54,7 @@ export type Page = {
     totalElements: number;
 };
 
-export type _link = {
+export type _links = {
     self: string;
     tickets: string | null;
 }
@@ -79,14 +83,18 @@ export async function fetchReservations(
     throw new Error(`fetchTrains failed: ${res.status} ${res.statusText} ${text}`);
   }
 
-  const data = (await res.json()) as ReservationListItem[];
+  const data = (await res.json()) as ReservationListItem;
 
-  const converted: ReservationItem[] = data.map((item) => {
-    return item.item;
-  });
+  console.log(data);
 
-  const totalCount = converted.length;
-  const results = converted.slice(safePage, safePage + safeSize);
+  const converted: ReservationItem[] = data.items;
+
+  // console.log(converted);
+
+  const totalCount = data.page.totalElements;
+  
+  const results = converted;
+
 
   return { totalCount, results };
 }
