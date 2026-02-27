@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle } from '@/components/ui/alert';
+import { createReservation } from '@/api/reservationApi';
 import { fetchTrainDetail } from '@/api/TrainDetailApi';
-import { formatJapaneseDate } from '@/utils/dateTime';
+import { formatJapaneseDate, calcDurationMin } from '@/utils/dateTime';
 import { ArrowLeft, MapPin, TramFront, Loader2 } from 'lucide-react';
 import { specifyTrainTypeIconColor } from '@/utils/train';
 import { SeatClassCard } from './SeatClassCard';
@@ -23,6 +24,7 @@ export const TrainDetailPage: React.FC = () => {
   const [trainDetail, setTrainDetail] = useState<TrainDetailResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isReserving, setIsReserving] = useState(false);
 
   useEffect(() => {
     if (!trainCd || !searchParams) {
@@ -52,6 +54,43 @@ export const TrainDetailPage: React.FC = () => {
 
     loadTrainDetail();
   }, [trainCd, searchParams]);
+
+  const handleReserve = async () => {
+    if (isReserving || !trainDetail || !searchParams) return;
+
+    try {
+      setIsReserving(true);
+      const durationMin = calcDurationMin(trainDetail.departureTime, trainDetail.arrivalTime);
+      const reservationDetails = await createReservation(
+        {
+          trainCd: trainDetail.trainCd,
+          trainTypeName: trainDetail.trainTypeName,
+          trainNumber: trainDetail.trainNumber,
+          departureTime: trainDetail.departureTime,
+          arrivalTime: trainDetail.arrivalTime,
+          departureStationCd: searchParams.from,
+          arrivalStationCd: searchParams.to,
+          trackNumber: trainDetail.trackNumber,
+          durationMin: durationMin,
+          remainSeatNumber: {
+            reserved: 0,
+            green: 0,
+            grandclass: 0,
+          },
+        },
+        trainDetail.date,
+      );
+
+      navigate('/reservation-result', {
+        state: { reservationDetails },
+      });
+    } catch (error) {
+      console.error(error);
+      alert(error instanceof Error ? error.message : '予期せぬエラーが発生しました。');
+    } finally {
+      setIsReserving(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -146,6 +185,8 @@ export const TrainDetailPage: React.FC = () => {
                   <SeatClassCard
                     key={seatInfo.type}
                     seatInfo={seatInfo}
+                    onClickReservation={handleReserve}
+                    isReserving={isReserving}
                   />
                 ))}
             </div>

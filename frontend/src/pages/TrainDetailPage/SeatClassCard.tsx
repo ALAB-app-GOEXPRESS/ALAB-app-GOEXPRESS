@@ -4,7 +4,11 @@ import { formatCurrency } from '@/utils/currency';
 
 import type { SeatClassDetail } from '@/api/TrainDetailApi';
 
-export const SeatClassCard: React.FC<{ seatInfo: SeatClassDetail }> = ({ seatInfo }) => {
+export const SeatClassCard: React.FC<{
+  seatInfo: SeatClassDetail;
+  onClickReservation: () => void;
+  isReserving: boolean;
+}> = ({ seatInfo, onClickReservation, isReserving }) => {
   const handleSelect = () => {
     alert(`${seatInfo.name}が選択されました。\n（この先の機能は別途実装が必要です）`);
   };
@@ -20,18 +24,18 @@ export const SeatClassCard: React.FC<{ seatInfo: SeatClassDetail }> = ({ seatInf
         <Button
           onClick={handleSelect}
           className='w-full bg-green-600 hover:bg-green-700'
+          disabled={isReserving}
         >
           座席を選択
         </Button>
-        {/* QRコード表示のための仮ボタン*/}
         <div className='mb-1'></div>
         <Button
-          onClick={handleSelect}
+          onClick={onClickReservation}
           className='w-full bg-green-600 hover:bg-green-700'
+          disabled={isReserving}
         >
-          予約
+          {isReserving ? '予約処理中...' : '予約する'}
         </Button>
-        {/* QRコード表示のための仮ボタン*/}
       </CardContent>
     </Card>
   );
