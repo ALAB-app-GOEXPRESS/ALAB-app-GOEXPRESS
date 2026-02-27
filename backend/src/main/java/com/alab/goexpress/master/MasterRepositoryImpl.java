@@ -55,11 +55,6 @@ public class MasterRepositoryImpl implements MasterRepositoryPort {
   }
 
   @Override
-  public List<SeatTypeInfoDTO> getSeatTypesForTrain(String trainCd) {
-    return trainCarMasterJpaRepository.findSeatTypesForTrain(trainCd);
-  }
-
-  @Override
   public TrainInfoDTO getTrainInfo(String trainCd) {
     return trainJpaRepository
       .findTrainInfo(trainCd)

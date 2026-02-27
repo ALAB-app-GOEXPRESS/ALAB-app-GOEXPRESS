@@ -1,6 +1,5 @@
 package com.alab.goexpress.master;
 
-import com.alab.goexpress.master.SeatTypeInfoDTO;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -15,8 +14,6 @@ public interface MasterRepositoryPort {
   int getCharge(String depSt, String arrSt, String trainTypeCd, String seatTypeCd);
 
   TrainInfoDTO getTrainInfo(String trainCd);
-
-  List<SeatTypeInfoDTO> getSeatTypesForTrain(String trainCd);
 
   Long sumMaxSeatNumber(String trainCd, String seatTypeCd);
 
