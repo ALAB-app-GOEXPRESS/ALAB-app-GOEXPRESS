@@ -1,8 +1,8 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export const formatSeat = (seatCode: string): string => {
@@ -22,14 +22,3 @@ export const formatSeat = (seatCode: string): string => {
     return seatCode;
   }
 };
-
-export function normalizeTrainNumber(raw: string): string {
-  const n = Number(raw);
-
-  if (Number.isNaN(n)) {
-    const stripped = raw.replace(/^0+(?=\d)/, '');
-    return stripped.length ? stripped : '0';
-  }
-
-  return String(n);
-}

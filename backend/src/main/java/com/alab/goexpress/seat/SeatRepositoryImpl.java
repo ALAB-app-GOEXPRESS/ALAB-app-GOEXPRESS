@@ -55,13 +55,13 @@ public class SeatRepositoryImpl implements SeatRepositoryPort {
   @Override
   @Transactional
   public void insertSeat(
-      String trainCd,
-      LocalDate depDate,
-      String trainCarCd,
-      String seatCd,
-      String depSt,
-      String arrSt,
-      Integer reservationId
+    String trainCd,
+    LocalDate depDate,
+    String trainCarCd,
+    String seatCd,
+    String depSt,
+    String arrSt,
+    Integer reservationId
   ) {
     // 主キー: (train_cd, departure_date, train_car_cd, seat_cd, departure_station_cd, arrival_station_cd)
     Seat s = new Seat();
@@ -77,8 +77,10 @@ public class SeatRepositoryImpl implements SeatRepositoryPort {
       seatRepo.save(s);
     } catch (DataIntegrityViolationException e) {
       // 主キー重複などの一意制約違反を業務例外へ変換（同時予約競合の可能性）
-      throw new IllegalArgumentException("seat already reserved: " + trainCd + " " + depDate +
-        " car " + trainCarCd + " seat " + seatCd, e);
+      throw new IllegalArgumentException(
+        "seat already reserved: " + trainCd + " " + depDate + " car " + trainCarCd + " seat " + seatCd,
+        e
+      );
     }
   }
 }

@@ -1,9 +1,8 @@
 package com.alab.goexpress.model.entity.master;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalTime;
+import lombok.*;
 
 @Entity
 @Table(name = "M_PLAN")

@@ -1,4 +1,4 @@
-import type { TrainResult } from './TrainListApi';
+import type { TrainResult } from '@/api/TrainListApi';
 import { formatSeat } from '@/lib/utils';
 
 interface ApiReservationResponse {
@@ -26,8 +26,6 @@ export const createReservation = async (train: TrainResult, date: string): Promi
     departureDate: date,
   };
 
-  console.log('【API通信開始】予約作成リクエストをサーバーに送信します:', API_ENDPOINT, payload);
-
   try {
     const response = await fetch(API_ENDPOINT, {
       method: 'POST',
@@ -46,13 +44,12 @@ export const createReservation = async (train: TrainResult, date: string): Promi
           errorMessage = errorData.message;
         }
       } catch (parseError) {
-        console.warn('APIエラーレスポンスのJSON解析に失敗しました：', parseError);
+        console.warn('エラーレスポンスのJSON解析に失敗しました:', parseError);
       }
       throw new Error(errorMessage);
     }
 
     const responseData: ApiReservationResponse = await response.json();
-    console.log('【API通信成功】サーバーからの生の応答:', responseData);
 
     const formattedData: ReservationDetails = {
       confirmedSeat: formatSeat(responseData.seatCd),
@@ -65,10 +62,9 @@ export const createReservation = async (train: TrainResult, date: string): Promi
       },
     };
 
-    console.log('【データ変換後】フロントエンドで使うデータ:', formattedData);
     return formattedData;
   } catch (error) {
-    console.error('予約APIの通信または処理中にエラーが発生しました:', error);
+    console.error('予約APIエラー:', error);
     throw error;
   }
 };

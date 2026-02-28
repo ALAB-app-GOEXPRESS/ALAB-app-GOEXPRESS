@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class TrainCarId implements Serializable {
+
   private String trainCd;
   private String trainCarCd;
 }
