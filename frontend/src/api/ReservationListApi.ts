@@ -1,4 +1,4 @@
-import type { StationCode } from "./TrainListApi";
+import type { StationCode } from './TrainListApi';
 
 export type ReservationListItem = {
   items: ReservationItem[];
@@ -33,7 +33,7 @@ export type TrainName = {
   trainCd: string;
   trainTypeName: string;
   trainNumber: string;
-}
+};
 
 export type Operation = {
   fromStationCd: StationCode;
@@ -46,28 +46,25 @@ export type Operation = {
   arrivalDateTime: string;
 };
 
-export type TicketStatus = "unused" | "used" | "canceled";
+export type TicketStatus = 'unused' | 'used' | 'canceled';
 
 export type Page = {
-    number: number;
-    size: number;
-    totalElements: number;
+  number: number;
+  size: number;
+  totalElements: number;
 };
 
 export type _links = {
-    self: string;
-    tickets: string | null;
-}
+  self: string;
+  tickets: string | null;
+};
 
 export type FetchReservationListResponse = {
   totalCount: number;
   results: ReservationItem[];
 };
 
-export async function fetchReservations(
-  page: number,
-  size: number,
-): Promise<FetchReservationListResponse> {
+export async function fetchReservations(page: number, size: number): Promise<FetchReservationListResponse> {
   const safePage = Math.max(0, page);
   const safeSize = Math.max(0, size);
 
@@ -88,9 +85,8 @@ export async function fetchReservations(
   const converted: ReservationItem[] = data.items;
 
   const totalCount = data.page.totalElements;
-  
-  const results = converted;
 
+  const results = converted;
 
   return { totalCount, results };
 }

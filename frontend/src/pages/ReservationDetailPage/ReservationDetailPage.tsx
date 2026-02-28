@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { stationNameMap } from '@/api/TrainListApi';
-import type { ReservationDetails } from '@/api/reservationApi';
+import type { ReservationDetails } from '@/api/ReservationApi';
 import { ReservationDetail } from '@/pages/ReservationResultPage/ReservationDetail';
 
 const ErrorDisplay: React.FC = () => {
