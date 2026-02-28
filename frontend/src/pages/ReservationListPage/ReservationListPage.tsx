@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
-import { RreservationCard } from './ReservationCard';
-import { useReservationList } from './useResavationList';
 import { Card, CardContent } from '@/components/ui/card';
+import { ReservationCard } from './ReservationCard';
+import { useReservationList } from './useReservationList';
 
 export const ReservationListPage: React.FC = () => {
   const pageSize = 5;
@@ -37,7 +37,7 @@ export const ReservationListPage: React.FC = () => {
               {pageResults.map((result) => {
                 return (
                   <li key={result.reservationId}>
-                    <RreservationCard reservationItem={result} />
+                    <ReservationCard reservationItem={result} />
                   </li>
                 );
               })}

@@ -19,5 +19,16 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    plugins: {
+      import: await import('eslint-plugin-import'),
+    },
+    rules: {
+      '@typescript-eslint/naming-convention': [
+        'warn',
+        { selector: 'variable', format: ['camelCase', 'PascalCase', 'UPPER_CASE'] },
+        { selector: 'typeLike', format: ['PascalCase'] },
+        { selector: 'function', format: ['camelCase'] },
+      ],
+    },
   },
 ])
