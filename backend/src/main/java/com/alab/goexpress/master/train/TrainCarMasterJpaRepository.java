@@ -17,7 +17,7 @@ public interface TrainCarMasterJpaRepository extends JpaRepository<TrainCar, Tra
 
   @Query(
     """
-    SELECT DISTINCT new com.alab.goexpress.master.SeatTypeInfoDTO(st.seatTypeCd, st.seatName)
+    SELECT DISTINCT new com.alab.goexpress.model.dto.SeatTypeInfoDTO(st.seatTypeCd, st.seatName)
     FROM TrainCar tc JOIN tc.seatType st WHERE tc.trainCd = :trainCd ORDER BY st.seatTypeCd ASC
     """
   )

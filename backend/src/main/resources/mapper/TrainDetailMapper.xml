@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.alab.goexpress.traindetail.TrainDetailMapper">
 
-    <resultMap id="seatTypeInfoResultMap" type="com.alab.goexpress.master.SeatTypeInfoDTO">
+    <resultMap id="seatTypeInfoResultMap" type="com.alab.goexpress.model.dto.SeatTypeInfoDTO">
         <result property="seatTypeCd" column="seat_type_cd"/>
         <result property="seatTypeName" column="seat_name"/>
     </resultMap>
 
-    <select id="findTrainInfo" resultType="com.alab.goexpress.master.TrainInfoDTO">
+    <select id="findTrainInfo" resultType="com.alab.goexpress.model.dto.TrainInfoDTO">
         SELECT
             mt.train_cd AS trainCd,
             mtt.train_type_name AS trainTypeName,
