@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { Ticket, Search } from 'lucide-react';
 
-export function Header() {
+export const Header: React.FC = () => {
   return (
     <header className='sticky top-0 z-50 border-b bg-white'>
       <div className='mx-auto px-4 sm:px-6 lg:px-8 max-w-screen-2xl flex h-16 items-center'>
@@ -39,4 +39,4 @@ export function Header() {
       </div>
     </header>
   );
-}
+};
