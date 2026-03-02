@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -15,8 +15,6 @@ import { stationNameMap, type TrainSearchParams, type TrainResult } from '@/api/
 
 import { type SeatClass } from '@/utils/seatClass';
 
-import { createReservation } from '@/api/ReservationApi';
-
 import { useTrainResults } from './useTrainResults';
 
 import { TrainCard } from './TrainCard';
@@ -32,8 +30,6 @@ const seatClassFilterOptions = [
 
 export const ResultPage: React.FC = () => {
   const navigate = useNavigate();
-
-  const [reservingTrainCd, setReservingTrainCd] = useState<string | null>(null);
 
   const defaultParams = useMemo<TrainSearchParams>(() => {
     return {
@@ -70,24 +66,6 @@ export const ResultPage: React.FC = () => {
 
   const departureStationName = stationNameMap[defaultParams.from];
   const arrivalStationName = stationNameMap[defaultParams.to];
-
-  const handleReserveClick = async (train: TrainResult) => {
-    if (reservingTrainCd) return; // 二重クリック防止
-
-    try {
-      setReservingTrainCd(train.trainCd);
-      const reservationDetails = await createReservation(train, defaultParams.date);
-
-      navigate('/reservation-result', {
-        state: { reservationDetails },
-      });
-    } catch (error) {
-      console.error(error);
-      alert(error instanceof Error ? error.message : '予期せぬエラーが発生しました。');
-    } finally {
-      setReservingTrainCd(null);
-    }
-  };
 
   const handleDetailClick = async (train: TrainResult) => {
     navigate('/train-detail', {
@@ -226,9 +204,7 @@ export const ResultPage: React.FC = () => {
                         reservedSeats={result.remainSeatNumber.reserved}
                         greenSeats={result.remainSeatNumber.green}
                         grandclassSeats={result.remainSeatNumber.grandclass}
-                        onClickReservation={() => handleReserveClick(result)}
                         onClickDetail={() => handleDetailClick(result)}
-                        isReserving={reservingTrainCd === result.trainCd}
                       />
                     </li>
                   );
