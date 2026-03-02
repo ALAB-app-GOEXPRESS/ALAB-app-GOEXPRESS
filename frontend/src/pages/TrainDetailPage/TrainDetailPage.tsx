@@ -178,17 +178,14 @@ export const TrainDetailPage: React.FC = () => {
           <div className='mt-8'>
             <h2 className='text-lg font-semibold'>空席状況</h2>
             <div className='mt-4 grid grid-cols-1 gap-4 md:grid-cols-3'>
-              {trainDetail.seatClasses
-                // ↓指定席以外も実装するときはこのfilter外す
-                .filter((seatInfo) => seatInfo.name === '指定席')
-                .map((seatInfo) => (
-                  <SeatClassCard
-                    key={seatInfo.type}
-                    seatInfo={seatInfo}
-                    onClickReservation={handleReserve}
-                    isReserving={isReserving}
-                  />
-                ))}
+              {trainDetail.seatClasses.map((seatInfo) => (
+                <SeatClassCard
+                  key={seatInfo.type}
+                  seatInfo={seatInfo}
+                  onClickReservation={handleReserve}
+                  isReserving={isReserving}
+                />
+              ))}
             </div>
           </div>
         </div>
