@@ -8,6 +8,7 @@ import { calcDurationMin, formatJapaneseDate, toHHMM } from '@/utils/dateTime';
 import { QrCode, Ticket } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Reservation } from './useReservationList';
+import { formatCurrency } from '@/utils/currency';
 
 type Props = {
   reservationItem: Reservation;
@@ -90,7 +91,7 @@ export const ReservationCard: React.FC<Props> = ({ reservationItem }: Props) => 
       <hr className='mx-4' />
       <CardFooter className='flex items-left gap-2 pt-2'>
         <p className='flex grow-1 shrink-1 text-xl font-semibold'>
-          合計: {reservationItem.tickets[0].charge.toString()}
+          合計: {formatCurrency(reservationItem.tickets[0].charge)}
         </p>
         <div className='flex grow-1 shrink-1 basis-0 justify-end gap-2'>
           {/* <Button>キャンセル</Button> */}
