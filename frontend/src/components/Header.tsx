@@ -17,7 +17,7 @@ export const Header: React.FC = () => {
             to='results'
             className={({ isActive }) =>
               isActive
-                ? 'py-1.5 px-4 inline-flex items-center gap-2 text-13 rounded-lg bg-primary text-white'
+                ? 'py-1.5 px-4 inline-flex items-center gap-2 text-13 rounded-lg bg-primary text-white cursor-default'
                 : 'py-1.5 px-4 inline-flex items-center gap-2 text-13 rounded-lg'
             }
           >
@@ -28,7 +28,7 @@ export const Header: React.FC = () => {
             to='reservation-list'
             className={({ isActive }) =>
               isActive
-                ? 'py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg bg-primary text-white'
+                ? 'py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg bg-primary text-white cursor-default'
                 : 'py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg'
             }
           >
