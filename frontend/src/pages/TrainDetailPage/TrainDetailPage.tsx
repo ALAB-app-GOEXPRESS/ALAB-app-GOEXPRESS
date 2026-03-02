@@ -24,7 +24,7 @@ export const TrainDetailPage: React.FC = () => {
   const [trainDetail, setTrainDetail] = useState<TrainDetailResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isReserving, setIsReserving] = useState(false);
+  const [reservingSeatType, setReservingSeatType] = useState<string | null>(null);
 
   useEffect(() => {
     if (!trainCd || !searchParams) {
@@ -55,11 +55,11 @@ export const TrainDetailPage: React.FC = () => {
     loadTrainDetail();
   }, [trainCd, searchParams]);
 
-  const handleReserve = async () => {
-    if (isReserving || !trainDetail || !searchParams) return;
+  const handleReserve = async (seatType: string) => {
+    if (reservingSeatType || !trainDetail || !searchParams) return;
 
     try {
-      setIsReserving(true);
+      setReservingSeatType(seatType);
       const durationMin = calcDurationMin(trainDetail.departureTime, trainDetail.arrivalTime);
       const reservationDetails = await createReservation(
         {
@@ -88,7 +88,7 @@ export const TrainDetailPage: React.FC = () => {
       console.error(error);
       alert(error instanceof Error ? error.message : '予期せぬエラーが発生しました。');
     } finally {
-      setIsReserving(false);
+      setReservingSeatType(null);
     }
   };
 
@@ -178,17 +178,14 @@ export const TrainDetailPage: React.FC = () => {
           <div className='mt-8'>
             <h2 className='text-lg font-semibold'>空席状況</h2>
             <div className='mt-4 grid grid-cols-1 gap-4 md:grid-cols-3'>
-              {trainDetail.seatClasses
-                // ↓指定席以外も実装するときはこのfilter外す
-                .filter((seatInfo) => seatInfo.name === '指定席')
-                .map((seatInfo) => (
-                  <SeatClassCard
-                    key={seatInfo.type}
-                    seatInfo={seatInfo}
-                    onClickReservation={handleReserve}
-                    isReserving={isReserving}
-                  />
-                ))}
+              {trainDetail.seatClasses.map((seatInfo) => (
+                <SeatClassCard
+                  key={seatInfo.type}
+                  seatInfo={seatInfo}
+                  onClickReservation={() => handleReserve(seatInfo.type)}
+                  isReserving={reservingSeatType === seatInfo.type}
+                />
+              ))}
             </div>
           </div>
         </div>

@@ -21,18 +21,18 @@ export const SeatClassCard: React.FC<{
       </CardHeader>
       <CardContent className='flex flex-1 flex-col justify-end'>
         <p className='mb-4 text-2xl font-bold'>{formatCurrency(seatInfo.price)}</p>
-        <Button
+        {/* <Button
           onClick={handleSelect}
           className='w-full bg-green-600 hover:bg-green-700'
           disabled={isReserving}
         >
           座席を選択
-        </Button>
+        </Button> */}
         <div className='mb-1'></div>
         <Button
           onClick={onClickReservation}
-          className='w-full bg-green-600 hover:bg-green-700'
-          disabled={isReserving}
+          className='w-full'
+          disabled={isReserving || seatInfo.name !== '指定席'}
         >
           {isReserving ? '予約処理中...' : '予約する'}
         </Button>
