@@ -9,9 +9,9 @@ export const SeatClassCard: React.FC<{
   onClickReservation: () => void;
   isReserving: boolean;
 }> = ({ seatInfo, onClickReservation, isReserving }) => {
-  const handleSelect = () => {
-    alert(`${seatInfo.name}が選択されました。\n（この先の機能は別途実装が必要です）`);
-  };
+  // const handleSelect = () => {
+  //   alert(`${seatInfo.name}が選択されました。\n（この先の機能は別途実装が必要です）`);
+  // };
 
   return (
     <Card className='flex flex-col'>
