@@ -1,6 +1,7 @@
 import { normalizeTrainNumber } from '@/utils/train';
 import { stationNameMap, type StationCode } from './TrainListApi';
 import { toSeatClassType, SEAT_CLASS_DESCRIPTIONS, type SeatClass } from '@/utils/seatClass';
+import { fetchJSON } from '@/lib/fetch';
 
 export type TrainDetailApiItem = {
   trainCd: string;
@@ -56,17 +57,7 @@ export async function fetchTrainDetail(params: TrainDetailParams): Promise<Train
 
   console.log(`[API通信] 列車詳細情報をリクエストします: ${endpoint}`);
 
-  const res = await fetch(endpoint, {
-    method: 'GET',
-    headers: { Accept: 'application/json' },
-  });
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`列車詳細の取得に失敗しました: ${res.status} ${res.statusText} ${text}`);
-  }
-
-  const data = (await res.json()) as TrainDetailApiItem;
+  const data = await fetchJSON<TrainDetailApiItem>(endpoint);
 
   const converted: TrainDetailResult = {
     trainCd: data.trainCd,

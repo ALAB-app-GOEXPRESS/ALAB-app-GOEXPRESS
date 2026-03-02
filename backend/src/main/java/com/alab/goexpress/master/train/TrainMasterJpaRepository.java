@@ -1,6 +1,5 @@
 package com.alab.goexpress.master.train;
 
-import com.alab.goexpress.master.TrainInfoDTO;
 import com.alab.goexpress.model.entity.master.Train;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

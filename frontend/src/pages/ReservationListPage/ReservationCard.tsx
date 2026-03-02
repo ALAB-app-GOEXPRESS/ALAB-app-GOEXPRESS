@@ -1,24 +1,25 @@
-import type { ReservationDetails } from '@/api/reservationApi';
-import type { Reservation } from './useResavationList';
+import type { ReservationDetails } from '@/api/ReservationApi';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatJapaneseDate, calcDurationMin, toHHMM } from '@/utils/dateTime';
-import { formatSeat, normalizeTrainNumber } from '@/lib/utils';
+import { formatSeat } from '@/lib/utils';
+import { normalizeTrainNumber } from '@/utils/train';
+import { calcDurationMin, formatJapaneseDate, toHHMM } from '@/utils/dateTime';
+import { QrCode, Ticket } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Badge } from "@/components/ui/badge"
-import { Ticket, QrCode } from 'lucide-react';
+import type { Reservation } from './useReservationList';
 
-type props = {
+type Props = {
   reservationItem: Reservation;
 };
 
-export const RreservationCard: React.FC<props> = ({ reservationItem }) => {
+export const ReservationCard: React.FC<Props> = ({ reservationItem }: Props) => {
   const navigate = useNavigate();
 
   const departureTime = toHHMM(reservationItem.tickets[0].operation.departureDateTime.slice(11, 17));
   const arrivalTime = toHHMM(reservationItem.tickets[0].operation.arrivalDateTime.slice(11, 17));
   const durationMin = calcDurationMin(departureTime, arrivalTime);
-  const validation = reservationItem.invalidFlg === true? "無効" : "有効";
+  const validation = reservationItem.invalidFlg === true ? '無効' : '有効';
 
   const reservationDetails: ReservationDetails = {
     confirmedSeat: formatSeat(reservationItem.tickets[0].seatCd),
@@ -38,6 +39,7 @@ export const RreservationCard: React.FC<props> = ({ reservationItem }) => {
         green: 0,
         grandclass: 0,
       },
+      trackNumber: reservationItem.tickets[0].operation.fromTrackNumber,
     },
   };
 
@@ -80,7 +82,7 @@ export const RreservationCard: React.FC<props> = ({ reservationItem }) => {
                 <li key={ticket.seatCd}>
                   <Badge variant='outline'>{formatSeat(ticket.seatCd)}</Badge>
                 </li>
-              )
+              );
             })}
           </ul>
         </div>
@@ -88,7 +90,7 @@ export const RreservationCard: React.FC<props> = ({ reservationItem }) => {
       <hr className='mx-4' />
       <CardFooter className='flex items-left gap-2 pt-2'>
         <p className='flex grow-1 shrink-1 text-xl font-semibold'>
-          合計:\{reservationItem.tickets[0].charge.toString()}
+          合計: {reservationItem.tickets[0].charge.toString()}
         </p>
         <div className='flex grow-1 shrink-1 basis-0 justify-end gap-2'>
           {/* <Button>キャンセル</Button> */}

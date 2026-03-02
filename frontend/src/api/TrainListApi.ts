@@ -1,8 +1,10 @@
 // TrainListApi.ts
 
 import { calcDurationMin, toHHMM } from '@/utils/dateTime';
-import { normalizeTrainNumber } from '@/utils/train';
 import type { SeatClass } from '@/utils/seatClass';
+import { normalizeTrainNumber } from '@/utils/train';
+export type { SeatClass } from '@/utils/seatClass';
+import { fetchJSON } from '@/lib/fetch';
 
 export type TrainBetweenApiItem = {
   trainCd: string;
@@ -24,7 +26,6 @@ function pseudoRandom(seed: number): number {
   return x - Math.floor(x);
 }
 
-// ★ インポートした SeatClass 型を使用
 export type RemainSeatNumber = Record<SeatClass, number>;
 
 function buildRemainSeatNumber(seed: number): RemainSeatNumber {
@@ -99,17 +100,7 @@ export async function fetchTrains(
 
   const endpoint = `/api/trains/between?from=${encodeURIComponent(params.from)}&to=${encodeURIComponent(params.to)}`;
 
-  const res = await fetch(endpoint, {
-    method: 'GET',
-    headers: { Accept: 'application/json' },
-  });
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`fetchTrains failed: ${res.status} ${res.statusText} ${text}`);
-  }
-
-  const data = (await res.json()) as TrainBetweenApiItem[];
+  const data = await fetchJSON<TrainBetweenApiItem[]>(endpoint);
 
   console.log('[APIレスポンス確認生データ]', data);
 

@@ -7,7 +7,7 @@ import { type TrainResult } from '@/api/TrainListApi';
 import { ArrowLeft, Clock, MapPin, TrainFront } from 'lucide-react';
 import { formatJapaneseDate } from '@/utils/dateTime';
 
-type props = {
+type Props = {
   trainDetails: TrainResult;
   confirmedSeat: string;
   reservationDate: string;
@@ -16,7 +16,7 @@ type props = {
   arrivalStationName: string;
 };
 
-export const ReservationDetail: React.FC<props> = ({
+export const ReservationDetail: React.FC<Props> = ({
   trainDetails,
   confirmedSeat,
   reservationDate,

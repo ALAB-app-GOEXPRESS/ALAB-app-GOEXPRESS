@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class SeatId implements Serializable {
+
   private String trainCd;
   private LocalDate departureDate;
   private String trainCarCd;

@@ -1,11 +1,11 @@
 package com.alab.goexpress.model.request;
 
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
-
 public class ReservationCreateRequest {
+
   public record CreateReservationRequest(
     boolean invalidFlg,
     @NotNull Integer accountId,

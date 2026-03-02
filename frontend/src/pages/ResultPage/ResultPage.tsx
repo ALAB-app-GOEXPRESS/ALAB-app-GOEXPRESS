@@ -15,7 +15,7 @@ import { stationNameMap, type TrainSearchParams, type TrainResult } from '@/api/
 
 import { type SeatClass } from '@/utils/seatClass';
 
-import { createReservation } from '@/api/reservationApi';
+import { createReservation } from '@/api/ReservationApi';
 
 import { useTrainResults } from './useTrainResults';
 

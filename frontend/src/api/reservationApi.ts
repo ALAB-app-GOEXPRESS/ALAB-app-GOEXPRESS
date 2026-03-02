@@ -1,5 +1,6 @@
-import type { TrainResult } from './TrainListApi';
+import type { TrainResult } from '@/api/TrainListApi';
 import { formatSeat } from '@/lib/utils';
+import { fetchJSON } from '@/lib/fetch';
 
 interface ApiReservationResponse {
   departureTime: string;
@@ -26,49 +27,21 @@ export const createReservation = async (train: TrainResult, date: string): Promi
     departureDate: date,
   };
 
-  console.log('【API通信開始】予約作成リクエストをサーバーに送信します:', API_ENDPOINT, payload);
+  const responseData = await fetchJSON<ApiReservationResponse>(API_ENDPOINT, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
 
-  try {
-    const response = await fetch(API_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
+  const formattedData: ReservationDetails = {
+    confirmedSeat: formatSeat(responseData.seatCd),
+    trackNumber: responseData.departureTrackNumber,
+    reservationDate: responseData.departureDate,
+    trainDetails: {
+      ...train,
+      departureTime: responseData.departureTime.slice(0, 5),
+      arrivalTime: responseData.arrivalTime.slice(0, 5),
+    },
+  };
 
-    if (!response.ok) {
-      let errorMessage = `サーバーエラーが発生しました (ステータス: ${response.status})`;
-      try {
-        const errorData = await response.json();
-        if (errorData && errorData.message) {
-          errorMessage = errorData.message;
-        }
-      } catch (parseError) {
-        console.warn('APIエラーレスポンスのJSON解析に失敗しました：', parseError);
-      }
-      throw new Error(errorMessage);
-    }
-
-    const responseData: ApiReservationResponse = await response.json();
-    console.log('【API通信成功】サーバーからの生の応答:', responseData);
-
-    const formattedData: ReservationDetails = {
-      confirmedSeat: formatSeat(responseData.seatCd),
-      trackNumber: responseData.departureTrackNumber,
-      reservationDate: responseData.departureDate,
-      trainDetails: {
-        ...train,
-        departureTime: responseData.departureTime.slice(0, 5),
-        arrivalTime: responseData.arrivalTime.slice(0, 5),
-      },
-    };
-
-    console.log('【データ変換後】フロントエンドで使うデータ:', formattedData);
-    return formattedData;
-  } catch (error) {
-    console.error('予約APIの通信または処理中にエラーが発生しました:', error);
-    throw error;
-  }
+  return formattedData;
 };

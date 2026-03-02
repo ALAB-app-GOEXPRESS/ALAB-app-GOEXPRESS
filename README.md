@@ -249,4 +249,31 @@ jobs:
                 run: ./gradlew --no-daemon build
 ```
 
+## ローカル クイックチェック
+
+開発中に最低限の品質チェックをすばやく回すためのコマンドです。
+
+1. フロントエンド（lint / typecheck / build）
+
+```bash
+# リポジトリ直下で実行
+npm -C frontend ci
+npm -C frontend run check
+
+# 生成物の確認（Windows）
+start frontend\\dist\\index.html
+```
+
+1. バックエンド（ビルドのみ）
+
+```bash
+# ネットワーク制限が無い環境で
+backend\\gradlew.bat -p backend build -x test
+
+# もしくは Linux/Mac
+./backend/gradlew -p backend build -x test
+```
+
+備考: ネットワーク制限下では Gradle Wrapper のディストリビューション取得で失敗することがあります。その場合は後続の Phase で CI 上のビルド確認を優先し、ローカルはネットワーク開放後に確認してください。
+
 > NOTE: Spring Initializr直後は `test` が落ちることもあるので、最初は `./gradlew build -x test` から始めて、後でテストを有効化してもOKです。

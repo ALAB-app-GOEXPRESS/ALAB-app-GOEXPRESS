@@ -2,7 +2,6 @@ package com.alab.goexpress.master;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 public interface MasterRepositoryPort {
   String getTrainTypeCd(String trainCd);

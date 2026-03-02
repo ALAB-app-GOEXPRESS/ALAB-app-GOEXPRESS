@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle } from '@/components/ui/alert';
-import { createReservation } from '@/api/reservationApi';
+import { createReservation } from '@/api/ReservationApi';
 import { fetchTrainDetail } from '@/api/TrainDetailApi';
 import { formatJapaneseDate, calcDurationMin } from '@/utils/dateTime';
 import { ArrowLeft, MapPin, TramFront, Loader2 } from 'lucide-react';

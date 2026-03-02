@@ -2,10 +2,10 @@ package com.alab.goexpress.model.request;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Getter
 @NoArgsConstructor
