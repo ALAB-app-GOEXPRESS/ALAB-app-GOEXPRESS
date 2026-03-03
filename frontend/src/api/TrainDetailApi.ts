@@ -1,7 +1,8 @@
 import { normalizeTrainNumber } from '@/utils/train';
-import { stationNameMap, type StationCode } from './TrainListApi';
+import { type StationCode } from '@/types/Station';
 import { toSeatClassType, SEAT_CLASS_DESCRIPTIONS, type SeatClass } from '@/utils/seatClass';
 import { fetchJSON } from '@/lib/fetch';
+import { stationNameMap } from '@/constants/Station';
 
 export type TrainDetailApiItem = {
   trainCd: string;

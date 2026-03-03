@@ -7,16 +7,12 @@ import { Card, CardContent } from '@/components/ui/card';
 // import { Label } from '@/components/ui/label';
 // import { Separator } from '@/components/ui/separator';
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-
 // import { Clock } from 'lucide-react';
-
-import { stationNameMap, type TrainSearchParams, type TrainResult } from '@/api/TrainListApi';
-
+import { type TrainSearchParams, type TrainResult } from '@/api/TrainListApi';
 import { type SeatClass } from '@/utils/seatClass';
-
 import { useTrainResults } from './useTrainResults';
-
 import { TrainCard } from './TrainCard';
+import { stationNameMap } from '@/constants/Station';
 
 type SeatClassFilter = 'all' | SeatClass;
 

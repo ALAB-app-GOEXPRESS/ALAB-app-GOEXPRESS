@@ -5,6 +5,7 @@ import type { SeatClass } from '@/utils/seatClass';
 import { normalizeTrainNumber } from '@/utils/train';
 export type { SeatClass } from '@/utils/seatClass';
 import { fetchJSON } from '@/lib/fetch';
+import type { StationCode } from '@/types/Station';
 
 export type TrainBetweenApiItem = {
   trainCd: string;
@@ -43,13 +44,6 @@ function hashSeed(str: string): number {
   }
   return h;
 }
-
-export const stationNameMap = {
-  '01': '東京',
-  '02': '上野',
-} as const;
-
-export type StationCode = keyof typeof stationNameMap;
 
 export type TrainSearchParams = {
   from: StationCode;

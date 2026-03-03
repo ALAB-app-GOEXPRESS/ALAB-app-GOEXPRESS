@@ -9,18 +9,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 import { nowHHMM, todayYYYYMMDD } from '@/utils/dateTime';
 import { isValidDateYYYYMMDD, isValidTimeHHMM } from '@/utils/validators';
+import { stationNameMap } from '@/constants/Station';
 
 // API仮置き
 type Station = {
   cd: string;
   name: string;
 };
-
-const STATIONS: Station[] = [
-  { cd: '01', name: '東京' },
-  { cd: '02', name: '上野' },
-  { cd: '03', name: '大宮' },
-];
 
 type TrainSearchParams = {
   from: string;
@@ -97,12 +92,12 @@ export const SearchPage: React.FC = () => {
                   <SelectValue placeholder='駅を選択' />
                 </SelectTrigger>
                 <SelectContent>
-                  {STATIONS.map((s) => (
+                  {Object.entries(stationNameMap).map(([key, name]) => (
                     <SelectItem
-                      key={s.cd}
-                      value={s.cd}
+                      key={key}
+                      value={key}
                     >
-                      {s.name}
+                      {name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -126,12 +121,12 @@ export const SearchPage: React.FC = () => {
                   <SelectValue placeholder='駅を選択' />
                 </SelectTrigger>
                 <SelectContent>
-                  {STATIONS.map((s) => (
+                  {Object.entries(stationNameMap).map(([key, name]) => (
                     <SelectItem
-                      key={s.cd}
-                      value={s.cd}
+                      key={key}
+                      value={key}
                     >
-                      {s.name}
+                      {name}
                     </SelectItem>
                   ))}
                 </SelectContent>
