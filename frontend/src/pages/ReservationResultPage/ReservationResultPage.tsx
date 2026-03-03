@@ -1,13 +1,12 @@
-import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { stationNameMap } from '@/api/TrainListApi';
 import type { ReservationDetails } from '@/api/ReservationApi';
 import { ReservationDetail } from './ReservationDetail';
-
 const ErrorDisplay: React.FC = () => {
   const navigate = useNavigate();
+
   return (
     <div className='mx-auto w-full max-w-2xl px-4 py-6'>
       <h1 className='text-2xl font-bold'>エラー</h1>
