@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,7 +9,6 @@ import { Card, CardContent } from '@/components/ui/card';
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 // import { Clock } from 'lucide-react';
-import { nowHHMM, todayYYYYMMDD } from '@/utils/dateTime';
 
 import { stationNameMap, type TrainSearchParams, type TrainResult } from '@/api/TrainListApi';
 
@@ -31,14 +30,16 @@ const seatClassFilterOptions = [
 export const ResultPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const defaultParams = useMemo<TrainSearchParams>(() => {
+  const [searchParams] = useSearchParams();
+
+  const paramsFromQuery = useMemo<TrainSearchParams>(() => {
     return {
-      from: '01',
-      to: '02',
-      date: todayYYYYMMDD(),
-      time: nowHHMM(),
-    };
-  }, []);
+      from: searchParams.get('from')!,
+      to: searchParams.get('to')!,
+      date: searchParams.get('date')!,
+      time: searchParams.get('time')!,
+    } as TrainSearchParams;
+  }, [searchParams]);
 
   // const [paramsUi, setParamsUi] = useState<TrainSearchParams>(defaultParams);
 
@@ -56,7 +57,7 @@ export const ResultPage: React.FC = () => {
     // totalCount,
     pageResults,
   } = useTrainResults({
-    defaultParams,
+    defaultParams: paramsFromQuery,
     pageSize,
     seatClassFilterOptions: seatClassFilterOptions as ReadonlyArray<{
       value: SeatClassFilter;
@@ -64,8 +65,8 @@ export const ResultPage: React.FC = () => {
     }>,
   });
 
-  const departureStationName = stationNameMap[defaultParams.from];
-  const arrivalStationName = stationNameMap[defaultParams.to];
+  const departureStationName = stationNameMap[paramsFromQuery.from];
+  const arrivalStationName = stationNameMap[paramsFromQuery.to];
 
   const handleDetailClick = async (train: TrainResult) => {
     navigate('/train-detail', {
@@ -74,7 +75,7 @@ export const ResultPage: React.FC = () => {
         searchParams: {
           from: train.departureStationCd,
           to: train.arrivalStationCd,
-          date: defaultParams.date,
+          date: paramsFromQuery.date,
           time: train.departureTime,
         },
       },

@@ -6,7 +6,7 @@ export const Header: React.FC = () => {
     <header className='sticky top-0 z-50 border-b bg-white'>
       <div className='mx-auto px-4 sm:px-6 lg:px-8 max-w-screen-2xl flex h-16 items-center'>
         <NavLink
-          to='results'
+          to='search'
           className='font-bold text-lg'
         >
           <img src='/images/goexpress.png' />
@@ -14,7 +14,7 @@ export const Header: React.FC = () => {
 
         <nav className='hidden md:flex items-center gap-1 text-sm font-medium ml-auto'>
           <NavLink
-            to='results'
+            to='search'
             className={({ isActive }) =>
               isActive
                 ? 'py-1.5 px-4 inline-flex items-center gap-2 text-13 rounded-lg bg-primary text-white cursor-default'

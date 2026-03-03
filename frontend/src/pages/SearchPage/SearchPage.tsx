@@ -10,8 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { nowHHMM, todayYYYYMMDD } from '@/utils/dateTime';
 import { isValidDateYYYYMMDD, isValidTimeHHMM } from '@/utils/validators';
 
-import { ArrowRight } from 'lucide-react';
-
 // API仮置き
 type Station = {
   cd: string;
@@ -21,6 +19,7 @@ type Station = {
 const STATIONS: Station[] = [
   { cd: '01', name: '東京' },
   { cd: '02', name: '上野' },
+  { cd: '03', name: '大宮' },
 ];
 
 type TrainSearchParams = {
@@ -48,9 +47,6 @@ export const SearchPage: React.FC = () => {
   const [time, setTime] = useState<string>(nowHHMM());
 
   const [error, setError] = useState<string>('');
-
-  const fromName = useMemo(() => STATIONS.find((s) => s.cd === from)?.name ?? '', [from]);
-  const toName = useMemo(() => STATIONS.find((s) => s.cd === to)?.name ?? '', [to]);
 
   const setAndFalse = (message: string) => {
     setError(message);
@@ -80,8 +76,8 @@ export const SearchPage: React.FC = () => {
 
   return (
     <div className='min-h-[calc(100vh-64px)] bg-background'>
-      <div className='mx-auto w-full max-w-3xl px-4 py-10'>
-        <div className='text-xl font-bold'>新幹線をさがす</div>
+      <div className='mx-auto w-full max-w-xl px-4 py-10'>
+        <div className='text-2xl font-bold mb-8'>新幹線をさがす</div>
 
         <form
           onSubmit={onSubmit}
@@ -96,7 +92,7 @@ export const SearchPage: React.FC = () => {
               >
                 <SelectTrigger
                   id='from'
-                  className='bg-muted/40'
+                  className='bg-muted/40 w-full'
                 >
                   <SelectValue placeholder='駅を選択' />
                 </SelectTrigger>
@@ -113,10 +109,8 @@ export const SearchPage: React.FC = () => {
               </Select>
             </div>
 
-            <div className='hidden md:flex md:justify-center'>
-              <div className='flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground'>
-                <ArrowRight className='h-5 w-5' />
-              </div>
+            <div className='hidden md:flex md:justify-center pb-2'>
+              <span className='text-muted-foreground text-lg'>→</span>
             </div>
 
             <div className='space-y-2'>
@@ -127,7 +121,7 @@ export const SearchPage: React.FC = () => {
               >
                 <SelectTrigger
                   id='to'
-                  className='bg-muted/40'
+                  className='bg-muted/40 w-full'
                 >
                   <SelectValue placeholder='駅を選択' />
                 </SelectTrigger>
@@ -182,21 +176,10 @@ export const SearchPage: React.FC = () => {
           {/* ボタン（画像の緑ボタン寄せ） */}
           <Button
             type='submit'
-            className='h-12 w-full rounded-md bg-emerald-600 text-white hover:bg-emerald-700'
+            className='h-12 w-full rounded-md'
           >
             列車を検索
           </Button>
-
-          {/* 補足（任意） */}
-          <div className='text-sm text-muted-foreground'>
-            {from && to ? (
-              <>
-                選択中：{fromName} → {toName} ／ {date} {time} 以降
-              </>
-            ) : (
-              <>駅・日付・時刻を入力して検索してください。</>
-            )}
-          </div>
         </form>
       </div>
     </div>
