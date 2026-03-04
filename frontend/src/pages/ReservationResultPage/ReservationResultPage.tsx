@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -35,6 +35,16 @@ export const ReservationResultPage: React.FC = () => {
 
   const [isShownSnackBar, setIsShownSnackBar] = useState(true);
 
+  useEffect(() => {
+    if (isShownSnackBar) {
+      const timer = setTimeout(() => {
+        setIsShownSnackBar(false)
+      }, 5000)
+
+      return () => clearTimeout(timer)
+    }
+  }, [isShownSnackBar])
+
   const { reservationDetails } = (location.state || {}) as {
     reservationDetails?: ReservationDetails;
   };
@@ -66,10 +76,9 @@ export const ReservationResultPage: React.FC = () => {
           <motion.div
             initial={{ x: '-100vw', opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 3 } }}
+            exit={{ opacity: 0, transition: { duration: 2 } }}
             transition={{ duration: 2, ease: 'easeOut' }}
             className='fixed bottom-4 right-4 bg-popover text-popover-foreground px-6 py-4 rounded-lg shadow-lg border border-primary flex items-center gap-4 max-w-2xl'
-            onAnimationComplete={() => setIsShownSnackBar(false)}
           >
             <CheckCircle2Icon />
             <span className='font-bold'>予約が完了しました！</span>
