@@ -10,7 +10,7 @@ import { specifyTrainTypeIconColor } from '@/utils/train';
 import { SeatClassCard } from './SeatClassCard';
 
 import type { TrainDetailResult } from '@/api/TrainDetailApi';
-import type { StationCode } from '@/api/TrainListApi';
+import type { StationCode } from '@/types/Station';
 
 export const TrainDetailPage: React.FC = () => {
   const location = useLocation();
@@ -72,11 +72,6 @@ export const TrainDetailPage: React.FC = () => {
           arrivalStationCd: searchParams.to,
           trackNumber: trainDetail.trackNumber,
           durationMin: durationMin,
-          remainSeatNumber: {
-            reserved: 0,
-            green: 0,
-            grandclass: 0,
-          },
         },
         trainDetail.date,
       );

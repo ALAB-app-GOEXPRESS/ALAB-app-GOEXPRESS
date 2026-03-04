@@ -35,11 +35,6 @@ export const ReservationCard: React.FC<Props> = ({ reservationItem }: Props) => 
       departureStationCd: reservationItem.tickets[0].operation.fromStationCd,
       arrivalStationCd: reservationItem.tickets[0].operation.toStationCd,
       durationMin,
-      remainSeatNumber: {
-        reserved: 1,
-        green: 0,
-        grandclass: 0,
-      },
       trackNumber: reservationItem.tickets[0].operation.fromTrackNumber,
     },
   };
