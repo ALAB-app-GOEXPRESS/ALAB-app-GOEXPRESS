@@ -12,10 +12,10 @@ public class TrainController {
   private final TrainService service;
 
   @GetMapping
-  public List<TrainBetweenStationsDto> between(
+  public List<TrainResponse> get(
     @RequestParam("from") String fromStationCd,
     @RequestParam("to") String toStationCd
   ) {
-    return service.findBetween(fromStationCd, toStationCd);
+    return service.find(fromStationCd, toStationCd);
   }
 }

@@ -12,7 +12,7 @@ public class TrainService {
   private final TrainMapper mapper;
 
   @Transactional(readOnly = true)
-  public List<TrainBetweenStationsDto> findBetween(String fromStationCd, String toStationCd) {
-    return mapper.findTrainsBetweenStations(fromStationCd, toStationCd);
+  public List<TrainResponse> find(String fromStationCd, String toStationCd) {
+    return mapper.selectTrains(fromStationCd, toStationCd);
   }
 }

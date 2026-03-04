@@ -6,7 +6,7 @@
 <mapper namespace="com.alab.goexpress.train.TrainMapper">
 
     <select id="findTrainsBetweenStations"
-            resultType="com.alab.goexpress.train.TrainBetweenStationsDto">
+            resultType="com.alab.goexpress.train.TrainResponse">
         SELECT
         t.train_cd                         AS trainCd,
         t.train_number                     AS trainNumber,

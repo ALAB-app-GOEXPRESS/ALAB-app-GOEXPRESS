@@ -92,7 +92,7 @@ export async function fetchTrains(
   const safeOffset = Math.max(0, offset);
   const safeLimit = Math.max(0, limit);
 
-  const endpoint = `/api/trains/between?from=${encodeURIComponent(params.from)}&to=${encodeURIComponent(params.to)}`;
+  const endpoint = `/api/trains?from=${encodeURIComponent(params.from)}&to=${encodeURIComponent(params.to)}`;
 
   const data = await fetchJSON<TrainBetweenApiItem[]>(endpoint);
 

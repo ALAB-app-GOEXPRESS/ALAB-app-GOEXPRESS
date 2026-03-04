@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface TrainMapper {
-  List<TrainBetweenStationsDto> findTrainsBetweenStations(
+  List<TrainResponse> selectTrains(
     @Param("fromStationCd") String fromStationCd,
     @Param("toStationCd") String toStationCd
   );
