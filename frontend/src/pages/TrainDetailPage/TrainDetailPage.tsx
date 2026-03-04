@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { createReservation } from '@/api/ReservationApi';
 import { fetchTrainDetail } from '@/api/TrainDetailApi';
-import { formatJapaneseDate } from '@/utils/dateTime';
+import { formatJapaneseDate, todayYYYYMMDD } from '@/utils/dateTime';
 import { ArrowLeft, MapPin, TramFront, Loader2 } from 'lucide-react';
 import { specifyTrainTypeIconColor } from '@/utils/train';
 import { SeatClassCard } from './SeatClassCard';
@@ -40,7 +40,7 @@ export const TrainDetailPage: React.FC = () => {
           trainCd,
           from: searchParams.from,
           to: searchParams.to,
-          date: searchParams.date,
+          date: todayYYYYMMDD(),
         };
         const data = await fetchTrainDetail(params);
         setTrainDetail(data);
