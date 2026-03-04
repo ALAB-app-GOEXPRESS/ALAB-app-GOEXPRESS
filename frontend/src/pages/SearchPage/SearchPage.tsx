@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+// import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import { nowHHMM, todayYYYYMMDD } from '@/utils/dateTime';
-import { isValidDateYYYYMMDD, isValidTimeHHMM } from '@/utils/validators';
+// import { nowHHMM, todayYYYYMMDD } from '@/utils/dateTime';
+// import { isValidDateYYYYMMDD, isValidTimeHHMM } from '@/utils/validators';
 import { StationNameMap } from '@/constants/Station';
 
 // API仮置き
@@ -16,16 +16,16 @@ import { StationNameMap } from '@/constants/Station';
 type TrainSearchParams = {
   from: string;
   to: string;
-  date: string;
-  time: string;
+  // date: string;
+  // time: string;
 };
 
 const toQueryString = (p: TrainSearchParams) => {
   const sp = new URLSearchParams();
   sp.set('from', p.from);
   sp.set('to', p.to);
-  sp.set('date', p.date);
-  sp.set('time', p.time);
+  // sp.set('date', p.date);
+  // sp.set('time', p.time);
   return sp.toString();
 };
 
@@ -34,8 +34,8 @@ export const SearchPage: React.FC = () => {
 
   const [from, setFrom] = useState<string>('');
   const [to, setTo] = useState<string>('');
-  const [date, setDate] = useState<string>(todayYYYYMMDD());
-  const [time, setTime] = useState<string>(nowHHMM());
+  // const [date, setDate] = useState<string>(todayYYYYMMDD());
+  // const [time, setTime] = useState<string>(nowHHMM());
 
   const [error, setError] = useState<string>('');
 
@@ -48,10 +48,10 @@ export const SearchPage: React.FC = () => {
     if (!from) return setAndFalse('乗車駅を選択してください。');
     if (!to) return setAndFalse('降車駅を選択してください。');
     if (from === to) return setAndFalse('乗車駅と降車駅は別の駅を選択してください。');
-    if (!date) return setAndFalse('乗車日を入力してください。');
-    if (!isValidDateYYYYMMDD(date)) return setAndFalse('乗車日は YYYY-MM-DD 形式で入力してください。');
-    if (!time) return setAndFalse('出発時刻を入力してください。');
-    if (!isValidTimeHHMM(time)) return setAndFalse('出発時刻は HH:mm 形式で入力してください。');
+    // if (!date) return setAndFalse('乗車日を入力してください。');
+    // if (!isValidDateYYYYMMDD(date)) return setAndFalse('乗車日は YYYY-MM-DD 形式で入力してください。');
+    // if (!time) return setAndFalse('出発時刻を入力してください。');
+    // if (!isValidTimeHHMM(time)) return setAndFalse('出発時刻は HH:mm 形式で入力してください。');
 
     setError('');
     return true;
@@ -61,7 +61,7 @@ export const SearchPage: React.FC = () => {
     e.preventDefault();
     if (!validate()) return;
 
-    const params: TrainSearchParams = { from, to, date, time };
+    const params: TrainSearchParams = { from, to /*date, time*/ };
     navigate(`/results?${toQueryString(params)}`);
   };
 
@@ -140,7 +140,7 @@ export const SearchPage: React.FC = () => {
             </div>
           </div>
 
-          {/* 日付・時刻（2カラム） */}
+          {/* 日付・時刻（2カラム）
           <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
             <div className='space-y-2'>
               <Label htmlFor='date'>乗車日</Label>
@@ -165,16 +165,14 @@ export const SearchPage: React.FC = () => {
                 className='bg-background'
               />
             </div>
-          </div>
+          </div> */}
 
-          {/* エラー */}
           {error && (
             <Alert variant='destructive'>
               <AlertTitle>{error}</AlertTitle>
             </Alert>
           )}
 
-          {/* ボタン（画像の緑ボタン寄せ） */}
           <Button
             type='submit'
             className='h-12 w-full rounded-md'

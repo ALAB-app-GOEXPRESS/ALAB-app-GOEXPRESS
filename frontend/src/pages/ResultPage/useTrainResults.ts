@@ -127,7 +127,7 @@ export function useTrainResults(args: UseTrainResultsArgs): UseTrainResultsRetur
         setIsLoading(true);
         setApiErrorMessage('');
 
-        const response: FetchTrainsResponse = await fetchTrains(defaultParams, pageSize, offset, seatClassForApi);
+        const response: FetchTrainsResponse = await fetchTrains(defaultParams, pageSize, offset);
 
         if (isCancelled) {
           return;

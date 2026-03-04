@@ -12,9 +12,6 @@ type Props = {
   arrivalTime: string;
   departureStation: string;
   arrivalStation: string;
-  reservedSeats: number;
-  greenSeats: number;
-  grandclassSeats: number;
   onClickDetail: () => void;
 };
 
@@ -25,9 +22,6 @@ export const TrainCard: React.FC<Props> = ({
   arrivalTime,
   departureStation,
   arrivalStation,
-  // reservedSeats,
-  // greenSeats,
-  // grandclassSeats,
   onClickDetail,
 }) => {
   return (
@@ -65,14 +59,6 @@ export const TrainCard: React.FC<Props> = ({
           </div>
 
           <div className='flex flex-col gap-2'>
-            {/* 
-            <div className="flex justify-end gap-1">
-              <Button variant="outline" size="sm">指定 {reservedSeats}</Button>
-              <Button variant="outline" size="sm">G {greenSeats}</Button>
-              <Button variant="outline" size="sm">グラン {grandclassSeats}</Button>
-            </div>
-            */}
-
             <div className='flex flex-col items-end gap-2'>
               <Button
                 onClick={onClickDetail}

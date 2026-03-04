@@ -21,35 +21,13 @@ export type TrainBetweenApiItem = {
   trackNumber: string;
 };
 
-//残席数表示機能の破壊を防ぐための仮部分
-function pseudoRandom(seed: number): number {
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-}
-
 export type RemainSeatNumber = Record<SeatClass, number>;
-
-function buildRemainSeatNumber(seed: number): RemainSeatNumber {
-  const reserved = Math.floor(pseudoRandom(seed + 1) * 21);
-  const green = Math.floor(pseudoRandom(seed + 2) * 12);
-  const grandclass = Math.floor(pseudoRandom(seed + 3) * 6);
-
-  return { reserved, green, grandclass };
-}
-// 文字列から安定した数値seedを作る（簡易ハッシュ）
-function hashSeed(str: string): number {
-  let h = 0;
-  for (let i = 0; i < str.length; i += 1) {
-    h = (h * 31 + str.charCodeAt(i)) >>> 0;
-  }
-  return h;
-}
 
 export type TrainSearchParams = {
   from: StationCode;
   to: StationCode;
-  date: string;
-  time: string;
+  // date: string;
+  // time: string;
 };
 
 export type TrainResult = {
@@ -61,7 +39,6 @@ export type TrainResult = {
   departureStationCd: StationCode;
   arrivalStationCd: StationCode;
   durationMin: number;
-  remainSeatNumber: RemainSeatNumber;
   trackNumber: string;
 };
 
@@ -70,24 +47,16 @@ export type FetchTrainsResponse = {
   results: TrainResult[];
 };
 
-function filterBySeatClass(results: TrainResult[], seatClass?: SeatClass): TrainResult[] {
-  if (!seatClass) return results;
-  return results.filter((train) => train.remainSeatNumber[seatClass] !== 0);
-}
-
 /**
  * 実API：列車一覧取得（ページング + seatClassFilter 対応）
  * - GET /api/trains/between?from=xx&to=yy を叩く
  * - APIの配列レスポンスを TrainResult[] に変換
- * - seatClassFilter はクライアント側で適用（APIに無い前提）
- * - totalCount はフィルタ後の全件数
  * - results はフィルタ後に limit / offset した最大 limit 件
  */
 export async function fetchTrains(
   params: TrainSearchParams,
   limit: number,
   offset: number,
-  seatClassFilter?: SeatClass,
 ): Promise<FetchTrainsResponse> {
   const safeOffset = Math.max(0, offset);
   const safeLimit = Math.max(0, limit);
@@ -98,16 +67,10 @@ export async function fetchTrains(
 
   console.log('[APIレスポンス確認生データ]', data);
 
-  const dateSeed = Number(params.date.replaceAll('-', '')) || 0;
-
-  const converted: TrainResult[] = data.map((item, index) => {
+  const converted: TrainResult[] = data.map((item) => {
     const departureTime = toHHMM(item.departureTime);
     const arrivalTime = toHHMM(item.arrivalTime);
     const durationMin = calcDurationMin(departureTime, arrivalTime);
-
-    // 残席はAPIにないので暫定生成：列車コード＋日付＋indexで安定させる
-    const seed = hashSeed(item.trainCd) + dateSeed + index;
-    const remainSeatNumber = buildRemainSeatNumber(seed);
 
     return {
       trainCd: item.trainCd,
@@ -118,14 +81,12 @@ export async function fetchTrains(
       departureStationCd: item.fromStationCd as StationCode,
       arrivalStationCd: item.toStationCd as StationCode,
       durationMin,
-      remainSeatNumber,
       trackNumber: item.trackNumber,
     };
   });
 
-  const filtered = filterBySeatClass(converted, seatClassFilter);
-  const totalCount = filtered.length;
-  const results = filtered.slice(safeOffset, safeOffset + safeLimit);
+  const totalCount = converted.length;
+  const results = converted.slice(safeOffset, safeOffset + safeLimit);
 
   return { totalCount, results };
 }

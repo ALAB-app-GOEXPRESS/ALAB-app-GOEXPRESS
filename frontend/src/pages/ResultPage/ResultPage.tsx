@@ -71,8 +71,8 @@ export const ResultPage: React.FC = () => {
         searchParams: {
           from: train.departureStationCd,
           to: train.arrivalStationCd,
-          date: paramsFromQuery.date,
-          time: train.departureTime,
+          // date: paramsFromQuery.date,
+          // time: train.departureTime,
         },
       },
     });
@@ -206,9 +206,6 @@ export const ResultPage: React.FC = () => {
                         arrivalTime={result.arrivalTime}
                         departureStation={departureName}
                         arrivalStation={arrivalName}
-                        reservedSeats={result.remainSeatNumber.reserved}
-                        greenSeats={result.remainSeatNumber.green}
-                        grandclassSeats={result.remainSeatNumber.grandclass}
                         onClickDetail={() => handleDetailClick(result)}
                       />
                     </li>
