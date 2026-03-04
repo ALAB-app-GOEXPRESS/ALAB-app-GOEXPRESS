@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { stationNameMap } from '@/api/TrainListApi';
 import type { ReservationDetails } from '@/api/ReservationApi';
 import { ReservationDetail } from './ReservationDetail';
+
 const ErrorDisplay: React.FC = () => {
   const navigate = useNavigate();
 
