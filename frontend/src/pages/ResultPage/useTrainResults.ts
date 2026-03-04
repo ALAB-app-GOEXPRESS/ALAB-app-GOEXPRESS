@@ -103,7 +103,7 @@ export function useTrainResults(args: UseTrainResultsArgs): UseTrainResultsRetur
   }, [currentPage, totalPages]);
 
   const pageResults = useMemo(() => {
-    return trainsQuery.data?.slice(offset, pageSize) ?? [];
+    return trainsQuery.data?.slice(offset, offset + pageSize) ?? [];
   }, [trainsQuery, offset, pageSize]);
 
   const setPageToQuery = (nextPage: number) => {
