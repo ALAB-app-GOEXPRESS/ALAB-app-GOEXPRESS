@@ -7,7 +7,7 @@ function App() {
     <>
       <Header />
       <Outlet />
-      <Toaster/>
+      <Toaster />
     </>
   );
 }
