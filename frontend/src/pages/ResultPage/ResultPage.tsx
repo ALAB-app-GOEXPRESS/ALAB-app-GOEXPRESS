@@ -182,6 +182,14 @@ export const ResultPage: React.FC = () => {
             </Card>
           )}
 
+          {!isLoading && pageResults.length === 0 && !apiErrorMessage && (
+            <Card className='border-muted/60'>
+              <CardContent className='p-4 text-sm text-muted-foreground'>
+                条件に一致する列車が見つかりませんでした。
+              </CardContent>
+            </Card>
+          )}
+
           {!isLoading && (
             <div>
               <ul>
@@ -259,14 +267,6 @@ export const ResultPage: React.FC = () => {
                 </li>
               </ul>
             </div>
-          )}
-
-          {!isLoading && pageResults.length === 0 && !apiErrorMessage && (
-            <Card className='border-muted/60'>
-              <CardContent className='p-4 text-sm text-muted-foreground'>
-                条件に一致する列車が見つかりませんでした。
-              </CardContent>
-            </Card>
           )}
         </div>
       </div>
