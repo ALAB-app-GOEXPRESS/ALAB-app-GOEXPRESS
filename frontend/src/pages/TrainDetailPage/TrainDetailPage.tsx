@@ -11,6 +11,7 @@ import { SeatClassCard } from './SeatClassCard';
 
 import type { TrainDetailResult } from '@/api/TrainDetailApi';
 import type { StationCode } from '@/api/TrainListApi';
+import { toast } from 'sonner';
 
 export const TrainDetailPage: React.FC = () => {
   const location = useLocation();
@@ -80,6 +81,8 @@ export const TrainDetailPage: React.FC = () => {
         },
         trainDetail.date,
       );
+
+      toast.success('予約が完了しました！', { position: 'bottom-right' });
 
       navigate('/reservation-result', {
         state: { reservationDetails },
