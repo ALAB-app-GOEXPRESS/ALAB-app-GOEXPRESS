@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { stationNameMap } from '@/api/TrainListApi';
 import type { ReservationDetails } from '@/api/ReservationApi';
 import { ReservationDetail } from './ReservationDetail';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle2Icon } from 'lucide-react';
 
 const ErrorDisplay: React.FC = () => {
@@ -33,6 +33,8 @@ const ErrorDisplay: React.FC = () => {
 export const ReservationResultPage: React.FC = () => {
   const location = useLocation();
 
+  const [isShownSnackBar, setIsShownSnackBar] = useState(true);
+
   const { reservationDetails } = (location.state || {}) as {
     reservationDetails?: ReservationDetails;
   };
@@ -59,15 +61,21 @@ export const ReservationResultPage: React.FC = () => {
         departureStationName={departureStationCd}
         arrivalStationName={arrivalStationCd}
       />
-      <motion.div
-        initial={{ x: '-100vw', opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 1.5, ease: 'easeOut' }}
-        className='fixed bottom-4 right-4 bg-popover text-popover-foreground px-6 py-4 rounded-lg shadow-lg border border-primary flex items-center gap-4 max-w-2xl'
-      >
-        <CheckCircle2Icon />
-        <span className='font-bold'>予約が完了しました！</span>
-      </motion.div>
+      <AnimatePresence>
+        {isShownSnackBar && (
+          <motion.div
+            initial={{ x: '-100vw', opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 3 } }}
+            transition={{ duration: 2, ease: 'easeOut' }}
+            className='fixed bottom-4 right-4 bg-popover text-popover-foreground px-6 py-4 rounded-lg shadow-lg border border-primary flex items-center gap-4 max-w-2xl'
+            onAnimationComplete={() => setIsShownSnackBar(false)}
+          >
+            <CheckCircle2Icon />
+            <span className='font-bold'>予約が完了しました！</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
