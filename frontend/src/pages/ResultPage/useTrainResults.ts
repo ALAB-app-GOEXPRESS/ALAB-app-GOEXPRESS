@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { fetchTrains, type SeatClass, type TrainResult, type TrainSearchParams } from '@/api/TrainListApi';
+import { type SeatClass, type TrainResult, type TrainSearchParams } from '@/api/TrainListApi';
 
 type SeatClassFilter = 'all' | SeatClass;
 
@@ -104,8 +104,8 @@ export function useTrainResults(args: UseTrainResultsArgs): UseTrainResultsRetur
   const [isLoading, setIsLoading] = useState(true);
   const [apiErrorMessage, setApiErrorMessage] = useState('');
 
-  const [totalCount, setTotalCount] = useState(0);
-  const [pageResults, setPageResults] = useState<TrainResult[]>([]);
+  const [totalCount] = useState(0);
+  const [pageResults] = useState<TrainResult[]>([]);
 
   useEffect(() => {
     let isCancelled = false;
@@ -121,7 +121,7 @@ export function useTrainResults(args: UseTrainResultsArgs): UseTrainResultsRetur
         setIsLoading(true);
         setApiErrorMessage('');
 
-        const response: TrainResult[] = await fetchTrains(defaultParams);
+        // const response: TrainResult[] = await fetchTrains(defaultParams);
 
         if (isCancelled) {
           return;

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatSeat } from '@/lib/utils';
 import { normalizeTrainNumber } from '@/utils/train';
-import { calcDurationMin, formatJapaneseDate, toHHMM } from '@/utils/dateTime';
+import { formatJapaneseDate, toHHMM } from '@/utils/dateTime';
 import { QrCode, Ticket } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Reservation } from './useReservationList';
@@ -19,7 +19,6 @@ export const ReservationCard: React.FC<Props> = ({ reservationItem }: Props) => 
 
   const departureTime = toHHMM(reservationItem.tickets[0].operation.departureDateTime.slice(11, 17));
   const arrivalTime = toHHMM(reservationItem.tickets[0].operation.arrivalDateTime.slice(11, 17));
-  const durationMin = calcDurationMin(departureTime, arrivalTime);
   const validation = reservationItem.invalidFlg === true ? '無効' : '有効';
 
   const reservationDetails: ReservationDetails = {
@@ -34,7 +33,6 @@ export const ReservationCard: React.FC<Props> = ({ reservationItem }: Props) => 
       arrivalTime,
       departureStationCd: reservationItem.tickets[0].operation.fromStationCd,
       arrivalStationCd: reservationItem.tickets[0].operation.toStationCd,
-      durationMin,
       trackNumber: reservationItem.tickets[0].operation.fromTrackNumber,
     },
   };
