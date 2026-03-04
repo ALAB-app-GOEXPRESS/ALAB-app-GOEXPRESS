@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Clock, TramFront } from 'lucide-react';
+import { MoveRight, TramFront } from 'lucide-react';
 import { specifyTrainTypeIconColor } from '@/utils/train';
 
 type Props = {
@@ -25,10 +25,13 @@ export const TrainCard: React.FC<Props> = ({
   onClickDetail,
 }) => {
   return (
-    <Card className='mb-4 border-brand-green-light'>
+    <Card
+      className='mb-4 border-brand-green-light cursor-pointer'
+      onClick={onClickDetail}
+    >
       <CardContent className='p-4'>
-        <div className='grid grid-cols-[15%_70%_15%] items-center'>
-          <div className='flex gap-2 items-center'>
+        <div className='grid grid-cols-[20%_80%] items-center'>
+          <div className='flex gap-2 items-center ml-4'>
             <TramFront className={`${specifyTrainTypeIconColor(trainTypeName)} text-white text-[30px] rounded-sm`} />
 
             <div className='flex flex-col'>
@@ -47,7 +50,7 @@ export const TrainCard: React.FC<Props> = ({
 
             <div className='relative flex items-center justify-center'>
               <hr className='absolute z-10 w-full border-[#008803]' />
-              <Clock className='absolute z-20 bg-white' />
+              {/* <MoveRight className='absolute z-20 bg-white p-2' /> */}
             </div>
 
             <div className='flex justify-center'>
@@ -58,7 +61,7 @@ export const TrainCard: React.FC<Props> = ({
             </div>
           </div>
 
-          <div className='flex flex-col gap-2'>
+          {/* <div className='flex flex-col gap-2'>
             <div className='flex flex-col items-end gap-2'>
               <Button
                 onClick={onClickDetail}
@@ -67,7 +70,7 @@ export const TrainCard: React.FC<Props> = ({
                 詳細を見る
               </Button>
             </div>
-          </div>
+          </div> */}
         </div>
       </CardContent>
     </Card>
