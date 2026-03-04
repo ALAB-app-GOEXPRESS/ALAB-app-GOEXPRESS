@@ -1,7 +1,5 @@
 package com.alab.goexpress.seat;
 
-import com.alab.goexpress.model.entity.ticket.Seat;
-import com.alab.goexpress.model.entity.ticket.SeatId;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
