@@ -87,15 +87,20 @@ export const SearchPage: React.FC = () => {
                 >
                   <SelectValue placeholder='駅を選択' />
                 </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(StationNameMap).map(([key, name]) => (
-                    <SelectItem
-                      key={key}
-                      value={key}
-                    >
-                      {name}
-                    </SelectItem>
-                  ))}
+                <SelectContent
+                  position='popper'
+                  className='max-h-95'
+                >
+                  {Object.entries(StationNameMap)
+                    .sort((a, b) => a[0].localeCompare(b[0]))
+                    .map(([key, name]) => (
+                      <SelectItem
+                        key={key}
+                        value={key}
+                      >
+                        {name}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
@@ -116,15 +121,20 @@ export const SearchPage: React.FC = () => {
                 >
                   <SelectValue placeholder='駅を選択' />
                 </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(StationNameMap).map(([key, name]) => (
-                    <SelectItem
-                      key={key}
-                      value={key}
-                    >
-                      {name}
-                    </SelectItem>
-                  ))}
+                <SelectContent
+                  position='popper'
+                  className='max-h-95'
+                >
+                  {Object.entries(StationNameMap)
+                    .sort((a, b) => a[0].localeCompare(b[0]))
+                    .map(([key, name]) => (
+                      <SelectItem
+                        key={key}
+                        value={key}
+                      >
+                        {name}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
