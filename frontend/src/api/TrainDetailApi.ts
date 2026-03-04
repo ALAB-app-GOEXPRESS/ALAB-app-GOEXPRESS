@@ -2,7 +2,7 @@ import { normalizeTrainNumber } from '@/utils/train';
 import { type StationCode } from '@/types/Station';
 import { toSeatClassType, SEAT_CLASS_DESCRIPTIONS, type SeatClass } from '@/utils/seatClass';
 import { fetchJSON } from '@/lib/fetch';
-import { stationNameMap } from '@/constants/Station';
+import { StationNameMap } from '@/constants/Station';
 
 export type TrainDetailApiItem = {
   trainCd: string;
@@ -66,8 +66,8 @@ export async function fetchTrainDetail(params: TrainDetailParams): Promise<Train
     trainNumber: `${normalizeTrainNumber(data.trainNumber)}号`,
     departureTime: data.departureTime,
     arrivalTime: data.arrivalTime,
-    departureStationName: stationNameMap[data.fromStationCd],
-    arrivalStationName: stationNameMap[data.toStationCd],
+    departureStationName: StationNameMap[data.fromStationCd],
+    arrivalStationName: StationNameMap[data.toStationCd],
     trackNumber: data.trackNumber,
     date: params.date,
     seatClasses: data.seatClasses.map((sc) => {

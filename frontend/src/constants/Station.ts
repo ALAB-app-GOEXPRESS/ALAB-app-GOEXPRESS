@@ -1,4 +1,4 @@
-export const stationNameMap = {
+export const StationNameMap = {
   '01': '東京',
   '02': '上野',
   '03': '大宮',

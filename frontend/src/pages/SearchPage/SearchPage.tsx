@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Alert, AlertTitle } from '@/components/ui/alert';
@@ -9,13 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 import { nowHHMM, todayYYYYMMDD } from '@/utils/dateTime';
 import { isValidDateYYYYMMDD, isValidTimeHHMM } from '@/utils/validators';
-import { stationNameMap } from '@/constants/Station';
+import { StationNameMap } from '@/constants/Station';
 
 // API仮置き
-type Station = {
-  cd: string;
-  name: string;
-};
 
 type TrainSearchParams = {
   from: string;
@@ -92,7 +88,7 @@ export const SearchPage: React.FC = () => {
                   <SelectValue placeholder='駅を選択' />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.entries(stationNameMap).map(([key, name]) => (
+                  {Object.entries(StationNameMap).map(([key, name]) => (
                     <SelectItem
                       key={key}
                       value={key}
@@ -121,7 +117,7 @@ export const SearchPage: React.FC = () => {
                   <SelectValue placeholder='駅を選択' />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.entries(stationNameMap).map(([key, name]) => (
+                  {Object.entries(StationNameMap).map(([key, name]) => (
                     <SelectItem
                       key={key}
                       value={key}

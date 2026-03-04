@@ -12,7 +12,7 @@ import { type TrainSearchParams, type TrainResult } from '@/api/TrainListApi';
 import { type SeatClass } from '@/utils/seatClass';
 import { useTrainResults } from './useTrainResults';
 import { TrainCard } from './TrainCard';
-import { stationNameMap } from '@/constants/Station';
+import { StationNameMap } from '@/constants/Station';
 
 type SeatClassFilter = 'all' | SeatClass;
 
@@ -61,8 +61,8 @@ export const ResultPage: React.FC = () => {
     }>,
   });
 
-  const departureStationName = stationNameMap[paramsFromQuery.from];
-  const arrivalStationName = stationNameMap[paramsFromQuery.to];
+  const departureStationName = StationNameMap[paramsFromQuery.from];
+  const arrivalStationName = StationNameMap[paramsFromQuery.to];
 
   const handleDetailClick = async (train: TrainResult) => {
     navigate('/train-detail', {
@@ -186,8 +186,8 @@ export const ResultPage: React.FC = () => {
             <div>
               <ul>
                 {pageResults.map((result) => {
-                  const departureName = stationNameMap[result.departureStationCd];
-                  const arrivalName = stationNameMap[result.arrivalStationCd];
+                  const departureName = StationNameMap[result.departureStationCd];
+                  const arrivalName = StationNameMap[result.arrivalStationCd];
 
                   return (
                     <li key={result.trainCd}>
