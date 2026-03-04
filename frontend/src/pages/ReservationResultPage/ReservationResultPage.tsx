@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { stationNameMap } from '@/api/TrainListApi';
 import type { ReservationDetails } from '@/api/ReservationApi';
 import { ReservationDetail } from './ReservationDetail';
+import { motion } from 'framer-motion';
+import { CheckCircle2Icon } from 'lucide-react';
 
 const ErrorDisplay: React.FC = () => {
   const navigate = useNavigate();
@@ -48,13 +50,24 @@ export const ReservationResultPage: React.FC = () => {
   const arrivalStationCd = stationNameMap[trainDetails.arrivalStationCd];
 
   return (
-    <ReservationDetail
-      trainDetails={trainDetails}
-      confirmedSeat={confirmedSeat}
-      reservationDate={reservationDate}
-      trackNumber={trackNumber}
-      departureStationName={departureStationCd}
-      arrivalStationName={arrivalStationCd}
-    />
+    <div>
+      <ReservationDetail
+        trainDetails={trainDetails}
+        confirmedSeat={confirmedSeat}
+        reservationDate={reservationDate}
+        trackNumber={trackNumber}
+        departureStationName={departureStationCd}
+        arrivalStationName={arrivalStationCd}
+      />
+      <motion.div
+        initial={{ x: '-100vw', opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 1.5, ease: 'easeOut' }}
+        className='fixed bottom-4 right-4 bg-popover text-popover-foreground px-6 py-4 rounded-lg shadow-lg border border-primary flex items-center gap-4 max-w-2xl'
+      >
+        <CheckCircle2Icon />
+        <span className='font-bold'>予約が完了しました！</span>
+      </motion.div>
+    </div>
   );
 };
