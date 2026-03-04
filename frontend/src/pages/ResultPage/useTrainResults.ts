@@ -1,13 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import {
-  fetchTrains,
-  type FetchTrainsResponse,
-  type SeatClass,
-  type TrainResult,
-  type TrainSearchParams,
-} from '@/api/TrainListApi';
+import { fetchTrains, type SeatClass, type TrainResult, type TrainSearchParams } from '@/api/TrainListApi';
 
 type SeatClassFilter = 'all' | SeatClass;
 
@@ -127,14 +121,14 @@ export function useTrainResults(args: UseTrainResultsArgs): UseTrainResultsRetur
         setIsLoading(true);
         setApiErrorMessage('');
 
-        const response: FetchTrainsResponse = await fetchTrains(defaultParams, pageSize, offset);
+        const response: TrainResult[] = await fetchTrains(defaultParams);
 
         if (isCancelled) {
           return;
         }
 
-        setTotalCount(response.totalCount);
-        setPageResults(response.results);
+        // setTotalCount(response.totalCount);
+        // setPageResults(response.results);
         setIsLoading(false);
       } catch {
         if (isCancelled) {
