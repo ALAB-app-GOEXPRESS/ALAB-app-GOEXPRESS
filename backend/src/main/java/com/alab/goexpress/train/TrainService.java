@@ -1,6 +1,5 @@
-package com.alab.goexpress.trainsearch;
+package com.alab.goexpress.train;
 
-import com.alab.goexpress.model.dto.TrainBetweenStationsDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -8,9 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class TrainSearchService {
+public class TrainService {
 
-  private final TrainSearchMapper mapper;
+  private final TrainMapper mapper;
 
   @Transactional(readOnly = true)
   public List<TrainBetweenStationsDto> findBetween(String fromStationCd, String toStationCd) {

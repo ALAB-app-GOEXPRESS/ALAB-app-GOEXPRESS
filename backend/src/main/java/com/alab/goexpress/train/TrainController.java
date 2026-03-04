@@ -1,6 +1,5 @@
-package com.alab.goexpress.trainsearch;
+package com.alab.goexpress.train;
 
-import com.alab.goexpress.model.dto.TrainBetweenStationsDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -8,11 +7,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/trains")
 @RequiredArgsConstructor
-public class TrainSearchController {
+public class TrainController {
 
-  private final TrainSearchService service;
+  private final TrainService service;
 
-  @GetMapping("/between")
+  @GetMapping
   public List<TrainBetweenStationsDto> between(
     @RequestParam("from") String fromStationCd,
     @RequestParam("to") String toStationCd

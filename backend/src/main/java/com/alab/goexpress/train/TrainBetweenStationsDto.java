@@ -1,4 +1,4 @@
-package com.alab.goexpress.model.dto;
+package com.alab.goexpress.train;
 
 import java.time.LocalTime;
 import lombok.Data;
