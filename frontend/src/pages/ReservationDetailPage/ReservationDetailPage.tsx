@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { stationNameMap } from '@/api/TrainListApi';
+import { StationNameMap } from '@/constants/Station';
 import type { ReservationDetails } from '@/api/ReservationApi';
 import { ReservationDetail } from '@/pages/ReservationResultPage/ReservationDetail';
 
@@ -44,8 +44,8 @@ export const ReservationDetailPage: React.FC = () => {
   }
 
   const { trainDetails, confirmedSeat, reservationDate, trackNumber } = reservationDetails;
-  const departureStationCd = stationNameMap[trainDetails.departureStationCd];
-  const arrivalStationCd = stationNameMap[trainDetails.arrivalStationCd];
+  const departureStationCd = StationNameMap[trainDetails.departureStationCd];
+  const arrivalStationCd = StationNameMap[trainDetails.arrivalStationCd];
 
   return (
     <ReservationDetail

@@ -1,13 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import {
-  fetchTrains,
-  type FetchTrainsResponse,
-  type SeatClass,
-  type TrainResult,
-  type TrainSearchParams,
-} from '@/api/TrainListApi';
+import { fetchTrains, type SeatClass, type TrainResult, type TrainSearchParams } from '@/api/TrainListApi';
+import { useQuery } from '@tanstack/react-query';
 
 type SeatClassFilter = 'all' | SeatClass;
 
@@ -80,14 +75,6 @@ function getPageItems(currentPage: number, totalPages: number): Array<number | '
   return items;
 }
 
-function toSeatClass(value: SeatClassFilter): SeatClass | undefined {
-  if (value === 'all') {
-    return undefined;
-  }
-
-  return value;
-}
-
 export function useTrainResults(args: UseTrainResultsArgs): UseTrainResultsReturn {
   const { defaultParams, pageSize, seatClassFilterOptions } = args;
 
@@ -99,59 +86,13 @@ export function useTrainResults(args: UseTrainResultsArgs): UseTrainResultsRetur
     return parsePositiveInt(searchParams.get('page'), 1);
   }, [searchParams]);
 
+  const trainsQuery = useQuery({ queryKey: ['between', defaultParams], queryFn: () => fetchTrains(defaultParams) });
+
+  const totalCount = trainsQuery.data?.length ?? 0;
+
   const offset = useMemo(() => {
     return (currentPage - 1) * pageSize;
   }, [currentPage, pageSize]);
-
-  const seatClassForApi = useMemo(() => {
-    return toSeatClass(seatClassFilter);
-  }, [seatClassFilter]);
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [apiErrorMessage, setApiErrorMessage] = useState('');
-
-  const [totalCount, setTotalCount] = useState(0);
-  const [pageResults, setPageResults] = useState<TrainResult[]>([]);
-
-  useEffect(() => {
-    let isCancelled = false;
-
-    const run = async () => {
-      try {
-        await Promise.resolve();
-
-        if (isCancelled) {
-          return;
-        }
-
-        setIsLoading(true);
-        setApiErrorMessage('');
-
-        const response: FetchTrainsResponse = await fetchTrains(defaultParams, pageSize, offset, seatClassForApi);
-
-        if (isCancelled) {
-          return;
-        }
-
-        setTotalCount(response.totalCount);
-        setPageResults(response.results);
-        setIsLoading(false);
-      } catch {
-        if (isCancelled) {
-          return;
-        }
-
-        setApiErrorMessage('検索に失敗しました。時間をおいて再度お試しください。');
-        setIsLoading(false);
-      }
-    };
-
-    run();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [defaultParams, offset, pageSize, seatClassForApi]);
 
   const totalPages = useMemo(() => {
     return Math.max(1, Math.ceil(totalCount / pageSize));
@@ -160,6 +101,10 @@ export function useTrainResults(args: UseTrainResultsArgs): UseTrainResultsRetur
   const pageItems = useMemo(() => {
     return getPageItems(currentPage, totalPages);
   }, [currentPage, totalPages]);
+
+  const pageResults = useMemo(() => {
+    return trainsQuery.data?.slice(offset, pageSize) ?? [];
+  }, [trainsQuery, offset, pageSize]);
 
   const setPageToQuery = (nextPage: number) => {
     const clampedPage = Math.min(Math.max(1, nextPage), totalPages);
@@ -186,6 +131,9 @@ export function useTrainResults(args: UseTrainResultsArgs): UseTrainResultsRetur
 
     setSearchParams(next);
   };
+
+  const isLoading = trainsQuery.isPending;
+  const apiErrorMessage = trainsQuery.isError ? '検索に失敗しました。時間をおいて再度お試しください。' : '';
 
   return {
     seatClassFilter,

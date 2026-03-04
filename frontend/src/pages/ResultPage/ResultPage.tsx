@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -7,17 +7,12 @@ import { Card, CardContent } from '@/components/ui/card';
 // import { Label } from '@/components/ui/label';
 // import { Separator } from '@/components/ui/separator';
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-
 // import { Clock } from 'lucide-react';
-import { nowHHMM, todayYYYYMMDD } from '@/utils/dateTime';
-
-import { stationNameMap, type TrainSearchParams, type TrainResult } from '@/api/TrainListApi';
-
+import { type TrainSearchParams, type TrainResult } from '@/api/TrainListApi';
 import { type SeatClass } from '@/utils/seatClass';
-
 import { useTrainResults } from './useTrainResults';
-
 import { TrainCard } from './TrainCard';
+import { StationNameMap } from '@/constants/Station';
 
 type SeatClassFilter = 'all' | SeatClass;
 
@@ -31,14 +26,16 @@ const seatClassFilterOptions = [
 export const ResultPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const defaultParams = useMemo<TrainSearchParams>(() => {
+  const [searchParams] = useSearchParams();
+
+  const paramsFromQuery = useMemo<TrainSearchParams>(() => {
     return {
-      from: '01',
-      to: '02',
-      date: todayYYYYMMDD(),
-      time: nowHHMM(),
-    };
-  }, []);
+      from: searchParams.get('from')!,
+      to: searchParams.get('to')!,
+      date: searchParams.get('date')!,
+      time: searchParams.get('time')!,
+    } as TrainSearchParams;
+  }, [searchParams]);
 
   // const [paramsUi, setParamsUi] = useState<TrainSearchParams>(defaultParams);
 
@@ -56,7 +53,7 @@ export const ResultPage: React.FC = () => {
     // totalCount,
     pageResults,
   } = useTrainResults({
-    defaultParams,
+    defaultParams: paramsFromQuery,
     pageSize,
     seatClassFilterOptions: seatClassFilterOptions as ReadonlyArray<{
       value: SeatClassFilter;
@@ -64,8 +61,8 @@ export const ResultPage: React.FC = () => {
     }>,
   });
 
-  const departureStationName = stationNameMap[defaultParams.from];
-  const arrivalStationName = stationNameMap[defaultParams.to];
+  const departureStationName = StationNameMap[paramsFromQuery.from];
+  const arrivalStationName = StationNameMap[paramsFromQuery.to];
 
   const handleDetailClick = async (train: TrainResult) => {
     navigate('/train-detail', {
@@ -74,8 +71,8 @@ export const ResultPage: React.FC = () => {
         searchParams: {
           from: train.departureStationCd,
           to: train.arrivalStationCd,
-          date: defaultParams.date,
-          time: train.departureTime,
+          // date: paramsFromQuery.date,
+          // time: train.departureTime,
         },
       },
     });
@@ -185,12 +182,20 @@ export const ResultPage: React.FC = () => {
             </Card>
           )}
 
+          {!isLoading && pageResults.length === 0 && !apiErrorMessage && (
+            <Card className='border-muted/60'>
+              <CardContent className='p-4 text-sm text-muted-foreground'>
+                条件に一致する列車が見つかりませんでした。
+              </CardContent>
+            </Card>
+          )}
+
           {!isLoading && (
             <div>
               <ul>
                 {pageResults.map((result) => {
-                  const departureName = stationNameMap[result.departureStationCd];
-                  const arrivalName = stationNameMap[result.arrivalStationCd];
+                  const departureName = StationNameMap[result.departureStationCd];
+                  const arrivalName = StationNameMap[result.arrivalStationCd];
 
                   return (
                     <li key={result.trainCd}>
@@ -201,9 +206,6 @@ export const ResultPage: React.FC = () => {
                         arrivalTime={result.arrivalTime}
                         departureStation={departureName}
                         arrivalStation={arrivalName}
-                        reservedSeats={result.remainSeatNumber.reserved}
-                        greenSeats={result.remainSeatNumber.green}
-                        grandclassSeats={result.remainSeatNumber.grandclass}
                         onClickDetail={() => handleDetailClick(result)}
                       />
                     </li>
@@ -262,14 +264,6 @@ export const ResultPage: React.FC = () => {
                 </li>
               </ul>
             </div>
-          )}
-
-          {!isLoading && pageResults.length === 0 && !apiErrorMessage && (
-            <Card className='border-muted/60'>
-              <CardContent className='p-4 text-sm text-muted-foreground'>
-                条件に一致する列車が見つかりませんでした。
-              </CardContent>
-            </Card>
           )}
         </div>
       </div>

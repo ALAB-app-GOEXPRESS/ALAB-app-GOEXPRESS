@@ -7,8 +7,5 @@
   "scripts": {
     "format": "prettier --write .",
     "format:check": "prettier --check ."
-  },
-  "dependencies": {
-    "lucide-react": "^0.564.0"
   }
 }

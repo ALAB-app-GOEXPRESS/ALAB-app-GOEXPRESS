@@ -4,13 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { createReservation } from '@/api/ReservationApi';
 import { fetchTrainDetail } from '@/api/TrainDetailApi';
-import { formatJapaneseDate, calcDurationMin } from '@/utils/dateTime';
+import { formatJapaneseDate, todayYYYYMMDD } from '@/utils/dateTime';
 import { ArrowLeft, MapPin, TramFront, Loader2 } from 'lucide-react';
 import { specifyTrainTypeIconColor } from '@/utils/train';
 import { SeatClassCard } from './SeatClassCard';
 
 import type { TrainDetailResult } from '@/api/TrainDetailApi';
-import type { StationCode } from '@/api/TrainListApi';
+import type { StationCode } from '@/types/Station';
 import { toast } from 'sonner';
 
 export const TrainDetailPage: React.FC = () => {
@@ -41,7 +41,7 @@ export const TrainDetailPage: React.FC = () => {
           trainCd,
           from: searchParams.from,
           to: searchParams.to,
-          date: searchParams.date,
+          date: todayYYYYMMDD(),
         };
         const data = await fetchTrainDetail(params);
         setTrainDetail(data);
@@ -61,7 +61,6 @@ export const TrainDetailPage: React.FC = () => {
 
     try {
       setReservingSeatType(seatType);
-      const durationMin = calcDurationMin(trainDetail.departureTime, trainDetail.arrivalTime);
       const reservationDetails = await createReservation(
         {
           trainCd: trainDetail.trainCd,
@@ -72,12 +71,6 @@ export const TrainDetailPage: React.FC = () => {
           departureStationCd: searchParams.from,
           arrivalStationCd: searchParams.to,
           trackNumber: trainDetail.trackNumber,
-          durationMin: durationMin,
-          remainSeatNumber: {
-            reserved: 0,
-            green: 0,
-            grandclass: 0,
-          },
         },
         trainDetail.date,
       );

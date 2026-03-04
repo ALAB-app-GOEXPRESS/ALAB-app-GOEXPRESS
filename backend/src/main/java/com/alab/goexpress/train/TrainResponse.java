@@ -1,10 +1,10 @@
-package com.alab.goexpress.model.dto;
+package com.alab.goexpress.train;
 
 import java.time.LocalTime;
 import lombok.Data;
 
 @Data
-public class TrainBetweenStationsDto {
+public class TrainResponse {
 
   private String trainCd;
 

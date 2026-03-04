@@ -1,4 +1,4 @@
-import type { StationCode } from './TrainListApi';
+import type { StationCode } from '@/types/Station';
 import { fetchJSON } from '@/lib/fetch';
 
 export type ReservationListItem = {

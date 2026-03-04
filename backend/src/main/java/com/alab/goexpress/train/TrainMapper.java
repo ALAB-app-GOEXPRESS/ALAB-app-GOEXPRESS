@@ -1,13 +1,12 @@
-package com.alab.goexpress.trainsearch;
+package com.alab.goexpress.train;
 
-import com.alab.goexpress.model.dto.TrainBetweenStationsDto;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 @Mapper
-public interface TrainSearchMapper {
-  List<TrainBetweenStationsDto> findTrainsBetweenStations(
+public interface TrainMapper {
+  List<TrainResponse> selectTrains(
     @Param("fromStationCd") String fromStationCd,
     @Param("toStationCd") String toStationCd
   );
