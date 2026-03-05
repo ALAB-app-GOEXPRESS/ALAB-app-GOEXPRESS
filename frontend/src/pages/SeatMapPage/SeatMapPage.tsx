@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft } from 'lucide-react';
-import { SeatButton, type SeatStatus } from '@/components/ui/SeatButton';
-import { SelectedSeatsInfo } from '@/components/ui/selectedSeatsInfo';
+import { SeatButton, type SeatStatus } from '@/components/ui/seatButton';
+// import { SelectedSeatsInfo } from '@/components/ui/selectedSeatsInfo';
 import type { SelectedSeat } from '@/types/Seat';
-import { convertRowColToSeatCd, convertSeatCdToLabel } from '@/utils/seat';
+import { convertRowColToSeatCd } from '@/utils/seat';
 
 const TOTAL_CARS = 10;
 const SEAT_ROWS = 15;
@@ -41,16 +41,16 @@ export const SeatMapPage: React.FC = () => {
     }
   };
 
-  const handleConfirmReservation = () => {
-    if (selectedSeats.length === 0) {
-      alert('座席を1つ以上選択してください。');
-      return;
-    }
-    const selectedSeatLabels = selectedSeats
-      .map((s) => `${s.carNumber}号車 ${convertSeatCdToLabel(s.seatId)}`)
-      .join(', ');
-    alert(`以下の座席で予約します：\n${selectedSeatLabels}\n（この先の機能は別途実装が必要です）`);
-  };
+  // const handleConfirmReservation = () => {
+  //   if (selectedSeats.length === 0) {
+  //     alert('座席を1つ以上選択してください。');
+  //     return;
+  //   }
+  //   const selectedSeatLabels = selectedSeats
+  //     .map((s) => `${s.carNumber}号車 ${convertSeatCdToLabel(s.seatId)}`)
+  //     .join(', ');
+  //   alert(`以下の座席で予約します：\n${selectedSeatLabels}\n（この先の機能は別途実装が必要です）`);
+  // };
 
   if (!trainDetail || !searchParams) {
     return (
@@ -63,12 +63,12 @@ export const SeatMapPage: React.FC = () => {
 
   return (
     <div className='min-h-screen bg-gray-50 p-4 sm:p-8 relative'>
-      <SelectedSeatsInfo
+      {/* <SelectedSeatsInfo
         selectedSeats={selectedSeats}
         onConfirm={handleConfirmReservation}
-      />
+      /> */}
 
-      <div className='mx-auto max-w-5xl lg:mr-87.5'>
+      <div className='mx-auto max-w-5xl'>
         <Button
           variant='link'
           onClick={() => navigate(-1)}
