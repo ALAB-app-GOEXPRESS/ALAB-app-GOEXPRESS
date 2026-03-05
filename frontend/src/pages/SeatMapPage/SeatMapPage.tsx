@@ -8,6 +8,7 @@ import { SeatButton, type SeatStatus } from '@/components/ui/seatButton';
 // import { SelectedSeatsInfo } from '@/components/ui/selectedSeatsInfo';
 import type { SelectedSeat } from '@/types/Seat';
 import { convertRowColToSeatCd } from '@/utils/seat';
+import { SeatMap } from './SeatMap';
 
 const TOTAL_CARS = 10;
 const SEAT_ROWS = 15;
@@ -103,84 +104,7 @@ export const SeatMapPage: React.FC = () => {
               </TabsList>
 
               {Array.from({ length: TOTAL_CARS }, (_, i) => i + 1).map((carNumber) => (
-                <TabsContent
-                  key={carNumber}
-                  value={String(carNumber)}
-                  className='mt-4'
-                >
-                  <div className='flex flex-col items-start gap-4'>
-                    <div className='flex justify-start gap-2 sm:gap-4'>
-                      <div className='flex flex-col gap-2 pt-1'>
-                        {Array.from({ length: SEAT_ROWS }, (_, i) => i + 1).map((row) => (
-                          <div
-                            key={row}
-                            className='flex h-10 w-8 items-center justify-center font-mono text-muted-foreground'
-                          >
-                            {row}
-                          </div>
-                        ))}
-                      </div>
-                      <div className='flex items-center gap-2 sm:gap-4'>
-                        <div className='grid grid-cols-3 gap-2'>
-                          {Array.from({ length: SEAT_ROWS }, (_, i) => i + 1).map((row) =>
-                            SEAT_COLUMNS_3.map((col) => {
-                              const seatId = convertRowColToSeatCd(row, col);
-                              const isReserved = DUMMY_RESERVED_SEATS.some(
-                                (s) => s.carNumber === carNumber && s.seatId === seatId,
-                              );
-                              const isSelected = selectedSeats.some(
-                                (s) => s.carNumber === carNumber && s.seatId === seatId,
-                              );
-                              const status: SeatStatus = isReserved
-                                ? 'reserved'
-                                : isSelected
-                                  ? 'selected'
-                                  : 'available';
-                              return (
-                                <SeatButton
-                                  key={seatId}
-                                  seatId={seatId}
-                                  status={status}
-                                  onClick={() => handleSeatClick(carNumber, seatId)}
-                                />
-                              );
-                            }),
-                          )}
-                        </div>
-                        <div
-                          className='w-2 sm:w-4'
-                          aria-hidden='true'
-                        />
-                        <div className='grid grid-cols-2 gap-2'>
-                          {Array.from({ length: SEAT_ROWS }, (_, i) => i + 1).map((row) =>
-                            SEAT_COLUMNS_2.map((col) => {
-                              const seatId = convertRowColToSeatCd(row, col);
-                              const isReserved = DUMMY_RESERVED_SEATS.some(
-                                (s) => s.carNumber === carNumber && s.seatId === seatId,
-                              );
-                              const isSelected = selectedSeats.some(
-                                (s) => s.carNumber === carNumber && s.seatId === seatId,
-                              );
-                              const status: SeatStatus = isReserved
-                                ? 'reserved'
-                                : isSelected
-                                  ? 'selected'
-                                  : 'available';
-                              return (
-                                <SeatButton
-                                  key={seatId}
-                                  seatId={seatId}
-                                  status={status}
-                                  onClick={() => handleSeatClick(carNumber, seatId)}
-                                />
-                              );
-                            }),
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
+              <SeatMap key={carNumber} carNumber={carNumber} />
               ))}
             </Tabs>
           </CardContent>

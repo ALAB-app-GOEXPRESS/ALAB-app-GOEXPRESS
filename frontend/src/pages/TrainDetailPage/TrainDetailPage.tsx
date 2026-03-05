@@ -179,15 +179,11 @@ export const TrainDetailPage: React.FC = () => {
                   key={seatInfo.type}
                   seatInfo={seatInfo}
                   onClickReservation={() => {
-                    if (seatInfo.name === '指定席') {
-                      navigate('/seat-map', {
-                        state: { trainDetail, searchParams },
-                      });
-                    } else {
-                      handleReserve(seatInfo.type);
-                    }
+                    handleReserve(seatInfo.type);
                   }}
                   isReserving={reservingSeatType === seatInfo.type}
+                  trainDetail={trainDetail}
+                  searchParams={searchParams}
                 />
               ))}
             </div>

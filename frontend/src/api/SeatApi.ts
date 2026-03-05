@@ -15,7 +15,7 @@ export type ReservedSeat = {
 }
 
 export async function FetchSeats(params: SeatsParams) {
-    const endpoint = `/api/seats?traind_cd=${encodeURIComponent(params.trainCd)}&departure_date=${encodeURIComponent(params.departureDate)}`;
+    const endpoint = `/api/seats?train_cd=${encodeURIComponent(params.trainCd)}&departure_date=${encodeURIComponent(params.departureDate)}`;
 
     const data = await fetchJSON<SeatBetweenApiItem[]>(endpoint);
 
