@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { MoveRight, TramFront } from 'lucide-react';
+import { ArrowRight, TramFront } from 'lucide-react';
 import { specifyTrainTypeIconColor } from '@/utils/train';
+import { calcDurationMin, formatHM } from '@/utils/dateTime';
 
 type Props = {
   trainTypeName: string;
@@ -12,6 +12,7 @@ type Props = {
   arrivalTime: string;
   departureStation: string;
   arrivalStation: string;
+  duration: string;
   onClickDetail: () => void;
 };
 
@@ -29,7 +30,7 @@ export const TrainCard: React.FC<Props> = ({
       className='mb-4 border-brand-green-light cursor-pointer'
       onClick={onClickDetail}
     >
-      <CardContent className='p-4'>
+      <CardContent className='px-4'>
         <div className='grid grid-cols-[20%_80%] items-center'>
           <div className='flex gap-2 items-center ml-4'>
             <TramFront className={`${specifyTrainTypeIconColor(trainTypeName)} text-white text-[30px] rounded-sm`} />
@@ -49,8 +50,11 @@ export const TrainCard: React.FC<Props> = ({
             </div>
 
             <div className='relative flex items-center justify-center'>
-              <hr className='absolute z-10 w-full border-[#008803]' />
-              {/* <MoveRight className='absolute z-20 bg-white p-2' /> */}
+              <div className='w-full border-t-2 border-dashed mr-5' />
+              <div className='absolute -top-3 rounded-md bg-white px-3 text-base font-bold text-primary'>
+                {formatHM(calcDurationMin(departureTime, arrivalTime))}
+              </div>
+              <ArrowRight className='absolute right-0 h-5 w-5 text-primary/40' />
             </div>
 
             <div className='flex justify-center'>
