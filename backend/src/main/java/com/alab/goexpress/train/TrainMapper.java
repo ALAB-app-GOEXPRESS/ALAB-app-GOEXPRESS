@@ -1,24 +1,29 @@
 package com.alab.goexpress.train;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-
 import com.alab.goexpress.master.DepartureInfo;
 import com.alab.goexpress.model.dto.SeatTypeInfoDTO;
 import com.alab.goexpress.model.dto.TrainInfoDTO;
+import com.alab.goexpress.train.dto.TrainDto;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface TrainMapper {
-  List<TrainResponse> selectTrains(
+  List<TrainDto> selectTrainList(
     @Param("fromStationCd") String fromStationCd,
     @Param("toStationCd") String toStationCd
   );
 
+  TrainDto selectTrain(
+    @Param("fromStationCd") String fromStationCd,
+    @Param("toStationCd") String toStationCd,
+    @Param("trainCd") String trainCd
+  );
 
-  TrainInfoDTO findTrainInfo(@Param("trainCd") String trainCd);
+  List<TrainInfoDTO> findTrainInfo(@Param("trainCd") String trainCd);
 
   DepartureInfo findDepartureInfo(@Param("trainCd") String trainCd, @Param("stationCd") String stationCd);
 

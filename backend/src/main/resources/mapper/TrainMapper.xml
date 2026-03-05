@@ -5,8 +5,8 @@
 
 <mapper namespace="com.alab.goexpress.train.TrainMapper">
 
-    <select id="selectTrains"
-            resultType="com.alab.goexpress.train.TrainResponse">
+    <select id="selectTrainList"
+            resultType="com.alab.goexpress.train.dto.TrainDto">
         SELECT
         t.train_cd                         AS trainCd,
         t.train_number                     AS trainNumber,
@@ -39,6 +39,41 @@
         AND pf.departure_time &lt; pt.arrival_time
 
         ORDER BY pf.departure_time
+    </select>
+
+     <select id="selectTrain"
+            resultType="com.alab.goexpress.train.dto.TrainDto">
+        SELECT
+        t.train_cd                         AS trainCd,
+        t.train_number                     AS trainNumber,
+        t.train_type_cd                    AS trainTypeCd,
+        tt.train_type_name                 AS trainTypeName,
+
+        pf.arrival_station_cd              AS fromStationCd,
+        sf.station_name                    AS fromStationName,
+
+        pt.arrival_station_cd              AS toStationCd,
+        st.station_name                    AS toStationName,
+
+        pf.departure_time                  AS departureTime,
+        pt.arrival_time                    AS arrivalTime
+
+        FROM M_PLAN pf
+        JOIN M_PLAN pt
+        ON pt.train_cd = pf.train_cd
+        JOIN M_TRAIN t
+        ON t.train_cd = pf.train_cd
+        JOIN M_TRAIN_TYPE tt
+        ON tt.train_type_cd = t.train_type_cd
+        JOIN M_STATION sf
+        ON sf.station_cd = pf.arrival_station_cd
+        JOIN M_STATION st
+        ON st.station_cd = pt.arrival_station_cd
+
+        WHERE t.train_cd = #{trainCd}
+        AND pf.arrival_station_cd = #{fromStationCd}
+        AND pt.arrival_station_cd = #{toStationCd}
+        AND pf.departure_time &lt; pt.arrival_time
     </select>
 
     <resultMap id="seatTypeInfoResultMap" type="com.alab.goexpress.model.dto.SeatTypeInfoDTO">

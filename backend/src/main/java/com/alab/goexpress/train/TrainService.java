@@ -1,13 +1,15 @@
 package com.alab.goexpress.train;
 
+import com.alab.goexpress.master.DepartureInfo;
+import com.alab.goexpress.model.dto.SeatTypeInfoDTO;
+import com.alab.goexpress.model.dto.TrainInfoDTO;
+import com.alab.goexpress.train.dto.SeatClassDto;
+import com.alab.goexpress.train.dto.TrainDetailResponse;
+import com.alab.goexpress.train.dto.TrainDto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.alab.goexpress.master.DepartureInfo;
-import com.alab.goexpress.model.dto.SeatTypeInfoDTO;
-import com.alab.goexpress.model.dto.TrainInfoDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +21,8 @@ public class TrainService {
   private final TrainMapper mapper;
 
   @Transactional(readOnly = true)
-  public List<TrainResponse> find(String fromStationCd, String toStationCd) {
-    return mapper.selectTrains(fromStationCd, toStationCd);
+  public List<TrainDto> find(String fromStationCd, String toStationCd) {
+    return mapper.selectTrainList(fromStationCd, toStationCd);
   }
 
   /**
@@ -34,64 +36,33 @@ public class TrainService {
    */
   @Transactional(readOnly = true)
   public TrainDetailResponse getTrainDetail(LocalDate date, String trainCd, String fromStationCd, String toStationCd) {
-    TrainInfoDTO trainInfo = mapper.findTrainInfo(trainCd);
-    if (trainInfo == null) {
+    TrainDto trainBasicInfo = mapper.selectTrain(fromStationCd, toStationCd, trainCd);
+    if (trainBasicInfo == null) {
       throw new RuntimeException("Train not found: " + trainCd);
     }
 
-    DepartureInfo departureInfo = mapper.findDepartureInfo(trainCd, fromStationCd);
-    if (departureInfo == null) {
-      throw new RuntimeException("Departure info not found");
-    }
-
-    LocalTime arrivalTime = mapper.findArrivalTime(trainCd, toStationCd);
-    if (arrivalTime == null) {
-      throw new RuntimeException("Arrival time not found");
-    }
+    DepartureInfo departureInfo = mapper.findDepartureInfo(trainCd, toStationCd);
 
     List<SeatTypeInfoDTO> seatTypes = mapper.findSeatTypesForTrain(trainCd);
-
-    List<TrainDetailResponse.SeatClassInfo> seatClassInfos = seatTypes
+    List<SeatClassDto> seatClasses = seatTypes
       .stream()
       .map(seatType -> {
         String trainTypeCd = mapper.findTrainTypeCd(trainCd);
 
-        Integer chargeResult = mapper.findCharge(
-          fromStationCd,
-          toStationCd,
-          trainTypeCd,
-          seatType.getSeatTypeCd()
-        );
+        Integer chargeResult = mapper.findCharge(fromStationCd, toStationCd, trainTypeCd, seatType.getSeatTypeCd());
         int charge = (chargeResult != null) ? chargeResult : 0;
 
-        Long maxSeats = mapper.sumMaxSeatNumber(trainCd, seatType.getSeatTypeCd());
-        if (maxSeats == null) {
-          maxSeats = 0L;
-        }
+        Long maxSeatsResult = mapper.sumMaxSeatNumber(trainCd, seatType.getSeatTypeCd());
+        long maxSeats = (maxSeatsResult != null) ? maxSeatsResult : 0L;
 
         long reservedSeats = mapper.countReservedSeatsBySeatType(trainCd, date, seatType.getSeatTypeCd());
 
         int remainingSeats = (int) (maxSeats - reservedSeats);
 
-        return new TrainDetailResponse.SeatClassInfo(
-          seatType.getSeatTypeCd(),
-          seatType.getSeatTypeName(),
-          charge,
-          remainingSeats
-        );
+        return new SeatClassDto(seatType.getSeatTypeCd(), seatType.getSeatTypeName(), charge, remainingSeats);
       })
-      .collect(Collectors.toList());
+      .toList();
 
-    return new TrainDetailResponse(
-      trainCd,
-      trainInfo.getTrainTypeName(),
-      trainInfo.getTrainNumber(),
-      fromStationCd,
-      toStationCd,
-      departureInfo.departureTime(),
-      arrivalTime,
-      departureInfo.trackNumber(),
-      seatClassInfos
-    );
+    return new TrainDetailResponse(trainBasicInfo, departureInfo.trackNumber(), seatClasses);
   }
 }

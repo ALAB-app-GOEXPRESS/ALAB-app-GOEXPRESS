@@ -1,5 +1,7 @@
 package com.alab.goexpress.train;
 
+import com.alab.goexpress.train.dto.TrainDetailResponse;
+import com.alab.goexpress.train.dto.TrainDto;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +17,7 @@ public class TrainController {
   private final TrainService service;
 
   @GetMapping
-  public List<TrainResponse> get(
-    @RequestParam("from") String fromStationCd,
-    @RequestParam("to") String toStationCd
-  ) {
+  public List<TrainDto> get(@RequestParam("from") String fromStationCd, @RequestParam("to") String toStationCd) {
     return service.find(fromStationCd, toStationCd);
   }
 
