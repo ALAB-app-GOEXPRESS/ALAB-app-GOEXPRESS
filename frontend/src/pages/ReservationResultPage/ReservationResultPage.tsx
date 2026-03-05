@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { StationNameMap } from '@/constants/Station';
 import type { ReservationDetails } from '@/api/ReservationApi';
 import { ReservationDetail } from './ReservationDetail';
+import { ArrowLeft } from 'lucide-react';
 
 const ErrorDisplay: React.FC = () => {
   const navigate = useNavigate();
@@ -19,9 +20,9 @@ const ErrorDisplay: React.FC = () => {
       <div className='mt-6'>
         <Button
           variant='outline'
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/reservation-list')}
         >
-          前の画面に戻る
+          予約一覧へ
         </Button>
       </div>
     </div>
@@ -30,6 +31,8 @@ const ErrorDisplay: React.FC = () => {
 
 export const ReservationResultPage: React.FC = () => {
   const location = useLocation();
+
+  const navigate = useNavigate();
 
   const { reservationDetails } = (location.state || {}) as {
     reservationDetails?: ReservationDetails;
@@ -48,13 +51,27 @@ export const ReservationResultPage: React.FC = () => {
   const arrivalStationCd = StationNameMap[trainDetails.arrivalStationCd];
 
   return (
-    <ReservationDetail
-      trainDetails={trainDetails}
-      confirmedSeat={confirmedSeat}
-      reservationDate={reservationDate}
-      trackNumber={trackNumber}
-      departureStationName={departureStationCd}
-      arrivalStationName={arrivalStationCd}
-    />
+    <div className='min-h-[calc(100vh-64px)] bg-background'>
+      <div className='mx-auto w-full max-w-md px-4 py-6'>
+        <div className='mb-4 flex'>
+          <Button
+            variant='link'
+            onClick={() => navigate('/reservation-list')}
+            className='p-0 h-auto text-muted-foreground flex items-center gap-1'
+          >
+            <ArrowLeft className='h-4 w-4' />
+            予約一覧へ
+          </Button>
+        </div>
+        <ReservationDetail
+          trainDetails={trainDetails}
+          confirmedSeat={confirmedSeat}
+          reservationDate={reservationDate}
+          trackNumber={trackNumber}
+          departureStationName={departureStationCd}
+          arrivalStationName={arrivalStationCd}
+        />
+      </div>
+    </div>
   );
 };
