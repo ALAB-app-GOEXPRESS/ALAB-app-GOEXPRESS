@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Ticket, Search } from 'lucide-react';
+import { Ticket, TrainFront } from 'lucide-react';
 
 export const Header: React.FC = () => {
   return (
@@ -17,18 +17,18 @@ export const Header: React.FC = () => {
             to='search'
             className={({ isActive }) =>
               isActive
-                ? 'py-1.5 px-4 inline-flex items-center gap-2 text-13 rounded-lg bg-primary text-white cursor-default'
+                ? 'py-1.5 px-4 inline-flex items-center gap-2 text-13 rounded-lg bg-primary/10 cursor-default'
                 : 'py-1.5 px-4 inline-flex items-center gap-2 text-13 rounded-lg'
             }
           >
-            <Search />
+            <TrainFront />
             新幹線をさがす
           </NavLink>
           <NavLink
             to='reservation-list'
             className={({ isActive }) =>
               isActive
-                ? 'py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg bg-primary text-white cursor-default'
+                ? 'py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg bg-primary/10 cursor-default'
                 : 'py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg'
             }
           >
