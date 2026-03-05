@@ -1,4 +1,4 @@
-package com.alab.goexpress.model.response;
+package com.alab.goexpress.train;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalTime;

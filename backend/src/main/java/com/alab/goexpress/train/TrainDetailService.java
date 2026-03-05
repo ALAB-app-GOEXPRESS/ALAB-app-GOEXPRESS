@@ -1,13 +1,14 @@
-package com.alab.goexpress.traindetail;
+package com.alab.goexpress.train;
 
 import com.alab.goexpress.master.DepartureInfo;
 import com.alab.goexpress.model.dto.SeatTypeInfoDTO;
 import com.alab.goexpress.model.dto.TrainInfoDTO;
-import com.alab.goexpress.model.response.TrainDetailResponse;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

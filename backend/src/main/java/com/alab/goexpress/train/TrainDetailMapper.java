@@ -1,4 +1,4 @@
-package com.alab.goexpress.traindetail;
+package com.alab.goexpress.train;
 
 import com.alab.goexpress.master.DepartureInfo;
 import com.alab.goexpress.model.dto.SeatTypeInfoDTO;

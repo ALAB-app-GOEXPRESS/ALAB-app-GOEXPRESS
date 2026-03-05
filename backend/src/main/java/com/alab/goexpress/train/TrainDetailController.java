@@ -1,7 +1,7 @@
-package com.alab.goexpress.traindetail;
+package com.alab.goexpress.train;
 
-import com.alab.goexpress.model.response.TrainDetailResponse;
 import java.time.LocalDate;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
