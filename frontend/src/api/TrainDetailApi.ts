@@ -3,15 +3,21 @@ import { type StationCode } from '@/types/Station';
 import { toSeatClassType, SEAT_CLASS_DESCRIPTIONS, type SeatClass } from '@/utils/seatClass';
 import { fetchJSON } from '@/lib/fetch';
 import { StationNameMap } from '@/constants/Station';
+import { toHHMM } from '@/utils/dateTime';
 
 export type TrainDetailApiItem = {
-  trainCd: string;
-  trainTypeName: string;
-  trainNumber: string;
-  fromStationCd: StationCode;
-  toStationCd: StationCode;
-  departureTime: string; // "HH:mm"
-  arrivalTime: string; // "HH:mm"
+  trainBasicInfo: {
+    trainCd: string;
+    trainNumber: string;
+    trainTypeCd: string;
+    trainTypeName: string;
+    fromStationCd: StationCode;
+    fromStationName: string;
+    toStationCd: StationCode;
+    toStationName: string;
+    departureTime: string; // "HH:mm"
+    arrivalTime: string; // "HH:mm"
+  };
   trackNumber: string;
   seatClasses: Array<{
     seatTypeCd: string;
@@ -61,13 +67,13 @@ export async function fetchTrainDetail(params: TrainDetailParams): Promise<Train
   const data = await fetchJSON<TrainDetailApiItem>(endpoint);
 
   const converted: TrainDetailResult = {
-    trainCd: data.trainCd,
-    trainTypeName: data.trainTypeName,
-    trainNumber: `${normalizeTrainNumber(data.trainNumber)}号`,
-    departureTime: data.departureTime,
-    arrivalTime: data.arrivalTime,
-    departureStationName: StationNameMap[data.fromStationCd],
-    arrivalStationName: StationNameMap[data.toStationCd],
+    trainCd: data.trainBasicInfo.trainCd,
+    trainTypeName: data.trainBasicInfo.trainTypeName,
+    trainNumber: `${normalizeTrainNumber(data.trainBasicInfo.trainNumber)}号`,
+    departureTime: toHHMM(data.trainBasicInfo.departureTime),
+    arrivalTime: toHHMM(data.trainBasicInfo.arrivalTime),
+    departureStationName: StationNameMap[data.trainBasicInfo.fromStationCd],
+    arrivalStationName: StationNameMap[data.trainBasicInfo.toStationCd],
     trackNumber: data.trackNumber,
     date: params.date,
     seatClasses: data.seatClasses.map((sc) => {
