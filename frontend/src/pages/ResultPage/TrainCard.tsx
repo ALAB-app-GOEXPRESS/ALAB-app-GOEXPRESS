@@ -63,17 +63,6 @@ export const TrainCard: React.FC<Props> = ({
               </div>
             </div>
           </div>
-
-          {/* <div className='flex flex-col gap-2'>
-            <div className='flex flex-col items-end gap-2'>
-              <Button
-                onClick={onClickDetail}
-                className='w-22 hover:cursor-'
-              >
-                詳細を見る
-              </Button>
-            </div>
-          </div> */}
         </div>
       </CardContent>
     </Card>
