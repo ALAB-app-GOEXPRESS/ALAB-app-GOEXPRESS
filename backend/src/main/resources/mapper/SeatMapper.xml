@@ -5,12 +5,13 @@
 
 <mapper namespace="com.alab.goexpress.seat.SeatMapper">
 
-    <select id="getReservedSeat"
-            resultType="com.alab.goexpress.seat.SeatId">
+    <select id="findReservedSeats"
+            resultType="com.alab.goexpress.seat.SeatResponse">
         SELECT seat_cd
         FROM T_SEAT
-        WHERE train_cd = #{train_cd}
-        AND departure_date = #{departure_date}
+        WHERE train_cd = #{trainCd}
+        AND departure_date = #{departureDate}
+        ORDER BY seat_cd
     </select>
 
 </mapper>
