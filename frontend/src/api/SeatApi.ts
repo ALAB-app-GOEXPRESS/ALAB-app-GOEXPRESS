@@ -1,5 +1,4 @@
 import { fetchJSON } from '@/lib/fetch';
-import { formatSeat } from '@/lib/utils';
 
 export type SeatBetweenApiItem = {
     seatCd: string;
@@ -11,7 +10,8 @@ export type SeatsParams = {
 };
 
 export type ReservedSeat = {
-    convertedSeat: string;
+    seatCd: string;
+    carNumber: number;
 }
 
 export async function FetchSeats(params: SeatsParams) {
@@ -19,11 +19,12 @@ export async function FetchSeats(params: SeatsParams) {
 
     const data = await fetchJSON<SeatBetweenApiItem[]>(endpoint);
 
-    const converted: ReservedSeat[] = data.map((seat) => {
+    const resetvedSeats: ReservedSeat[] = data.map((seat) => {
         return {
-            convertedSeat: formatSeat(seat.seatCd)
+            seatCd: seat.seatCd,
+            carNumber: Math.floor((parseInt(seat.seatCd) - 1) / 85) + 1
         }
     });
 
-    return converted;
+    return resetvedSeats;
 };

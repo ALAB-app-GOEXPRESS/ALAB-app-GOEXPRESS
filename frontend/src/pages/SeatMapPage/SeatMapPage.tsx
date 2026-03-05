@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft } from 'lucide-react';
 // import { SelectedSeatsInfo } from '@/components/ui/selectedSeatsInfo';
-import { SeatMap } from './SeatMap';
+import { SeatMapTab } from './SeatMapTab';
 
 const TOTAL_CARS = 10;
 
@@ -13,7 +13,7 @@ export const SeatMapPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { trainDetail, searchParams } = location.state || {};
+  const { trainDetail } = location.state || {};
 
   // const handleConfirmReservation = () => {
   //   if (selectedSeats.length === 0) {
@@ -26,7 +26,7 @@ export const SeatMapPage: React.FC = () => {
   //   alert(`以下の座席で予約します：\n${selectedSeatLabels}\n（この先の機能は別途実装が必要です）`);
   // };
 
-  if (!trainDetail || !searchParams) {
+  if (!trainDetail) {
     return (
       <div className='p-8'>
         <p>列車情報がありません。前のページから再度操作してください。</p>
@@ -77,7 +77,12 @@ export const SeatMapPage: React.FC = () => {
               </TabsList>
 
               {Array.from({ length: TOTAL_CARS }, (_, i) => i + 1).map((carNumber) => (
-              <SeatMap key={carNumber} carNumber={carNumber} />
+                <SeatMapTab
+                  key={carNumber}
+                  carNumber={carNumber}
+                  trainCd={trainDetail.trainCd}
+                  departureDate={trainDetail.date}
+                />
               ))}
             </Tabs>
           </CardContent>

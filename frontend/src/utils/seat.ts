@@ -48,8 +48,8 @@ export const convertSeatCdToLabel = (seatId: string): string => {
  * @param col - 列名 (例: 'A')
  * @returns '021' のようなDBのseat_cd
  */
-export const convertRowColToSeatCd = (row: number, col: string): string => {
+export const convertRowColToSeatCd = (carNumber: number, row: number, col: string): string => {
   const colIndex = ALL_COLUMNS.indexOf(col);
-  const seatIndex = (row - 1) * SEATS_PER_ROW + colIndex;
+  const seatIndex = (carNumber - 1) * 75 + (row - 1) * SEATS_PER_ROW + colIndex;
   return String(seatIndex + 1).padStart(3, '0');
 };
