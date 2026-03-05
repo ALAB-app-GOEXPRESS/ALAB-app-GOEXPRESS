@@ -1,7 +1,9 @@
 package com.alab.goexpress.seat;
 
-import com.alab.goexpress.master.train.TrainCarMasterJpaRepository;
+//import com.alab.goexpress.master.train.TrainCarMasterJpaRepository;
 import java.time.LocalDate;
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,8 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class SeatService {
 
   private final SeatRepositoryPort seatRepo;
-  private final SeatReservationJpaRepository seatReservationJpaRepository;
-  private final TrainCarMasterJpaRepository trainCarMasterJpaRepository;
+//  private final SeatReservationJpaRepository seatReservationJpaRepository;
+//  private final TrainCarMasterJpaRepository trainCarMasterJpaRepository;
+  private final SeatMapper mapper;
 
   public SeatChoice chooseSeat(String trainCd, LocalDate depDate) {
     return seatRepo.chooseSeat(trainCd, depDate);
@@ -30,17 +33,22 @@ public class SeatService {
     seatRepo.insertSeat(trainCd, depDate, trainCarCd, seatCd, depSt, arrSt, reservationId);
   }
 
+//  @Transactional(readOnly = true)
+//  public int countAvailableSeats(String trainCd, LocalDate date, String seatTypeCd) {
+//    Long totalSeats = trainCarMasterJpaRepository.sumMaxSeatNumber(trainCd, seatTypeCd);
+//    if (totalSeats == null) {
+//      return 0;
+//    }
+//
+//    long reservedSeats = seatReservationJpaRepository.countReservedSeatsBySeatType(trainCd, date, seatTypeCd);
+//
+//    int availableSeats = (int) (totalSeats - reservedSeats);
+//
+//    return Math.max(0, availableSeats);
+//  }
+
   @Transactional(readOnly = true)
-  public int countAvailableSeats(String trainCd, LocalDate date, String seatTypeCd) {
-    Long totalSeats = trainCarMasterJpaRepository.sumMaxSeatNumber(trainCd, seatTypeCd);
-    if (totalSeats == null) {
-      return 0;
-    }
-
-    long reservedSeats = seatReservationJpaRepository.countReservedSeatsBySeatType(trainCd, date, seatTypeCd);
-
-    int availableSeats = (int) (totalSeats - reservedSeats);
-
-    return Math.max(0, availableSeats);
+  public List<SeatResponse> find(String trainCd, LocalDate departureDate) {
+    return mapper.findReservedSeats(trainCd, departureDate);
   }
 }
