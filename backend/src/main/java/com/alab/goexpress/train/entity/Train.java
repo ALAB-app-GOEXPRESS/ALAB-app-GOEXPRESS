@@ -1,4 +1,4 @@
-package com.alab.goexpress.train;
+package com.alab.goexpress.train.entity;
 
 import com.alab.goexpress.model.entity.master.TrainType;
 import jakarta.persistence.*;
