@@ -7,7 +7,7 @@
 
     <select id="getReservedSeat"
             resultType="com.alab.goexpress.seat.SeatId">
-        SELECT seat_id
+        SELECT seat_cd
         FROM T_SEAT
         WHERE train_cd = #{train_cd}
         AND departure_date = #{departure_date}
