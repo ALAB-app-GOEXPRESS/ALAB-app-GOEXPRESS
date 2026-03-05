@@ -12,7 +12,6 @@ type Props = {
   arrivalTime: string;
   departureStation: string;
   arrivalStation: string;
-  duration: string;
   onClickDetail: () => void;
 };
 
