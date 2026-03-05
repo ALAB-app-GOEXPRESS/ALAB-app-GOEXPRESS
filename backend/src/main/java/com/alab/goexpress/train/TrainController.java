@@ -32,7 +32,7 @@ public class TrainController {
    * @param toStationCd 到着駅コード (クエリパラメータ)
    * @return 列車詳細情報
    */
-  @GetMapping("/{date}/{trainCd}/detail2")
+  @GetMapping("/{date}/{trainCd}/detail")
   public ResponseEntity<TrainDetailResponse> getTrainDetail(
     @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
     @PathVariable String trainCd,
