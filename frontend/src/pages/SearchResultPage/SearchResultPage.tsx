@@ -10,7 +10,7 @@ import { Card, CardContent } from '@/components/ui/card';
 // import { Clock } from 'lucide-react';
 import { type TrainSearchParams, type TrainResult } from '@/api/TrainListApi';
 import { type SeatClass } from '@/utils/seatClass';
-import { useTrainResults } from './useTrainResults';
+import { useTrainResults } from './useSearchResults';
 import { TrainCard } from './TrainCard';
 import { StationNameMap } from '@/constants/Station';
 
@@ -23,7 +23,7 @@ const seatClassFilterOptions = [
   { value: 'grandclass', label: 'グランクラス' },
 ] as const;
 
-export const ResultPage: React.FC = () => {
+export const SearchResultPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();

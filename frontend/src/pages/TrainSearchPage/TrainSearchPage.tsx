@@ -27,7 +27,7 @@ const toQueryString = (p: TrainSearchParams) => {
   return sp.toString();
 };
 
-export const SearchPage: React.FC = () => {
+export const TrainSearchPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [from, setFrom] = useState<string>('');
