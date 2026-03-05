@@ -10,7 +10,7 @@ export type SeatsParams = {
     departureDate: string;
 };
 
-export type SeatResult = {
+export type ReservedSeat = {
     convertedSeat: string;
 }
 
@@ -19,7 +19,7 @@ export async function FetchSeats(params: SeatsParams) {
 
     const data = await fetchJSON<SeatBetweenApiItem[]>(endpoint);
 
-    const converted: SeatResult[] = data.map((seat) => {
+    const converted: ReservedSeat[] = data.map((seat) => {
         return {
             convertedSeat: formatSeat(seat.seatCd)
         }
