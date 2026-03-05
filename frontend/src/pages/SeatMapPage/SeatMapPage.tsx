@@ -1,46 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft } from 'lucide-react';
-import { SeatButton, type SeatStatus } from '@/components/ui/seatButton';
 // import { SelectedSeatsInfo } from '@/components/ui/selectedSeatsInfo';
-import type { SelectedSeat } from '@/types/Seat';
-import { convertRowColToSeatCd } from '@/utils/seat';
 import { SeatMap } from './SeatMap';
 
 const TOTAL_CARS = 10;
-const SEAT_ROWS = 15;
-const SEAT_COLUMNS_3 = ['A', 'B', 'C'];
-const SEAT_COLUMNS_2 = ['D', 'E'];
-
-const DUMMY_RESERVED_SEATS: SelectedSeat[] = [
-  { carNumber: 3, seatId: '021' },
-  { carNumber: 3, seatId: '022' },
-  { carNumber: 3, seatId: '023' },
-];
 
 export const SeatMapPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const { trainDetail, searchParams } = location.state || {};
-
-  const [selectedSeats, setSelectedSeats] = useState<SelectedSeat[]>([]);
-
-  const handleSeatClick = (carNumber: number, seatId: string) => {
-    const isReserved = DUMMY_RESERVED_SEATS.some((s) => s.carNumber === carNumber && s.seatId === seatId);
-    if (isReserved) return;
-
-    const isSelected = selectedSeats.some((s) => s.carNumber === carNumber && s.seatId === seatId);
-
-    if (isSelected) {
-      setSelectedSeats((prev) => prev.filter((s) => !(s.carNumber === carNumber && s.seatId === seatId)));
-    } else {
-      setSelectedSeats((prev) => [...prev, { carNumber, seatId }]);
-    }
-  };
 
   // const handleConfirmReservation = () => {
   //   if (selectedSeats.length === 0) {
