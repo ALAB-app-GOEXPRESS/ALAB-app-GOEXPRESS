@@ -38,7 +38,7 @@ public class ReservationListAssembler {
           h.buyerName(),
           h.emailAddress(),
           tickets,
-          new LinksView("/reservations/" + h.reservationId(), "/reservations/" + h.reservationId() + "/tickets")
+          new LinksView("/api/reservations/" + h.reservationId(), "/api/reservations/" + h.reservationId() + "/tickets")
         );
       })
       .toList();
@@ -46,7 +46,32 @@ public class ReservationListAssembler {
     return new ReservationListView(
       items,
       new PageView(page, size, total),
-      new LinksView("/reservations?page=" + page + "&size=" + size, null)
+      new LinksView("/api/reservations?page=" + page + "&size=" + size, null)
+    );
+  }
+
+  public static ReservationListItemView assembleOne(
+    ReservationHeaderRow header,
+    List<TicketOperationRow> ticketRows
+  ) {
+    List<TicketWithTrainNameAndOperationView> tickets = ticketRows
+      .stream()
+      .filter(r -> Objects.equals(r.reservationId(), header.reservationId()))
+      .map(ReservationListAssembler::toTicketView)
+      .toList();
+
+    return new ReservationListItemView(
+      header.reservationId(),
+      header.invalidFlg(),
+      header.departureDate(),
+      header.buyDatetime(),
+      header.buyerName(),
+      header.emailAddress(),
+      tickets,
+      new LinksView(
+        "/api/reservations/" + header.reservationId(),
+        "/api/reservations/" + header.reservationId() + "/tickets"
+      )
     );
   }
 
