@@ -45,9 +45,7 @@ export const createReservation = async (
     body: JSON.stringify(createPayload),
   });
 
-  const reservationUri = createResponse.resourceUri;
-
-  const detailResponse = await fetchJSON<ApiReservationResponse>(reservationUri);
+  const detailResponse = await fetchJSON<ApiReservationResponse>(createResponse.resourceUri);
 
   const formattedData: ReservationDetails = {
     confirmedSeat: formatSeat(detailResponse.seatCd),
