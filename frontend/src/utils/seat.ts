@@ -1,3 +1,5 @@
+import type { ReservedSeat } from '@/api/SeatApi';
+
 /**
  * 座席クラスの種別
  * - reserved: 普通車指定席
@@ -35,12 +37,12 @@ export const SEATS_PER_ROW = ALL_COLUMNS.length;
  * @param seatId - '021' のようなDBのseat_cd
  * @returns '5A' のような表示用ラベル
  */
-export const convertSeatCdToLabel = (seatId: string): string => {
-  const seatIndex = parseInt(seatId, 10) - 1;
-  const row = Math.floor(seatIndex / SEATS_PER_ROW) + 1;
-  const col = ALL_COLUMNS[seatIndex % SEATS_PER_ROW];
-  return `${row}${col}`;
-};
+// export const convertSeatCdToLabel = (seatId: string): string => {
+//   const seatIndex = parseInt(seatId, 10) - 1;
+//   const row = Math.floor(seatIndex / SEATS_PER_ROW) + 1;
+//   const col = ALL_COLUMNS[seatIndex % SEATS_PER_ROW];
+//   return `${row}${col}`;
+// };
 
 /**
  * 行番号と列名からseat_cdを計算する
@@ -52,4 +54,13 @@ export const convertRowColToSeatCd = (carNumber: number, row: number, col: strin
   const colIndex = ALL_COLUMNS.indexOf(col);
   const seatIndex = (carNumber - 1) * 75 + (row - 1) * SEATS_PER_ROW + colIndex;
   return String(seatIndex + 1).padStart(3, '0');
+};
+
+export const calculateAvailableSeat = (reservedSeats: ReservedSeat[], carNumber: number) => {
+  return (
+    75 -
+    reservedSeats.filter((seat) => {
+      return seat.carNumber === carNumber;
+    }).length
+  );
 };

@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft } from 'lucide-react';
 // import { SelectedSeatsInfo } from '@/components/ui/selectedSeatsInfo';
 import { SeatMapTab } from './SeatMapTab';
-
+import { useSeatMap } from '@/pages/SeatMapPage/useSeatMap';
+import { calculateAvailableSeat } from '@/utils/seat';
 const TOTAL_CARS = 10;
 
 export const SeatMapPage: React.FC = () => {
@@ -14,6 +14,13 @@ export const SeatMapPage: React.FC = () => {
   const location = useLocation();
 
   const { trainDetail } = location.state || {};
+
+  const [activeCar, setActiveCar] = useState<number>(1);
+
+  const { reservedSeats, isLoading, apiErrorMessage } = useSeatMap({
+  trainCd: trainDetail.trainCd,
+  departureDate: trainDetail.date
+  });
 
   // const handleConfirmReservation = () => {
   //   if (selectedSeats.length === 0) {
@@ -61,30 +68,61 @@ export const SeatMapPage: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs
-              defaultValue='1'
-              className='w-full'
-            >
-              <TabsList className='overflow-x-auto whitespace-nowrap'>
-                {Array.from({ length: TOTAL_CARS }, (_, i) => i + 1).map((carNumber) => (
-                  <TabsTrigger
-                    key={carNumber}
-                    value={String(carNumber)}
-                  >
-                    {carNumber}号車
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-
-              {Array.from({ length: TOTAL_CARS }, (_, i) => i + 1).map((carNumber) => (
+            <div className='w-full'>
+              <div className='flex flex-col overflow-x-auto whitespace-nowrap pb-2 -mb-2'>
+                <span className='text-base text-black/50 mb-2'>号車を選択</span>
+                <div className='inline-flex gap-2'>
+                  {Array.from({ length: TOTAL_CARS }, (_, i) => i + 1).map((carNumber) => (
+                    <Button
+                      key={carNumber}
+                      variant={activeCar === carNumber ? 'default' : 'outline'}
+                      className={[
+                        // どの状態でも border 幅を確保
+                        'border',
+                        activeCar === carNumber
+                          ? 'bg-primary/10 hover:bg-primary/10 text-primary border-primary'
+                          : 'border-border',
+                        // 必要に応じて最小幅も追加
+                        'px-3 py-1 sm:px-4 h-16 w-16 border-3',
+                      ].join(' ')}
+                      onClick={() => setActiveCar(carNumber)}
+                      aria-pressed={activeCar === carNumber}
+                    >
+                      <div className='flex flex-col'>
+                        <span>{carNumber}</span>
+                        <span className='text-xs text-black/50'>{calculateAvailableSeat(reservedSeats, carNumber)}席</span>
+                      </div>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              <div className='mt-4'>
                 <SeatMapTab
-                  key={carNumber}
-                  carNumber={carNumber}
-                  trainCd={trainDetail.trainCd}
-                  departureDate={trainDetail.date}
+                  reservedSeats={reservedSeats}
+                  carNumber={activeCar}
                 />
-              ))}
-            </Tabs>
+              </div>
+            </div>
+            <div className='flex mt-4 items-center'>
+              <Button
+                variant='outline'
+                className='border-border h-8 w-8 disabled:bg-background'
+                disabled
+              />
+              <span className='ml-2'>空席</span>
+              <Button
+                variant='outline'
+                className='border-border disabled:bg-primary h-8 w-8 ml-4'
+                disabled
+              />
+              <span className='ml-2'>選択中</span>
+              <Button
+                variant='outline'
+                className='border-border h-8 w-8 ml-4'
+                disabled
+              />
+              <span className='ml-2'>予約済み</span>
+            </div>
           </CardContent>
         </Card>
       </div>
