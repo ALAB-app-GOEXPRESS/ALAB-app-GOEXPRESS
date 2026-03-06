@@ -52,7 +52,7 @@ export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber }) => {
             {Array.from({ length: SEAT_ROWS }, (_, i) => i + 1).map((row) => (
               <div
                 key={row}
-                className='flex h-10 w-8 items-center justify-center font-mono text-muted-foreground'
+                className='flex h-12 w-8 items-center justify-center font-mono text-muted-foreground'
               >
                 {row}
               </div>
