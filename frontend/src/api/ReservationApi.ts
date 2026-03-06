@@ -40,12 +40,12 @@ export const createReservation = async (
     departureDate: date,
   };
 
-  const createResponse = await fetchJSON<{ url: string }>(API_ENDPOINT_CREATE, {
+  const createResponse = await fetchJSON<{ _links: string }>(API_ENDPOINT_CREATE, {
     method: 'POST',
     body: JSON.stringify(createPayload),
   });
 
-  const detailResponse = await fetchJSON<ApiReservationResponse>(createResponse.url);
+  const detailResponse = await fetchJSON<ApiReservationResponse>(createResponse._links);
 
   const formattedData: ReservationDetails = {
     confirmedSeat: formatSeat(detailResponse.seatCd),
