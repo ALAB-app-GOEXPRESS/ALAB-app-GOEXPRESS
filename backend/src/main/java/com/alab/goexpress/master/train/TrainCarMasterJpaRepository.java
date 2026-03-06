@@ -1,8 +1,8 @@
 package com.alab.goexpress.master.train;
 
-import com.alab.goexpress.train.dto.SeatTypeInfoDTO;
 import com.alab.goexpress.model.entity.master.TrainCar;
 import com.alab.goexpress.model.entity.master.TrainCarId;
+import com.alab.goexpress.train.dto.SeatTypeInfoDTO;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +17,7 @@ public interface TrainCarMasterJpaRepository extends JpaRepository<TrainCar, Tra
 
   @Query(
     """
-    SELECT DISTINCT new com.alab.goexpress.model.dto.SeatTypeInfoDTO(st.seatTypeCd, st.seatName)
+    SELECT DISTINCT new com.alab.goexpress.train.dto.SeatTypeInfoDTO(st.seatTypeCd, st.seatName)
     FROM TrainCar tc JOIN tc.seatType st WHERE tc.trainCd = :trainCd ORDER BY st.seatTypeCd ASC
     """
   )
