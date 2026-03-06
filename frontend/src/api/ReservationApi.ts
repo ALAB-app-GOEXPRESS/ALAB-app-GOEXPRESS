@@ -1,6 +1,16 @@
 import type { TrainResult } from '@/api/TrainListApi';
 import { formatSeat } from '@/lib/utils';
 import { fetchJSON } from '@/lib/fetch';
+import type { StationCode } from '@/types/Station';
+
+export interface ReservationParams {
+  trainCd: string;
+  trainTypeName: string;
+  trainNumber: string;
+  departureStationCd: StationCode;
+  arrivalStationCd: StationCode;
+  trackNumber: string;
+}
 
 interface ApiReservationResponse {
   departureTime: string;
@@ -17,13 +27,16 @@ export interface ReservationDetails {
   trainDetails: TrainResult;
 }
 
-export const createReservation = async (train: TrainResult, date: string): Promise<ReservationDetails> => {
+export const createReservation = async (
+  reservationParams: ReservationParams,
+  date: string,
+): Promise<ReservationDetails> => {
   const API_ENDPOINT = 'api/ticket-reservations';
 
   const payload = {
-    trainCd: train.trainCd,
-    departureStationCd: train.departureStationCd,
-    arrivalStationCd: train.arrivalStationCd,
+    trainCd: reservationParams.trainCd,
+    departureStationCd: reservationParams.departureStationCd,
+    arrivalStationCd: reservationParams.arrivalStationCd,
     departureDate: date,
   };
 
@@ -37,7 +50,7 @@ export const createReservation = async (train: TrainResult, date: string): Promi
     trackNumber: responseData.departureTrackNumber,
     reservationDate: responseData.departureDate,
     trainDetails: {
-      ...train,
+      ...reservationParams,
       departureTime: responseData.departureTime.slice(0, 5),
       arrivalTime: responseData.arrivalTime.slice(0, 5),
     },
