@@ -183,7 +183,6 @@ export const TrainDetailPage: React.FC = () => {
                   }}
                   isReserving={reservingSeatType === seatInfo.type}
                   trainDetail={trainDetail}
-                  searchParams={searchParams}
                 />
               ))}
             </div>

@@ -17,7 +17,7 @@ export const SeatMapPage: React.FC = () => {
 
   const [activeCar, setActiveCar] = useState<number>(1);
 
-  const { reservedSeats, isLoading, apiErrorMessage } = useSeatMap({
+  const { reservedSeats } = useSeatMap({
   trainCd: trainDetail.trainCd,
   departureDate: trainDetail.date
   });
