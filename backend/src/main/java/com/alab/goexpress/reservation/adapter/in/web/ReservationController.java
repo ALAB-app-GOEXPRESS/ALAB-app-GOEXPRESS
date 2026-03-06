@@ -1,13 +1,15 @@
 package com.alab.goexpress.reservation.adapter.in.web;
 
+import com.alab.goexpress.model.request.TicketReservationRequest;
+import com.alab.goexpress.model.response.TicketReservationResponse;
 import com.alab.goexpress.reservation.adapter.in.web.dto.*;
 import com.alab.goexpress.reservation.adapter.in.web.mapper.ReservationMapper;
 import com.alab.goexpress.reservation.application.service.ReservationService;
 import com.alab.goexpress.reservation.domain.model.Reservation;
 import com.alab.goexpress.reservation.domain.model.ReservationId;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import java.net.URI;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -43,12 +45,9 @@ public class ReservationController {
   }
 
   @PostMapping
-  public ResponseEntity<ReservationResponse> create(@RequestBody @jakarta.validation.Valid CreateReservationRequest req) {
-    Reservation domain = ReservationMapper.toDomain(req, null);
-    Reservation saved = service.save(domain);
-
-    URI location = URI.create("/api/reservations/" + saved.getReservationId().value());
-    return ResponseEntity.created(location).body(ReservationMapper.toResponse(saved));
+  public ResponseEntity<TicketReservationResponse> create(@Valid @RequestBody TicketReservationRequest req) {
+    TicketReservationResponse res = service.createReservationWithTicketAndSeat(req);
+    return ResponseEntity.ok(res);
   }
 
   @PutMapping("/{reservationId}")
