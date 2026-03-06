@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/utils/currency';
 import { useNavigate } from 'react-router-dom';
 import type { SeatClassDetail, TrainDetailResult } from '@/api/TrainDetailApi';
-import { useSeatMap } from '@/pages/SeatMapPage/useSeatMap';
 
 export const SeatClassCard: React.FC<{
   seatInfo: SeatClassDetail;
@@ -13,16 +12,8 @@ export const SeatClassCard: React.FC<{
 }> = ({ seatInfo, onClickReservation, isReserving, trainDetail }) => {
   const navigate = useNavigate();
 
-  const { reservedSeats, isLoading, apiErrorMessage } = useSeatMap({
-    trainCd: trainDetail.trainCd,
-    departureDate: trainDetail.date
-  });
-
   const handleSelect = () => {
     navigate('/seat-map', { state: { trainDetail } });
-    console.log(reservedSeats);
-    console.log(isLoading);
-    console.log(apiErrorMessage);
   };
 
   return (
