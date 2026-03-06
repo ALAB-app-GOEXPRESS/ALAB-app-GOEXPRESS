@@ -30,7 +30,7 @@ export const SeatButton: React.FC<SeatButtonProps> = ({ seatId, status }) => {
   return (
     <Button
       variant='outline'
-      className={cn('h-10 w-10 p-0', {
+      className={cn('h-12 w-12 p-0 text-xs', {
         'bg-primary text-primary-foreground hover:bg-primary/90': status === 'selected',
         'bg-muted text-muted-foreground cursor-not-allowed hover:bg-muted': status === 'reserved',
       })}
