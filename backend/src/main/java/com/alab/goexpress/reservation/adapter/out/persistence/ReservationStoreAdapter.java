@@ -51,12 +51,28 @@ public class ReservationStoreAdapter implements ReservationStorePort {
     long total = queryMapper.countReservations();
 
     if (headers.isEmpty()) {
-      return ReservationListView.empty(page, size, total, "/reservations?page=" + page + "&size=" + size);
+      return ReservationListView.empty(page, size, total, "/api/reservations?page=" + page + "&size=" + size);
     }
 
     List<Integer> ids = headers.stream().map(ReservationHeaderRow::reservationId).toList();
     var ticketRows = queryMapper.selectTicketsWithOperationByReservationIds(ids);
 
     return ReservationListAssembler.assemble(headers, ticketRows, page, size, total);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public com.alab.goexpress.reservation.application.query.ReservationListItemView findItemWithTicketsAndOperationById(
+    int reservationId
+  ) {
+    var header = queryMapper.selectReservationHeaderById(reservationId);
+    if (header == null) {
+      throw new IllegalArgumentException("reservation not found: id=" + reservationId);
+    }
+    var ticketRows = queryMapper.selectTicketsWithOperationByReservationIds(java.util.List.of(reservationId));
+    return com.alab.goexpress.reservation.adapter.out.persistence.mapper.ReservationListAssembler.assembleOne(
+      header,
+      ticketRows
+    );
   }
 }

@@ -1,7 +1,6 @@
 package com.alab.goexpress.reservation.application.service;
 
 import com.alab.goexpress.model.request.TicketReservationRequest;
-import com.alab.goexpress.model.response.TicketReservationResponse;
 import com.alab.goexpress.reservation.application.port.out.AccountQueryPort;
 import com.alab.goexpress.reservation.application.port.out.MasterQueryPort;
 import com.alab.goexpress.reservation.application.port.out.ReservationStorePort;
@@ -10,11 +9,11 @@ import com.alab.goexpress.reservation.application.port.out.TicketCommandPort;
 import com.alab.goexpress.reservation.application.port.out.model.BuyerAccount;
 import com.alab.goexpress.reservation.application.port.out.model.ChosenSeat;
 import com.alab.goexpress.reservation.application.port.out.model.DepartureStationInfo;
+import com.alab.goexpress.reservation.application.query.ReservationListItemView;
 import com.alab.goexpress.reservation.application.query.ReservationListView;
 import com.alab.goexpress.reservation.domain.model.Reservation;
 import com.alab.goexpress.reservation.domain.model.ReservationId;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -51,16 +50,15 @@ public class ReservationService {
   }
 
   @Transactional
-  public TicketReservationResponse createReservationWithTicketAndSeat(TicketReservationRequest req) {
+  public ReservationListItemView createReservationWithTicketAndSeat(TicketReservationRequest req) {
     String trainCd = req.getTrainCd();
     LocalDate depDate = req.getDepartureDate();
     String depSt = req.getDepartureStationCd();
     String arrSt = req.getArrivalStationCd();
 
     String trainTypeCd = masterQuery.getTrainTypeCd(trainCd);
-
     DepartureStationInfo depInfo = masterQuery.getDepartureInfo(trainCd, depSt);
-    LocalTime arrivalTime = masterQuery.getArrivalTime(trainCd, arrSt);
+    masterQuery.getArrivalTime(trainCd, arrSt);
 
     ChosenSeat seat = seatReservation.chooseSeat(trainCd, depDate);
 
@@ -100,12 +98,15 @@ public class ReservationService {
       savedReservation.getReservationId().value()
     );
 
-    return new TicketReservationResponse(
-      depInfo.departureTime(),
-      arrivalTime,
-      depInfo.trackNumber(),
-      depDate,
-      seat.seatCd()
-    );
+    return store.findItemWithTicketsAndOperationById(savedReservation.getReservationId().value());
+  }
+
+  @Transactional(readOnly = true)
+  public Optional<ReservationListItemView> findItemViewById(int id) {
+    try {
+      return Optional.of(store.findItemWithTicketsAndOperationById(id));
+    } catch (IllegalArgumentException e) {
+      return Optional.empty();
+    }
   }
 }

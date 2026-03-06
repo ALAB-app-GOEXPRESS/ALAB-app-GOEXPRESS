@@ -85,4 +85,17 @@
         ORDER BY tk.reservation_id, tk.train_cd, tk.train_car_cd, tk.seat_cd
     </select>
 
+    <select id="selectReservationHeaderById"
+            resultType="com.alab.goexpress.reservation.adapter.out.persistence.mybatis.row.ReservationHeaderRow">
+        SELECT
+        reservation_id AS reservationId,
+        invalid_flg    AS invalidFlg,
+        departure_date AS departureDate,
+        buy_datetime   AS buyDatetime,
+        buyer_name     AS buyerName,
+        email_address  AS emailAddress
+        FROM T_RESERVATION
+        WHERE reservation_id = #{reservationId}
+    </select>
+
 </mapper>

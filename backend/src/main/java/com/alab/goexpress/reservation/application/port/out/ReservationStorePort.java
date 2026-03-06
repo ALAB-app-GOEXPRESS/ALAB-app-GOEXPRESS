@@ -3,6 +3,7 @@ package com.alab.goexpress.reservation.application.port.out;
 import com.alab.goexpress.reservation.application.query.ReservationListView;
 import com.alab.goexpress.reservation.domain.model.Reservation;
 import com.alab.goexpress.reservation.domain.model.ReservationId;
+import com.alab.goexpress.reservation.application.query.ReservationListItemView;
 import java.util.Optional;
 
 public interface ReservationStorePort {
@@ -11,4 +12,8 @@ public interface ReservationStorePort {
   void deleteById(ReservationId reservationId);
 
   ReservationListView listAllWithTicketsAndOperation(int page, int size, String sortKey);
+
+  ReservationListItemView findItemWithTicketsAndOperationById(
+    int reservationId
+  );
 }
