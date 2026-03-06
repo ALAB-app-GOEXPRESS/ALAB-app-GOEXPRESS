@@ -76,7 +76,7 @@
         AND pf.departure_time &lt; pt.arrival_time
     </select>
 
-    <resultMap id="seatTypeInfoResultMap" type="com.alab.goexpress.model.dto.SeatTypeInfoDTO">
+    <resultMap id="seatTypeInfoResultMap" type="com.alab.goexpress.train.dto.SeatTypeInfoDTO">
         <result property="seatTypeCd" column="seat_type_cd"/>
         <result property="seatTypeName" column="seat_name"/>
     </resultMap>

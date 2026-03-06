@@ -1,7 +1,7 @@
 package com.alab.goexpress.train;
 
 import com.alab.goexpress.master.DepartureInfo;
-import com.alab.goexpress.model.dto.SeatTypeInfoDTO;
+import com.alab.goexpress.train.dto.SeatTypeInfoDTO;
 import com.alab.goexpress.train.dto.TrainDto;
 import java.time.LocalDate;
 import java.time.LocalTime;
