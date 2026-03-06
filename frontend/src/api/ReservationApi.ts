@@ -31,28 +31,32 @@ export const createReservation = async (
   reservationParams: ReservationParams,
   date: string,
 ): Promise<ReservationDetails> => {
-  const API_ENDPOINT = 'api/ticket-reservations';
+  const API_ENDPOINT_CREATE = 'api/ticket-reservations';
 
-  const payload = {
+  const createPayload = {
     trainCd: reservationParams.trainCd,
     departureStationCd: reservationParams.departureStationCd,
     arrivalStationCd: reservationParams.arrivalStationCd,
     departureDate: date,
   };
 
-  const responseData = await fetchJSON<ApiReservationResponse>(API_ENDPOINT, {
+  const createResponse = await fetchJSON<{ resourceUri: string }>(API_ENDPOINT_CREATE, {
     method: 'POST',
-    body: JSON.stringify(payload),
+    body: JSON.stringify(createPayload),
   });
 
+  const reservationUri = createResponse.resourceUri;
+
+  const detailResponse = await fetchJSON<ApiReservationResponse>(reservationUri);
+
   const formattedData: ReservationDetails = {
-    confirmedSeat: formatSeat(responseData.seatCd),
-    trackNumber: responseData.departureTrackNumber,
-    reservationDate: responseData.departureDate,
+    confirmedSeat: formatSeat(detailResponse.seatCd),
+    trackNumber: detailResponse.departureTrackNumber,
+    reservationDate: detailResponse.departureDate,
     trainDetails: {
       ...reservationParams,
-      departureTime: responseData.departureTime.slice(0, 5),
-      arrivalTime: responseData.arrivalTime.slice(0, 5),
+      departureTime: detailResponse.departureTime.slice(0, 5),
+      arrivalTime: detailResponse.arrivalTime.slice(0, 5),
     },
   };
 
