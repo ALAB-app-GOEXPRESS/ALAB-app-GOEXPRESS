@@ -40,8 +40,8 @@
 
         ORDER BY pf.departure_time
     </select>
-
-     <select id="selectTrain"
+    
+    <select id="selectTrain"
             resultType="com.alab.goexpress.train.dto.TrainDto">
         SELECT
         t.train_cd                         AS trainCd,
@@ -81,32 +81,10 @@
         <result property="seatTypeName" column="seat_name"/>
     </resultMap>
 
-    <select id="findTrainInfo" resultType="com.alab.goexpress.model.dto.TrainInfoDTO">
-        SELECT
-        mt.train_cd AS trainCd,
-        mtt.train_type_name AS trainTypeName,
-        mt.train_number AS trainNumber
-        FROM
-        M_TRAIN mt
-        JOIN
-        M_TRAIN_TYPE mtt ON mt.train_type_cd = mtt.train_type_cd
-        WHERE
-        mt.train_cd = #{trainCd}
-    </select>
-
     <select id="findDepartureInfo" resultType="com.alab.goexpress.master.DepartureInfo">
         SELECT
         departure_time AS departureTime,
         track_number AS trackNumber
-        FROM
-        M_PLAN
-        WHERE
-        train_cd = #{trainCd} AND arrival_station_cd = #{stationCd}
-    </select>
-
-    <select id="findArrivalTime" resultType="java.time.LocalTime">
-        SELECT
-        arrival_time
         FROM
         M_PLAN
         WHERE

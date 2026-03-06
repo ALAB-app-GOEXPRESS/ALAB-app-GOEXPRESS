@@ -2,7 +2,6 @@ package com.alab.goexpress.train;
 
 import com.alab.goexpress.master.DepartureInfo;
 import com.alab.goexpress.model.dto.SeatTypeInfoDTO;
-import com.alab.goexpress.model.dto.TrainInfoDTO;
 import com.alab.goexpress.train.dto.TrainDto;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -23,11 +22,7 @@ public interface TrainMapper {
     @Param("trainCd") String trainCd
   );
 
-  List<TrainInfoDTO> findTrainInfo(@Param("trainCd") String trainCd);
-
   DepartureInfo findDepartureInfo(@Param("trainCd") String trainCd, @Param("stationCd") String stationCd);
-
-  LocalTime findArrivalTime(@Param("trainCd") String trainCd, @Param("stationCd") String stationCd);
 
   String findTrainTypeCd(@Param("trainCd") String trainCd);
 
