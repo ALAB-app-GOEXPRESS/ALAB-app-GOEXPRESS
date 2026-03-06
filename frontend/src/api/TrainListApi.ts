@@ -2,7 +2,7 @@
 
 import { toHHMM } from '@/utils/dateTime';
 import { normalizeTrainNumber } from '@/utils/train';
-export type { SeatClass } from '@/utils/seatClass';
+export type { SeatClass } from '@/utils/seat';
 import { fetchJSON } from '@/lib/fetch';
 import type { StationCode } from '@/types/Station';
 

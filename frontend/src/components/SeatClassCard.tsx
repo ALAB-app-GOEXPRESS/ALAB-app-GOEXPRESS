@@ -1,17 +1,20 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/utils/currency';
-
-import type { SeatClassDetail } from '@/api/TrainDetailApi';
+import { useNavigate } from 'react-router-dom';
+import type { SeatClassDetail, TrainDetailResult } from '@/api/TrainDetailApi';
 
 export const SeatClassCard: React.FC<{
   seatInfo: SeatClassDetail;
   onClickReservation: () => void;
   isReserving: boolean;
-}> = ({ seatInfo, onClickReservation, isReserving }) => {
-  // const handleSelect = () => {
-  //   alert(`${seatInfo.name}が選択されました。\n（この先の機能は別途実装が必要です）`);
-  // };
+  trainDetail: TrainDetailResult;
+}> = ({ seatInfo, onClickReservation, isReserving, trainDetail }) => {
+  const navigate = useNavigate();
+
+  const handleSelect = () => {
+    navigate('/seat-map', { state: { trainDetail } });
+  };
 
   return (
     <Card className='flex flex-col'>
@@ -21,20 +24,20 @@ export const SeatClassCard: React.FC<{
       </CardHeader>
       <CardContent className='flex flex-1 flex-col justify-end'>
         <p className='mb-4 text-2xl font-bold'>{formatCurrency(seatInfo.price)}</p>
-        {/* <Button
+        <Button
           onClick={handleSelect}
-          className='w-full bg-green-600 hover:bg-green-700'
-          disabled={isReserving}
+          className='w-full'
+          disabled={isReserving || seatInfo.name !== '指定席'}
         >
           座席を選択
-        </Button> */}
+        </Button>
         <div className='mb-1'></div>
         <Button
           onClick={onClickReservation}
           className='w-full'
           disabled={isReserving || seatInfo.name !== '指定席'}
         >
-          {isReserving ? '予約処理中...' : '予約する'}
+          {isReserving ? '処理中...' : '予約する'}
         </Button>
       </CardContent>
     </Card>

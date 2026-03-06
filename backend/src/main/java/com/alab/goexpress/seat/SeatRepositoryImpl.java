@@ -2,7 +2,7 @@ package com.alab.goexpress.seat;
 
 import com.alab.goexpress.master.train.TrainCarMasterJpaRepository;
 import com.alab.goexpress.model.entity.master.TrainCar;
-import com.alab.goexpress.model.entity.ticket.Seat;
+
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;

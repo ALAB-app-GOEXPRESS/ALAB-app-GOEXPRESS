@@ -1,4 +1,4 @@
-package com.alab.goexpress.model.entity.ticket;
+package com.alab.goexpress.seat;
 
 import java.io.Serializable;
 import java.time.LocalDate;
