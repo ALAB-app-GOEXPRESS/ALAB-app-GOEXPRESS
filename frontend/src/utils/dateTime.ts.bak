@@ -45,10 +45,3 @@ export function calcDurationMin(departureHHMM: string, arrivalHHMM: string): num
   const diff = arr >= dep ? arr - dep : arr + 24 * 60 - dep;
   return diff;
 }
-
-export function formatHM(totalMinutes: number): string {
-  const minutes = Math.max(0, Math.floor(totalMinutes));
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  return `${h}h${String(m).padStart(2, '0')}m`;
-}
