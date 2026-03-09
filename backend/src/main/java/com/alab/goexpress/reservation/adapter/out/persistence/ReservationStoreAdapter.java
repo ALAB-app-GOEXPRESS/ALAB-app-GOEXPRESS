@@ -6,6 +6,7 @@ import com.alab.goexpress.reservation.adapter.out.persistence.mapper.Reservation
 import com.alab.goexpress.reservation.adapter.out.persistence.mybatis.ReservationQueryMapper;
 import com.alab.goexpress.reservation.adapter.out.persistence.mybatis.row.ReservationHeaderRow;
 import com.alab.goexpress.reservation.application.port.out.ReservationStorePort;
+import com.alab.goexpress.reservation.application.query.ReservationListItemView;
 import com.alab.goexpress.reservation.application.query.ReservationListView;
 import com.alab.goexpress.reservation.domain.model.Reservation;
 import com.alab.goexpress.reservation.domain.model.ReservationId;
@@ -51,12 +52,28 @@ public class ReservationStoreAdapter implements ReservationStorePort {
     long total = queryMapper.countReservations();
 
     if (headers.isEmpty()) {
-      return ReservationListView.empty(page, size, total, "/reservations?page=" + page + "&size=" + size);
+      return ReservationListView.empty(page, size, total, "/api/reservations?page=" + page + "&size=" + size);
     }
 
     List<Integer> ids = headers.stream().map(ReservationHeaderRow::reservationId).toList();
     var ticketRows = queryMapper.selectTicketsWithOperationByReservationIds(ids);
 
     return ReservationListAssembler.assemble(headers, ticketRows, page, size, total);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public ReservationListItemView findItemWithTicketsAndOperationById(
+    int reservationId
+  ) {
+    var header = queryMapper.selectReservationHeaderById(reservationId);
+    if (header == null) {
+      throw new IllegalArgumentException("reservation not found: id=" + reservationId);
+    }
+    var ticketRows = queryMapper.selectTicketsWithOperationByReservationIds(List.of(reservationId));
+    return ReservationListAssembler.assembleOne(
+      header,
+      ticketRows
+    );
   }
 }
