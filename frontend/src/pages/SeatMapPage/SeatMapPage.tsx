@@ -80,13 +80,14 @@ export const SeatMapPage: React.FC = () => {
                         // どの状態でも border 幅を確保
                         'border',
                         activeCar === carNumber
-                          ? 'bg-primary/10 hover:bg-primary/10 text-primary border-primary'
+                          ? 'disabled:bg-primary/10 disabled:text-primary border-primary'
                           : 'border-border',
                         // 必要に応じて最小幅も追加
                         'px-3 py-1 sm:px-4 h-16 w-16 border-3',
                       ].join(' ')}
                       onClick={() => setActiveCar(carNumber)}
                       aria-pressed={activeCar === carNumber}
+                      disabled={activeCar === carNumber}
                     >
                       <div className='flex flex-col'>
                         <span>{carNumber}</span>
