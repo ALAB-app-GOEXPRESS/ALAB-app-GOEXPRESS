@@ -2,7 +2,6 @@ package com.alab.goexpress.seat;
 
 import com.alab.goexpress.master.train.TrainCarMasterJpaRepository;
 import com.alab.goexpress.model.entity.master.TrainCar;
-
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +41,7 @@ public class SeatRepositoryImpl implements SeatRepositoryPort {
       int max = car.getMaxSeatNumber();
 
       for (int i = 1; i <= max; i++) {
-        String seatCd = String.format("%03d", i + (Integer.parseInt(train_car_cd)-1)*75);
+        String seatCd = String.format("%03d", i + (Integer.parseInt(trainCarCd) - 1) * 75);
         String key = trainCarCd + ":" + seatCd;
         if (!occupied.contains(key)) {
           return new SeatChoice(trainCarCd, seatCd, seatTypeCd);
