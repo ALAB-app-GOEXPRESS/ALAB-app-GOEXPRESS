@@ -10,7 +10,7 @@ import { Card, CardContent } from '@/components/ui/card';
 // import { Clock } from 'lucide-react';
 import { type TrainSearchParams, type TrainResult } from '@/api/TrainListApi';
 import { type SeatClass } from '@/utils/seatClass';
-import { useTrainResults } from './useSearchResults';
+import { useSearchResults } from './useSearchResults';
 import { TrainCard } from './TrainCard';
 import { StationNameMap } from '@/constants/Station';
 
@@ -52,7 +52,7 @@ export const SearchResultPage: React.FC = () => {
     apiErrorMessage,
     // totalCount,
     pageResults,
-  } = useTrainResults({
+  } = useSearchResults({
     defaultParams: paramsFromQuery,
     pageSize,
     seatClassFilterOptions: seatClassFilterOptions as ReadonlyArray<{
