@@ -33,18 +33,6 @@ export const ALL_COLUMNS = ['A', 'B', 'C', 'D', 'E'];
 export const SEATS_PER_ROW = ALL_COLUMNS.length;
 
 /**
- * seat_cdから表示用の '5A' 形式の文字列を計算する
- * @param seatId - '021' のようなDBのseat_cd
- * @returns '5A' のような表示用ラベル
- */
-// export const convertSeatCdToLabel = (seatId: string): string => {
-//   const seatIndex = parseInt(seatId, 10) - 1;
-//   const row = Math.floor(seatIndex / SEATS_PER_ROW) + 1;
-//   const col = ALL_COLUMNS[seatIndex % SEATS_PER_ROW];
-//   return `${row}${col}`;
-// };
-
-/**
  * 行番号と列名からseat_cdを計算する
  * @param row - 行番号 (例: 5)
  * @param col - 列名 (例: 'A')
