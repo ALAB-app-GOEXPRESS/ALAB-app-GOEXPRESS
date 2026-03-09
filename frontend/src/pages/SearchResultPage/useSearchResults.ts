@@ -75,7 +75,7 @@ function getPageItems(currentPage: number, totalPages: number): Array<number | '
   return items;
 }
 
-export function useTrainResults(args: UseTrainResultsArgs): UseTrainResultsReturn {
+export function useSearchResults(args: UseTrainResultsArgs): UseTrainResultsReturn {
   const { defaultParams, pageSize, seatClassFilterOptions } = args;
 
   const [searchParams, setSearchParams] = useSearchParams();

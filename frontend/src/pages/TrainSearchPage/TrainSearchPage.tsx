@@ -11,8 +11,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 // import { isValidDateYYYYMMDD, isValidTimeHHMM } from '@/utils/validators';
 import { StationNameMap } from '@/constants/Station';
 
-// API仮置き
-
 type TrainSearchParams = {
   from: string;
   to: string;
@@ -29,7 +27,7 @@ const toQueryString = (p: TrainSearchParams) => {
   return sp.toString();
 };
 
-export const SearchPage: React.FC = () => {
+export const TrainSearchPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [from, setFrom] = useState<string>('');

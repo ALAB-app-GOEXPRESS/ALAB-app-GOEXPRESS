@@ -3,7 +3,7 @@ import {
   type FetchReservationListResponse,
   type Operation,
   type TicketStatus,
-} from '@/api/ReservationListApi';
+} from '@/api/ReservationApi';
 import { normalizeTrainNumber } from '@/utils/train';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';

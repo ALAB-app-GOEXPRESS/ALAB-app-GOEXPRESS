@@ -1,13 +1,16 @@
 package com.alab.goexpress.reservation.adapter.in.web;
 
+import com.alab.goexpress.model.request.TicketReservationRequest;
+import com.alab.goexpress.reservation.application.query.ReservationListItemView;
 import com.alab.goexpress.reservation.adapter.in.web.dto.*;
 import com.alab.goexpress.reservation.adapter.in.web.mapper.ReservationMapper;
 import com.alab.goexpress.reservation.application.service.ReservationService;
 import com.alab.goexpress.reservation.domain.model.Reservation;
 import com.alab.goexpress.reservation.domain.model.ReservationId;
+import jakarta.validation.Valid;
+import java.net.URI;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import java.net.URI;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -34,21 +37,19 @@ public class ReservationController {
   }
 
   @GetMapping("/{reservationId}")
-  public ResponseEntity<ReservationResponse> get(@PathVariable int reservationId) {
+  public ResponseEntity<ReservationListItemDto> get(@PathVariable int reservationId) {
     return service
-      .findById(reservationId)
-      .map(ReservationMapper::toResponse)
+      .findItemViewById(reservationId)
+      .map(this::toItemDto)
       .map(ResponseEntity::ok)
       .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
   @PostMapping
-  public ResponseEntity<ReservationResponse> create(@RequestBody @jakarta.validation.Valid CreateReservationRequest req) {
-    Reservation domain = ReservationMapper.toDomain(req, null);
-    Reservation saved = service.save(domain);
-
-    URI location = URI.create("/api/reservations/" + saved.getReservationId().value());
-    return ResponseEntity.created(location).body(ReservationMapper.toResponse(saved));
+  public ResponseEntity<ReservationListItemDto> create(@Valid @RequestBody TicketReservationRequest req) {
+    ReservationListItemView view = service.createReservationWithTicketAndSeat(req);
+    URI location = URI.create("/api/reservations/" + view.reservationId());
+    return ResponseEntity.created(location).body(toItemDto(view));
   }
 
   @PutMapping("/{reservationId}")
@@ -116,6 +117,46 @@ public class ReservationController {
       items,
       new PageDto(view.page().number(), view.page().size(), view.page().totalElements()),
       new LinksDto(view.links().self(), view.links().tickets())
+    );
+  }
+
+  private ReservationListItemDto toItemDto(ReservationListItemView v) {
+    var tickets = v
+      .tickets()
+      .stream()
+      .map(t ->
+        new TicketWithTrainNameAndOperationDto(
+          t.departureDate(),
+          t.trainCarCd(),
+          t.seatCd(),
+          t.charge(),
+          t.userName(),
+          t.emailAddress(),
+          t.status(),
+          new TrainNameDto(t.trainName().trainCd(), t.trainName().trainTypeName(), t.trainName().trainNumber()),
+          new OperationDto(
+            t.operation().fromStationCd(),
+            t.operation().fromStationName(),
+            t.operation().fromTrackNumber(),
+            t.operation().toStationCd(),
+            t.operation().toStationName(),
+            t.operation().toTrackNumber(),
+            t.operation().departureDateTime(),
+            t.operation().arrivalDateTime()
+          )
+        )
+      )
+      .toList();
+
+    return new ReservationListItemDto(
+      v.reservationId(),
+      v.invalidFlg(),
+      v.departureDate(),
+      v.buyDatetime(),
+      v.buyerName(),
+      v.emailAddress(),
+      tickets,
+      new LinksDto(v.links().self(), v.links().tickets())
     );
   }
 

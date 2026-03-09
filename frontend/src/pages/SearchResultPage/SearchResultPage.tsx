@@ -9,8 +9,8 @@ import { Card, CardContent } from '@/components/ui/card';
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 // import { Clock } from 'lucide-react';
 import { type TrainSearchParams, type TrainResult } from '@/api/TrainListApi';
+import { useSearchResults } from './useSearchResults';
 import { type SeatClass } from '@/utils/seat';
-import { useTrainResults } from './useTrainResults';
 import { TrainCard } from './TrainCard';
 import { StationNameMap } from '@/constants/Station';
 
@@ -23,7 +23,7 @@ const seatClassFilterOptions = [
   { value: 'grandclass', label: 'グランクラス' },
 ] as const;
 
-export const ResultPage: React.FC = () => {
+export const SearchResultPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
@@ -52,7 +52,7 @@ export const ResultPage: React.FC = () => {
     apiErrorMessage,
     // totalCount,
     pageResults,
-  } = useTrainResults({
+  } = useSearchResults({
     defaultParams: paramsFromQuery,
     pageSize,
     seatClassFilterOptions: seatClassFilterOptions as ReadonlyArray<{

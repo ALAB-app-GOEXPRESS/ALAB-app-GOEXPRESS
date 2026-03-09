@@ -5,10 +5,12 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.hamcrest.Matchers.endsWith;
 
+import com.alab.goexpress.reservation.application.query.LinksView;
+import com.alab.goexpress.reservation.application.query.ReservationListItemView;
 import com.alab.goexpress.reservation.application.query.ReservationListView;
 import com.alab.goexpress.reservation.application.service.ReservationService;
 import com.alab.goexpress.reservation.domain.model.Reservation;
@@ -42,7 +44,7 @@ class ReservationControllerTest {
 
   @Test
   void get_shouldReturnNotFound_whenMissing() throws Exception {
-    when(reservationService.findById(anyInt())).thenReturn(Optional.empty());
+    when(reservationService.findItemViewById(anyInt())).thenReturn(Optional.empty());
 
     mockMvc
       .perform(get("/api/reservations/1"))
@@ -51,22 +53,26 @@ class ReservationControllerTest {
 
   @Test
   void create_shouldReturnCreated_andLocationHeader() throws Exception {
-    // Given
-    Reservation saved = new Reservation();
-    saved.setReservationId(new ReservationId(123));
-    when(reservationService.save(org.mockito.ArgumentMatchers.any(Reservation.class)))
-      .thenReturn(saved);
+    // Given: service returns created view with id=123
+    ReservationListItemView view = new ReservationListItemView(
+      123,
+      false,
+      java.time.LocalDate.parse("2025-01-01"),
+      java.time.LocalDateTime.parse("2025-01-01T10:00:00"),
+      "Taro",
+      "taro@example.com",
+      java.util.List.of(),
+      new LinksView("/api/reservations/123", "/api/reservations/123/tickets")
+    );
+    when(reservationService.createReservationWithTicketAndSeat(org.mockito.ArgumentMatchers.any()))
+      .thenReturn(view);
 
     String json = """
       {
-        "invalidFlg": false,
-        "accountId": 1,
+        "trainCd": "A001",
         "departureDate": "2025-01-01",
-        "buyDatetime": "2025-01-01T10:00:00",
-        "buyerName": "Taro",
-        "emailAddress": "taro@example.com",
-        "cardNumber": "4111111111111111",
-        "expirationDate": "2026-12-31"
+        "departureStationCd": "01",
+        "arrivalStationCd": "05"
       }
       """;
 

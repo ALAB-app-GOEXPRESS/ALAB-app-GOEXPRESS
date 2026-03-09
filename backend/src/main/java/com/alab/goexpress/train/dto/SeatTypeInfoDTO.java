@@ -1,4 +1,4 @@
-package com.alab.goexpress.model.dto;
+package com.alab.goexpress.train.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

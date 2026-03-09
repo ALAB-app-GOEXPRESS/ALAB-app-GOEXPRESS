@@ -19,4 +19,6 @@ public interface ReservationQueryMapper {
   List<TicketOperationRow> selectTicketsWithOperationByReservationIds(
     @Param("reservationIds") List<Integer> reservationIds
   );
+
+  ReservationHeaderRow selectReservationHeaderById(@Param("reservationId") int reservationId);
 }

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.alab.goexpress.train.TrainMapper">
+
+    <select id="selectTrainList"
+            resultType="com.alab.goexpress.train.dto.TrainDto">
+        SELECT
+        t.train_cd                         AS trainCd,
+        t.train_number                     AS trainNumber,
+        t.train_type_cd                    AS trainTypeCd,
+        tt.train_type_name                 AS trainTypeName,
+
+        pf.arrival_station_cd              AS fromStationCd,
+        sf.station_name                    AS fromStationName,
+
+        pt.arrival_station_cd              AS toStationCd,
+        st.station_name                    AS toStationName,
+
+        pf.departure_time                  AS departureTime,
+        pt.arrival_time                    AS arrivalTime
+
+        FROM M_PLAN pf
+        JOIN M_PLAN pt
+        ON pt.train_cd = pf.train_cd
+        JOIN M_TRAIN t
+        ON t.train_cd = pf.train_cd
+        JOIN M_TRAIN_TYPE tt
+        ON tt.train_type_cd = t.train_type_cd
+        JOIN M_STATION sf
+        ON sf.station_cd = pf.arrival_station_cd
+        JOIN M_STATION st
+        ON st.station_cd = pt.arrival_station_cd
+
+        WHERE pf.arrival_station_cd = #{fromStationCd}
+        AND pt.arrival_station_cd = #{toStationCd}
+        AND pf.departure_time &lt; pt.arrival_time
+
+        ORDER BY pf.departure_time
+    </select>
+    
+    <select id="selectTrain"
+            resultType="com.alab.goexpress.train.dto.TrainDto">
+        SELECT
+        t.train_cd                         AS trainCd,
+        t.train_number                     AS trainNumber,
+        t.train_type_cd                    AS trainTypeCd,
+        tt.train_type_name                 AS trainTypeName,
+
+        pf.arrival_station_cd              AS fromStationCd,
+        sf.station_name                    AS fromStationName,
+
+        pt.arrival_station_cd              AS toStationCd,
+        st.station_name                    AS toStationName,
+
+        pf.departure_time                  AS departureTime,
+        pt.arrival_time                    AS arrivalTime
+
+        FROM M_PLAN pf
+        JOIN M_PLAN pt
+        ON pt.train_cd = pf.train_cd
+        JOIN M_TRAIN t
+        ON t.train_cd = pf.train_cd
+        JOIN M_TRAIN_TYPE tt
+        ON tt.train_type_cd = t.train_type_cd
+        JOIN M_STATION sf
+        ON sf.station_cd = pf.arrival_station_cd
+        JOIN M_STATION st
+        ON st.station_cd = pt.arrival_station_cd
+
+        WHERE t.train_cd = #{trainCd}
+        AND pf.arrival_station_cd = #{fromStationCd}
+        AND pt.arrival_station_cd = #{toStationCd}
+        AND pf.departure_time &lt; pt.arrival_time
+    </select>
+
+    <resultMap id="seatTypeInfoResultMap" type="com.alab.goexpress.train.dto.SeatTypeInfoDTO">
+        <result property="seatTypeCd" column="seat_type_cd"/>
+        <result property="seatTypeName" column="seat_name"/>
+    </resultMap>
+
+    <select id="findDepartureInfo" resultType="com.alab.goexpress.master.DepartureInfo">
+        SELECT
+        departure_time AS departureTime,
+        track_number AS trackNumber
+        FROM
+        M_PLAN
+        WHERE
+        train_cd = #{trainCd} AND arrival_station_cd = #{stationCd}
+    </select>
+
+    <select id="findTrainTypeCd" resultType="java.lang.String">
+        SELECT
+        train_type_cd
+        FROM
+        M_TRAIN
+        WHERE
+        train_cd = #{trainCd}
+    </select>
+
+    <select id="findCharge" resultType="java.lang.Integer">
+        SELECT
+        charge
+        FROM
+        M_CHARGE
+        WHERE
+        departure_station_cd = #{depSt}
+        AND arrival_station_cd = #{arrSt}
+        AND train_type_cd = #{trainTypeCd}
+        AND seat_type_cd = #{seatTypeCd}
+    </select>
+
+    <select id="findSeatTypesForTrain" resultMap="seatTypeInfoResultMap">
+        SELECT DISTINCT
+        mst.seat_type_cd,
+        mst.seat_name
+        FROM
+        M_TRAIN_CAR mtc
+        JOIN
+        M_SEAT_TYPE mst ON mtc.seat_type_cd = mst.seat_type_cd
+        WHERE
+        mtc.train_cd = #{trainCd}
+    </select>
+
+    <select id="sumMaxSeatNumber" resultType="java.lang.Long">
+        SELECT
+        SUM(max_seat_number)
+        FROM
+        M_TRAIN_CAR
+        WHERE
+        train_cd = #{trainCd}
+        AND seat_type_cd = #{seatTypeCd}
+    </select>
+
+    <select id="countReservedSeatsBySeatType" resultType="long">
+        SELECT
+        COUNT(ts.seat_cd)
+        FROM
+        T_SEAT ts
+        JOIN
+        M_TRAIN_CAR mtc ON ts.train_cd = mtc.train_cd AND ts.train_car_cd = mtc.train_car_cd
+        WHERE
+        ts.train_cd = #{trainCd}
+        AND ts.departure_date = #{date}
+        AND mtc.seat_type_cd = #{seatTypeCd}
+    </select>
+
+</mapper>
