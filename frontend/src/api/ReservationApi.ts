@@ -1,6 +1,16 @@
 import type { TrainResult } from '@/api/TrainListApi';
 import { formatSeat } from '@/lib/utils';
 import { fetchJSON } from '@/lib/fetch';
+import type { StationCode } from '@/types/Station';
+
+export interface ReservationParams {
+  trainCd: string;
+  trainTypeName: string;
+  trainNumber: string;
+  departureStationCd: StationCode;
+  arrivalStationCd: StationCode;
+  trackNumber: string;
+}
 
 interface ApiReservationResponse {
   departureTime: string;
@@ -17,29 +27,34 @@ export interface ReservationDetails {
   trainDetails: TrainResult;
 }
 
-export const createReservation = async (train: TrainResult, date: string): Promise<ReservationDetails> => {
-  const API_ENDPOINT = 'api/ticket-reservations';
+export const createReservation = async (
+  reservationParams: ReservationParams,
+  date: string,
+): Promise<ReservationDetails> => {
+  const API_ENDPOINT_CREATE = 'api/ticket-reservations';
 
-  const payload = {
-    trainCd: train.trainCd,
-    departureStationCd: train.departureStationCd,
-    arrivalStationCd: train.arrivalStationCd,
+  const createPayload = {
+    trainCd: reservationParams.trainCd,
+    departureStationCd: reservationParams.departureStationCd,
+    arrivalStationCd: reservationParams.arrivalStationCd,
     departureDate: date,
   };
 
-  const responseData = await fetchJSON<ApiReservationResponse>(API_ENDPOINT, {
+  const createResponse = await fetchJSON<{ _links: string }>(API_ENDPOINT_CREATE, {
     method: 'POST',
-    body: JSON.stringify(payload),
+    body: JSON.stringify(createPayload),
   });
 
+  const detailResponse = await fetchJSON<ApiReservationResponse>(createResponse._links);
+
   const formattedData: ReservationDetails = {
-    confirmedSeat: formatSeat(responseData.seatCd),
-    trackNumber: responseData.departureTrackNumber,
-    reservationDate: responseData.departureDate,
+    confirmedSeat: formatSeat(detailResponse.seatCd),
+    trackNumber: detailResponse.departureTrackNumber,
+    reservationDate: detailResponse.departureDate,
     trainDetails: {
-      ...train,
-      departureTime: responseData.departureTime.slice(0, 5),
-      arrivalTime: responseData.arrivalTime.slice(0, 5),
+      ...reservationParams,
+      departureTime: detailResponse.departureTime.slice(0, 5),
+      arrivalTime: detailResponse.arrivalTime.slice(0, 5),
     },
   };
 

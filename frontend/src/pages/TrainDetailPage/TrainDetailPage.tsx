@@ -66,8 +66,6 @@ export const TrainDetailPage: React.FC = () => {
           trainCd: trainDetail.trainCd,
           trainTypeName: trainDetail.trainTypeName,
           trainNumber: trainDetail.trainNumber,
-          departureTime: trainDetail.departureTime,
-          arrivalTime: trainDetail.arrivalTime,
           departureStationCd: searchParams.from,
           arrivalStationCd: searchParams.to,
           trackNumber: trainDetail.trackNumber,
