@@ -7,7 +7,7 @@ import { fetchTrainDetail } from '@/api/TrainDetailApi';
 import { formatJapaneseDate, todayYYYYMMDD } from '@/utils/dateTime';
 import { ArrowLeft, MapPin, TramFront, Loader2 } from 'lucide-react';
 import { specifyTrainTypeIconColor } from '@/utils/train';
-import { SeatClassCard } from './SeatClassCard';
+import { SeatClassCard } from '@/components/SeatClassCard';
 
 import type { TrainDetailResult } from '@/api/TrainDetailApi';
 import type { StationCode } from '@/types/Station';
@@ -176,8 +176,11 @@ export const TrainDetailPage: React.FC = () => {
                 <SeatClassCard
                   key={seatInfo.type}
                   seatInfo={seatInfo}
-                  onClickReservation={() => handleReserve(seatInfo.type)}
+                  onClickReservation={() => {
+                    handleReserve(seatInfo.type);
+                  }}
                   isReserving={reservingSeatType === seatInfo.type}
+                  trainDetail={trainDetail}
                 />
               ))}
             </div>

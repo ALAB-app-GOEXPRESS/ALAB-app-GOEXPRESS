@@ -9,8 +9,8 @@ import { Card, CardContent } from '@/components/ui/card';
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 // import { Clock } from 'lucide-react';
 import { type TrainSearchParams, type TrainResult } from '@/api/TrainListApi';
-import { type SeatClass } from '@/utils/seatClass';
 import { useSearchResults } from './useSearchResults';
+import { type SeatClass } from '@/utils/seat';
 import { TrainCard } from './TrainCard';
 import { StationNameMap } from '@/constants/Station';
 

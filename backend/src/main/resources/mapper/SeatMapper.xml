@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.alab.goexpress.seat.SeatMapper">
+
+    <select id="findReservedSeats"
+            resultType="com.alab.goexpress.seat.SeatResponse">
+        SELECT seat_cd
+        FROM T_SEAT
+        WHERE train_cd = #{trainCd}
+        AND departure_date = #{departureDate}
+        ORDER BY seat_cd
+    </select>
+
+</mapper>

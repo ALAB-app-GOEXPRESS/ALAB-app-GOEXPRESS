@@ -1,6 +1,7 @@
 package com.alab.goexpress.seat;
 
 import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class SeatService {
 
   private final SeatRepositoryPort seatRepo;
-  private final SeatReservationJpaRepository seatReservationJpaRepository;
+
+  private final SeatMapper mapper;
 
   public SeatChoice chooseSeat(String trainCd, LocalDate depDate) {
     return seatRepo.chooseSeat(trainCd, depDate);
@@ -26,5 +28,10 @@ public class SeatService {
     Integer reservationId
   ) {
     seatRepo.insertSeat(trainCd, depDate, trainCarCd, seatCd, depSt, arrSt, reservationId);
+  }
+
+  @Transactional(readOnly = true)
+  public List<SeatResponse> find(String trainCd, LocalDate departureDate) {
+    return mapper.findReservedSeats(trainCd, departureDate);
   }
 }

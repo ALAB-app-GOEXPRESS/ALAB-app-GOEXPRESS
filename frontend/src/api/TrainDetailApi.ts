@@ -1,6 +1,6 @@
 import { normalizeTrainNumber } from '@/utils/train';
 import { type StationCode } from '@/types/Station';
-import { toSeatClassType, SEAT_CLASS_DESCRIPTIONS, type SeatClass } from '@/utils/seatClass';
+import { toSeatClassType, SEAT_CLASS_DESCRIPTIONS, type SeatClass } from '@/utils/seat';
 import { fetchJSON } from '@/lib/fetch';
 import { StationNameMap } from '@/constants/Station';
 import { toHHMM } from '@/utils/dateTime';

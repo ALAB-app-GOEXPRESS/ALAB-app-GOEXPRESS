@@ -6,6 +6,7 @@ import { TrainDetailPage } from './pages/TrainDetailPage/TrainDetailPage';
 import { ReservationResultPage } from './pages/ReservationResultPage/ReservationResultPage';
 import { ReservationListPage } from './pages/ReservationListPage/ReservationListPage';
 import { ReservationDetailPage } from './pages/ReservationDetailPage/ReservationDetailPage';
+import { SeatMapPage } from './pages/SeatMapPage/SeatMapPage';
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
       { path: 'reservation-result', element: <ReservationResultPage /> },
       { path: 'reservation-list', element: <ReservationListPage /> },
       { path: 'reservation-detail', element: <ReservationDetailPage /> },
+      { path: 'seat-map', element: <SeatMapPage /> },
     ],
   },
 ]);
