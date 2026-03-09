@@ -1,5 +1,5 @@
 import React from 'react';
-import { SeatButton, type SeatStatus } from '@/components/ui/seatButton';
+import { SeatButton, type SeatStatus } from '@/pages/SeatMapPage/seatButton';
 import { calculateAvailableSeat, convertRowColToSeatCd } from '@/utils/seat';
 
 import { ArrowDown, ArrowUp } from 'lucide-react';

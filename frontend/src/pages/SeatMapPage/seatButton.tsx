@@ -31,8 +31,9 @@ export const SeatButton: React.FC<SeatButtonProps> = ({ seatId, status }) => {
     <Button
       variant='outline'
       className={cn('h-12 w-12 p-0 text-xs', {
+        'pointer-events-none cursor-not-allowed': status === 'available', //座席選択機能実装時に消す
         'bg-primary text-primary-foreground hover:bg-primary/90': status === 'selected',
-        'bg-muted text-muted-foreground cursor-not-allowed hover:bg-muted': status === 'reserved',
+        'text-muted-foreground cursor-not-allowed hover:bg-muted': status === 'reserved',
       })}
       // onClick={() => onClick(seatId)}
       disabled={isDisabled}
