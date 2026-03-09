@@ -38,21 +38,21 @@ export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber }) => {
       key={carNumber}
       className='mt-4'
     >
-      <div className='flex flex-col items-start gap-4'>
+      <div className='flex flex-col items-start gap-3'>
         <div className='flex gap-4'>
           <span className='font-semibold text-xl'>{carNumber}号車</span>
           <Badge variant='outline' className='text-sm border-2'>空席 {calculateAvailableSeat(reservedSeats, carNumber)}席</Badge>
         </div>
-        <div className='flex'>
-          <ArrowUp className='text-black/50' />
-          <span className='text-black/50'>東京方面</span>
+        <div className='flex items-center gap-1.5'>
+          <ArrowUp className='text-black/50' size={14} />
+          <span className='text-black/50 text-xs'>東京方面</span>
         </div>
-        <div className='flex justify-start gap-2 sm:gap-4'>
+        <div className='flex justify-start sm:gap-4'>
           <div className='flex flex-col gap-2 pt-1'>
             {Array.from({ length: SEAT_ROWS }, (_, i) => i + 1).map((row) => (
               <div
                 key={row}
-                className='flex h-12 w-8 items-center justify-center font-mono text-muted-foreground'
+                className='flex h-12 w-6 text-base items-center justify-start font-mono text-muted-foreground'
               >
                 {row}
               </div>
@@ -108,9 +108,9 @@ export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber }) => {
             </div>
           </div>
         </div>
-        <div className='flex my-3'>
-          <ArrowDown className='text-black/50' />
-          <span className='text-black/50'>新青森方面</span>
+        <div className='flex items-center gap-1.5'>
+          <ArrowDown className='text-black/50' size={14} />
+          <span className='text-black/50 text-xs'>新青森方面</span>
         </div>
       </div>
     </div>
