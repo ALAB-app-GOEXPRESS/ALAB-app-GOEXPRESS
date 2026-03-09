@@ -7,7 +7,7 @@ import { ArrowLeft } from 'lucide-react';
 import { SeatMapTab } from './SeatMapTab';
 import { useSeatMap } from '@/pages/SeatMapPage/useSeatMap';
 import { calculateAvailableSeat } from '@/utils/seat';
-const TOTAL_CARS = 10;
+const TOTAL_CARS = 8;
 
 export const SeatMapPage: React.FC = () => {
   const navigate = useNavigate();

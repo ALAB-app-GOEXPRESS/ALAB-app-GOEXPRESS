@@ -11,10 +11,10 @@ export const formatSeat = (seatCode: string): string => {
     if (isNaN(seatNumberInt) || seatNumberInt < 1) {
       return seatCode;
     }
-    const carNumber = Math.floor((seatNumberInt - 1) / 85) + 1;
+    const carNumber = Math.floor((seatNumberInt - 1) / 75) + 1;
     const seatAlphabetIndex = (seatNumberInt - 1) % 5;
     const seatAlphabet = ['A', 'B', 'C', 'D', 'E'][seatAlphabetIndex];
-    const seatRowNumber = Math.floor((seatNumberInt - 1) / 5) + 1;
+    const seatRowNumber = Math.floor((seatNumberInt - 1) % 75 / 5) + 1;
 
     return `${carNumber}号車 ${seatRowNumber}番 ${seatAlphabet}席`;
   } catch (error) {

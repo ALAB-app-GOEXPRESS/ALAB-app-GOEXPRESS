@@ -42,7 +42,7 @@ public class SeatRepositoryImpl implements SeatRepositoryPort {
       int max = car.getMaxSeatNumber();
 
       for (int i = 1; i <= max; i++) {
-        String seatCd = String.format("%03d", i);
+        String seatCd = String.format("%03d", i + (Integer.parseInt(train_car_cd)-1)*75);
         String key = trainCarCd + ":" + seatCd;
         if (!occupied.contains(key)) {
           return new SeatChoice(trainCarCd, seatCd, seatTypeCd);
