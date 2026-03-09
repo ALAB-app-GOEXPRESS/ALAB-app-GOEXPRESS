@@ -13,6 +13,8 @@ import com.alab.goexpress.reservation.application.query.ReservationListItemView;
 import com.alab.goexpress.reservation.application.query.ReservationListView;
 import com.alab.goexpress.reservation.domain.model.Reservation;
 import com.alab.goexpress.reservation.domain.model.ReservationId;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,9 @@ public class ReservationService {
   private final MasterQueryPort masterQuery;
   private final SeatReservationPort seatReservation;
   private final AccountQueryPort accountQuery;
+
+  @PersistenceContext
+  private EntityManager entityManager;
 
   @Transactional
   public Reservation save(Reservation reservation) {
@@ -95,6 +100,10 @@ public class ReservationService {
       arrSt,
       savedReservation.getReservationId().value()
     );
+
+    if (entityManager != null) {
+      entityManager.flush();
+    }
 
     return store.findItemWithTicketsAndOperationById(savedReservation.getReservationId().value());
   }
