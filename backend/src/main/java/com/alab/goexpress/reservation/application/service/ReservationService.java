@@ -57,8 +57,6 @@ public class ReservationService {
     String arrSt = req.getArrivalStationCd();
 
     String trainTypeCd = masterQuery.getTrainTypeCd(trainCd);
-    DepartureStationInfo depInfo = masterQuery.getDepartureInfo(trainCd, depSt);
-    masterQuery.getArrivalTime(trainCd, arrSt);
 
     ChosenSeat seat = seatReservation.chooseSeat(trainCd, depDate);
 

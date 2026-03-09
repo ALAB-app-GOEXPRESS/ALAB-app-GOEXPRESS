@@ -6,6 +6,7 @@ import com.alab.goexpress.reservation.adapter.out.persistence.mapper.Reservation
 import com.alab.goexpress.reservation.adapter.out.persistence.mybatis.ReservationQueryMapper;
 import com.alab.goexpress.reservation.adapter.out.persistence.mybatis.row.ReservationHeaderRow;
 import com.alab.goexpress.reservation.application.port.out.ReservationStorePort;
+import com.alab.goexpress.reservation.application.query.ReservationListItemView;
 import com.alab.goexpress.reservation.application.query.ReservationListView;
 import com.alab.goexpress.reservation.domain.model.Reservation;
 import com.alab.goexpress.reservation.domain.model.ReservationId;
@@ -62,15 +63,15 @@ public class ReservationStoreAdapter implements ReservationStorePort {
 
   @Override
   @Transactional(readOnly = true)
-  public com.alab.goexpress.reservation.application.query.ReservationListItemView findItemWithTicketsAndOperationById(
+  public ReservationListItemView findItemWithTicketsAndOperationById(
     int reservationId
   ) {
     var header = queryMapper.selectReservationHeaderById(reservationId);
     if (header == null) {
       throw new IllegalArgumentException("reservation not found: id=" + reservationId);
     }
-    var ticketRows = queryMapper.selectTicketsWithOperationByReservationIds(java.util.List.of(reservationId));
-    return com.alab.goexpress.reservation.adapter.out.persistence.mapper.ReservationListAssembler.assembleOne(
+    var ticketRows = queryMapper.selectTicketsWithOperationByReservationIds(List.of(reservationId));
+    return ReservationListAssembler.assembleOne(
       header,
       ticketRows
     );
