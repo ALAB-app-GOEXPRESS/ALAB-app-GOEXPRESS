@@ -62,7 +62,6 @@ export async function fetchTrainDetail(params: TrainDetailParams): Promise<Train
     trainCd,
   )}/detail?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
 
-  console.log(`[API通信] 列車詳細情報をリクエストします: ${endpoint}`);
 
   const data = await fetchJSON<TrainDetailApiItem>(endpoint);
 
@@ -88,6 +87,5 @@ export async function fetchTrainDetail(params: TrainDetailParams): Promise<Train
     }),
   };
 
-  console.log('[APIレスポンス変換後]', converted);
   return converted;
 }
