@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
-// import { SelectedSeatsInfo } from '@/components/ui/selectedSeatsInfo';
 import { SeatMapTab } from './SeatMapTab';
 import { useSeatMap } from '@/pages/SeatMapPage/useSeatMap';
 import { calculateAvailableSeat } from '@/utils/seat';

@@ -1,4 +1,3 @@
-import {  useState } from 'react';
 import { SeatButton, type SeatStatus } from '@/pages/SeatMapPage/seatButton';
 import { calculateAvailableSeat, convertRowColToSeatCd } from '@/utils/seat';
 import type { SelectedSeat } from '@/types/Seat';
@@ -6,7 +5,6 @@ import { ArrowDown, ArrowUp } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { ReservedSeat } from '@/api/SeatApi';
 import type { SeatClassDetail } from '@/api/TrainDetailApi';
-import { SelectedSeatsInfo } from './selectedSeatsInfo';
 
 const SEAT_ROWS = 15;
 const SEAT_COLUMNS_3 = ['A', 'B', 'C'];
@@ -30,7 +28,7 @@ export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber, seatClas
     if (isSelected) {
       setSelectedSeats((prev) => prev.filter((s) => !(s.carNumber === carNumber && s.seatCd === seatCd)));
     } else {
-      setSelectedSeats((prev) => [...prev, { carNumber, seatCd, seatType: seatClasses[0].type, price: seatClasses[0].price }]);
+      setSelectedSeats((prev) => [...prev, { carNumber, seatCd, seatTypeName: seatClasses[0].name, price: seatClasses[0].price }]);
     }
   };
 
