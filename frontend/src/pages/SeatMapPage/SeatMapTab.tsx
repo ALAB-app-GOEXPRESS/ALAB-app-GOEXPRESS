@@ -1,7 +1,7 @@
-import React from 'react';
+import {  useState } from 'react';
 import { SeatButton, type SeatStatus } from '@/pages/SeatMapPage/seatButton';
 import { calculateAvailableSeat, convertRowColToSeatCd } from '@/utils/seat';
-
+import type { SelectedSeat } from '@/types/Seat';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { ReservedSeat } from '@/api/SeatApi';
@@ -16,22 +16,20 @@ type props = {
 };
 
 export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber }) => {
+  const [selectedSeats, setSelectedSeats] = useState<SelectedSeat[]>([]);
 
+  const handleSeatClick = (carNumber: number, seatCd: string) => {
+    const isReserved = reservedSeats.some((s) => s.carNumber === carNumber && s.seatCd === seatCd);
+    if (isReserved) return;
 
-  // const [selectedSeats, setSelectedSeats] = useState<SelectedSeat[]>([]);
+    const isSelected = selectedSeats.some((s) => s.carNumber === carNumber && s.seatCd === seatCd);
 
-  // const handleSeatClick = (carNumber: number, seatId: string) => {
-  //   const isReserved = DUMMY_RESERVED_SEATS.some((s) => s.carNumber === carNumber && s.seatId === seatId);
-  //   if (isReserved) return;
-
-  //   const isSelected = selectedSeats.some((s) => s.carNumber === carNumber && s.seatId === seatId);
-
-  //   if (isSelected) {
-  //     setSelectedSeats((prev) => prev.filter((s) => !(s.carNumber === carNumber && s.seatId === seatId)));
-  //   } else {
-  //     setSelectedSeats((prev) => [...prev, { carNumber, seatId }]);
-  //   }
-  // };
+    if (isSelected) {
+      setSelectedSeats((prev) => prev.filter((s) => !(s.carNumber === carNumber && s.seatCd === seatCd)));
+    } else {
+      setSelectedSeats((prev) => [...prev, { carNumber, seatCd }]);
+    }
+  };
 
   return (
     <div
@@ -66,15 +64,15 @@ export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber }) => {
                   const isReserved = reservedSeats.find(
                     (seat) => seat.carNumber === carNumber && seat.seatCd === seatCd,
                   );
-                  // const isSelected = selectedSeats.some((s) => s.carNumber === carNumber && s.seatId === seatId);
-                  const status: SeatStatus = isReserved ? 'reserved' : 'available';
+                  const isSelected = selectedSeats.some((s) => s.carNumber === carNumber && s.seatCd === seatCd);
+                  const status: SeatStatus = isReserved ? 'reserved' : isSelected ? 'selected' : 'available';
 
                   return (
                     <SeatButton
                       key={seatCd}
                       seatId={seatCd}
                       status={status}
-                      // onClick={() => handleSeatClick(carNumber, seatId)}
+                      onClick={() => handleSeatClick(carNumber, seatCd)}
                     />
                   );
                 }),
@@ -93,14 +91,14 @@ export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber }) => {
                       return seat.carNumber === carNumber;
                     })
                     .find((seat) => seat.seatCd === seatCd);
-                  // const isSelected = selectedSeats.some((s) => s.carNumber === carNumber && s.seatId === seatId);
-                  const status: SeatStatus = isReserved ? 'reserved' : 'available';
+                  const isSelected = selectedSeats.some((s) => s.carNumber === carNumber && s.seatCd === seatCd);
+                  const status: SeatStatus = isReserved ? 'reserved' : isSelected ? 'selected' : 'available';
                   return (
                     <SeatButton
                       key={seatCd}
                       seatId={seatCd}
                       status={status}
-                      // onClick={() => handleSeatClick(carNumber, seatId)}
+                      onClick={() => handleSeatClick(carNumber, seatCd)}
                     />
                   );
                 }),
