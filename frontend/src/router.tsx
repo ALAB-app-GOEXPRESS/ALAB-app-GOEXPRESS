@@ -7,6 +7,7 @@ import { ReservationResultPage } from './pages/ReservationResultPage/Reservation
 import { ReservationListPage } from './pages/ReservationListPage/ReservationListPage';
 import { ReservationDetailPage } from './pages/ReservationDetailPage/ReservationDetailPage';
 import { SeatMapPage } from './pages/SeatMapPage/SeatMapPage';
+import { ReservationConfirmPage } from './pages/ReservationConfirmPage/ReservationConfirmPage';
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
       { path: 'reservation-list', element: <ReservationListPage /> },
       { path: 'reservation-detail', element: <ReservationDetailPage /> },
       { path: 'seat-map', element: <SeatMapPage /> },
+      { path: 'reservation-confirm', element: <ReservationConfirmPage /> },
     ],
   },
 ]);
