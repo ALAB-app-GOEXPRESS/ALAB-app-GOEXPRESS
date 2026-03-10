@@ -24,4 +24,13 @@ public class TicketReservationRequest {
 
   @NotNull
   private String arrivalStationCd;
+
+  @NotNull
+  private String buyerName;
+
+  @NotNull
+  private String emailAddress;
+
+  @NotNull
+  private ReservedSeat[] selectedSeat;
 }

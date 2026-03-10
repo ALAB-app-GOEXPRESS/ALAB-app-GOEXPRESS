@@ -10,6 +10,7 @@ import { createReservation } from '@/api/ReservationApi';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import type { StationCode } from '@/types/Station';
+import type { ReservedSeat } from '@/api/SeatApi';
 
 // --- ここからダミーデータ ---
 // 本来は前の画面から渡されるデータですが、レイアウト確認のためにここで定義します。
@@ -26,10 +27,10 @@ const trainDetailDummy = {
 };
 
 const selectedSeatsDummy = [
-  { carNumber: '01', seatCd: '012' },
-  { carNumber: '01', seatCd: '013' },
-  { carNumber: '01', seatCd: '014' },
-];
+  { seatCd: '012', carNumber: 1 },
+  { seatCd: '013', carNumber: 1 },
+  { seatCd: '014', carNumber: 1 },
+] as ReservedSeat[];
 
 const pricePerSeat = 18870;
 // --- ここまでダミーデータ ---
@@ -38,7 +39,7 @@ export const ReservationConfirmPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { trainDetailResult, selectedSeats } = location.state || {};
+  //   const { trainDetailResult, selectedSeats } = location.state || {};
 
   // お客様情報を管理するための状態
   const [buyerName, setName] = useState('');
@@ -63,6 +64,9 @@ export const ReservationConfirmPage: React.FC = () => {
           departureStationCd: trainDetailDummy.departureStationCd,
           arrivalStationCd: trainDetailDummy.arrivalStationCd,
           trackNumber: trainDetailDummy.trackNumber,
+          buyerName: buyerName,
+          emailAddress: emailAddress,
+          selectedSeat: selectedSeatsDummy,
         },
         trainDetailDummy.date,
       );

@@ -6,10 +6,8 @@ import type { SeatClassDetail, TrainDetailResult } from '@/api/TrainDetailApi';
 
 export const SeatClassCard: React.FC<{
   seatInfo: SeatClassDetail;
-  onClickReservation: () => void;
-  isReserving: boolean;
   trainDetail: TrainDetailResult;
-}> = ({ seatInfo, onClickReservation, isReserving, trainDetail }) => {
+}> = ({ seatInfo, trainDetail }) => {
   const navigate = useNavigate();
 
   const handleSelect = () => {
@@ -27,17 +25,9 @@ export const SeatClassCard: React.FC<{
         <Button
           onClick={handleSelect}
           className='w-full'
-          disabled={isReserving || seatInfo.name !== '指定席'}
+          disabled={seatInfo.name !== '指定席'}
         >
           座席を選択
-        </Button>
-        <div className='mb-1'></div>
-        <Button
-          onClick={onClickReservation}
-          className='w-full'
-          disabled={isReserving || seatInfo.name !== '指定席'}
-        >
-          {isReserving ? '処理中...' : '予約する'}
         </Button>
       </CardContent>
     </Card>
