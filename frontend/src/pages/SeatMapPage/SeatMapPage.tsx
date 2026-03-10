@@ -44,6 +44,10 @@ export const SeatMapPage: React.FC = () => {
     );
   }
 
+  const handleClickTrash = () => {
+    setSelectedSeats([]);
+  }
+
   return (
     <div className='min-h-screen bg-gray-50 p-4 sm:p-8 relative'>
       {/* <SelectedSeatsInfo
@@ -138,6 +142,7 @@ export const SeatMapPage: React.FC = () => {
           <SelectedSeatsInfo
             selectedSeats={selectedSeats}
             totalPrice={selectedSeats.reduce((acc, current) => acc + current.price, 0)}
+            handleClickTrash={handleClickTrash}
           />
         </div>
       </div>
