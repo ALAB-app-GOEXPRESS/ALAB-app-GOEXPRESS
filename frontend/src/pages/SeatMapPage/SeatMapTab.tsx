@@ -16,11 +16,11 @@ type props = {
   reservedSeats: ReservedSeat[];
   carNumber: number;
   seatClasses: SeatClassDetail[];
+  selectedSeats: SelectedSeat[];
+  setSelectedSeats: (value: React.SetStateAction<SelectedSeat[]>) => void;
 };
 
-export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber, seatClasses }) => {
-  const [selectedSeats, setSelectedSeats] = useState<SelectedSeat[]>([]);
-
+export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber, seatClasses, selectedSeats, setSelectedSeats }) => {
   const handleSeatClick = (carNumber: number, seatCd: string) => {
     const isReserved = reservedSeats.some((s) => s.carNumber === carNumber && s.seatCd === seatCd);
     if (isReserved) return;
@@ -39,7 +39,6 @@ export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber, seatClas
       key={carNumber}
       className='mt-4'
     >
-      <SelectedSeatsInfo selectedSeats={selectedSeats} totalPrice={selectedSeats.reduce((acc, current) => acc + current.price, 0)}/>
       <div className='flex flex-col items-start gap-3'>
         <div className='flex gap-4'>
           <span className='font-semibold text-xl'>{carNumber}号車</span>

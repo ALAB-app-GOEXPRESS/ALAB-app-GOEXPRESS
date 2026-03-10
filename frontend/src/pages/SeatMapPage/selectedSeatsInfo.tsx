@@ -11,7 +11,7 @@ interface SelectedSeatsInfoProps {
 
 export const SelectedSeatsInfo: React.FC<SelectedSeatsInfoProps> = ({ selectedSeats, totalPrice }) => {
   return (
-    <div className='fixed top-24 right-4 w-80 z-10 hidden lg:block'>
+    <div className='w-80 hidden lg:block'>
       <Card>
         <CardHeader>
           <CardTitle>選択中の座席</CardTitle>
