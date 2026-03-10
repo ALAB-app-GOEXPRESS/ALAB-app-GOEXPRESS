@@ -13,7 +13,7 @@ export const SeatMapPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { trainDetail } = location.state || {};
+  const { seatClasses, trainDetail } = location.state || {};
 
   const [activeCar, setActiveCar] = useState<number>(1);
 
@@ -101,6 +101,7 @@ export const SeatMapPage: React.FC = () => {
                 <SeatMapTab
                   reservedSeats={reservedSeats}
                   carNumber={activeCar}
+                  seatClasses={seatClasses}
                 />
               </div>
             </div>

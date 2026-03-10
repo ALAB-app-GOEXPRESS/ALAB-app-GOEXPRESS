@@ -7,7 +7,7 @@ const SEAT_COLUMNS = ['A', 'B', 'C', 'D', 'E'];
 const SEATS_PER_ROW = SEAT_COLUMNS.length;
 
 interface SeatButtonProps {
-  seatId: string;
+  seatCd: string;
   status: SeatStatus;
   onClick: (seatId: string) => void;
 }
@@ -23,8 +23,8 @@ const getSeatDisplayInfo = (seatId: string) => {
   };
 };
 
-export const SeatButton: React.FC<SeatButtonProps> = ({ seatId, status, onClick }) => {
-  const { col, label } = getSeatDisplayInfo(seatId);
+export const SeatButton: React.FC<SeatButtonProps> = ({ seatCd, status, onClick }) => {
+  const { col, label } = getSeatDisplayInfo(seatCd);
   const isDisabled = status === 'reserved';
 
   return (
@@ -34,7 +34,7 @@ export const SeatButton: React.FC<SeatButtonProps> = ({ seatId, status, onClick 
         'bg-primary text-primary-foreground hover:bg-primary/90': status === 'selected',
         'text-muted-foreground cursor-not-allowed hover:bg-muted': status === 'reserved',
       })}
-      onClick={() => onClick(seatId)}
+      onClick={() => onClick(seatCd)}
       disabled={isDisabled}
       aria-label={`座席 ${label}`}
     >

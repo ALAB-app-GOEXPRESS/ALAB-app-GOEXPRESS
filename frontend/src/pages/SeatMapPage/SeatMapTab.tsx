@@ -5,6 +5,8 @@ import type { SelectedSeat } from '@/types/Seat';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { ReservedSeat } from '@/api/SeatApi';
+import type { SeatClassDetail } from '@/api/TrainDetailApi';
+import { SelectedSeatsInfo } from './selectedSeatsInfo';
 
 const SEAT_ROWS = 15;
 const SEAT_COLUMNS_3 = ['A', 'B', 'C'];
@@ -13,9 +15,10 @@ const SEAT_COLUMNS_2 = ['D', 'E'];
 type props = {
   reservedSeats: ReservedSeat[];
   carNumber: number;
+  seatClasses: SeatClassDetail[];
 };
 
-export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber }) => {
+export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber, seatClasses }) => {
   const [selectedSeats, setSelectedSeats] = useState<SelectedSeat[]>([]);
 
   const handleSeatClick = (carNumber: number, seatCd: string) => {
@@ -27,7 +30,7 @@ export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber }) => {
     if (isSelected) {
       setSelectedSeats((prev) => prev.filter((s) => !(s.carNumber === carNumber && s.seatCd === seatCd)));
     } else {
-      setSelectedSeats((prev) => [...prev, { carNumber, seatCd }]);
+      setSelectedSeats((prev) => [...prev, { carNumber, seatCd, seatType: seatClasses[0].type, price: seatClasses[0].price }]);
     }
   };
 
@@ -36,6 +39,7 @@ export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber }) => {
       key={carNumber}
       className='mt-4'
     >
+      <SelectedSeatsInfo selectedSeats={selectedSeats} totalPrice={selectedSeats.reduce((acc, current) => acc + current.price, 0)}/>
       <div className='flex flex-col items-start gap-3'>
         <div className='flex gap-4'>
           <span className='font-semibold text-xl'>{carNumber}号車</span>
@@ -70,7 +74,7 @@ export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber }) => {
                   return (
                     <SeatButton
                       key={seatCd}
-                      seatId={seatCd}
+                      seatCd={seatCd}
                       status={status}
                       onClick={() => handleSeatClick(carNumber, seatCd)}
                     />
@@ -96,7 +100,7 @@ export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber }) => {
                   return (
                     <SeatButton
                       key={seatCd}
-                      seatId={seatCd}
+                      seatCd={seatCd}
                       status={status}
                       onClick={() => handleSeatClick(carNumber, seatCd)}
                     />

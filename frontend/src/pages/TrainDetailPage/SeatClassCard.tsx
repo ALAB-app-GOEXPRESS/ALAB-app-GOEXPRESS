@@ -5,15 +5,18 @@ import { useNavigate } from 'react-router-dom';
 import type { SeatClassDetail, TrainDetailResult } from '@/api/TrainDetailApi';
 
 export const SeatClassCard: React.FC<{
-  seatInfo: SeatClassDetail;
+  index: number;
+  seatClasses: SeatClassDetail[];
   onClickReservation: () => void;
   isReserving: boolean;
   trainDetail: TrainDetailResult;
-}> = ({ seatInfo, onClickReservation, isReserving, trainDetail }) => {
+}> = ({ index, seatClasses, onClickReservation, isReserving, trainDetail }) => {
   const navigate = useNavigate();
 
+  const seatInfo = seatClasses[index];
+
   const handleSelect = () => {
-    navigate('/seat-map', { state: { trainDetail } });
+    navigate('/seat-map', { state: { seatClasses, trainDetail } });
   };
 
   return (
