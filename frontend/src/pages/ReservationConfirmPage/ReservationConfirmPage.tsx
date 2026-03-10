@@ -6,40 +6,76 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { formatSeat } from '@/lib/utils';
 import { ArrowLeft, Mail, User } from 'lucide-react';
+import { createReservation } from '@/api/ReservationApi';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import type { StationCode } from '@/types/Station';
 
 // --- ここからダミーデータ ---
 // 本来は前の画面から渡されるデータですが、レイアウト確認のためにここで定義します。
-const trainDetail = {
+const trainDetailDummy = {
+  trainCd: '3002B',
   trainNumber: '1',
   trainTypeName: 'はやぶさ',
+  departureStationCd: '01' as StationCode,
+  arrivalStationCd: '02' as StationCode,
   departureStationName: '東京',
   arrivalStationName: '上野',
   date: '2026-02-04T06:32:00',
+  trackNumber: '21',
 };
 
-const selectedSeats = [
-  { carNumber: 8, seatId: '805A' },
-  { carNumber: 8, seatId: '805B' },
-  { carNumber: 8, seatId: '805C' },
+const selectedSeatsDummy = [
+  { carNumber: '01', seatCd: '012' },
+  { carNumber: '01', seatCd: '013' },
+  { carNumber: '01', seatCd: '014' },
 ];
 
 const pricePerSeat = 18870;
 // --- ここまでダミーデータ ---
 
 export const ReservationConfirmPage: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { trainDetailResult, selectedSeats } = location.state || {};
+
   // お客様情報を管理するための状態
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [buyerName, setName] = useState('');
+  const [emailAddress, setEmail] = useState('');
 
-  const totalPrice = selectedSeats.length * pricePerSeat;
+  const totalPrice = selectedSeatsDummy.length * pricePerSeat;
 
-  // 予約確定ボタンが押されたときの仮の処理
-  const handleConfirmReservation = () => {
-    if (!name || !email) {
+  const handleReserve = async () => {
+    if (!buyerName || !emailAddress) {
       alert('購入者氏名とメールアドレスを入力してください。');
       return;
     }
-    alert(`氏名: ${name}, メールアドレス: ${email} で予約処理を行います。（これはダミーの動作です）`);
+
+    if (!trainDetailDummy) return;
+
+    try {
+      const reservationDetails = await createReservation(
+        {
+          trainCd: trainDetailDummy.trainCd,
+          trainTypeName: trainDetailDummy.trainTypeName,
+          trainNumber: trainDetailDummy.trainNumber,
+          departureStationCd: trainDetailDummy.departureStationCd,
+          arrivalStationCd: trainDetailDummy.arrivalStationCd,
+          trackNumber: trainDetailDummy.trackNumber,
+        },
+        trainDetailDummy.date,
+      );
+
+      toast.success('予約が完了しました！', { position: 'bottom-right' });
+
+      navigate('/reservation-result', {
+        state: { reservationDetails },
+      });
+    } catch (error) {
+      console.error(error);
+      alert(error instanceof Error ? error.message : '予期せぬエラーが発生しました。');
+    }
   };
 
   return (
@@ -62,15 +98,15 @@ export const ReservationConfirmPage: React.FC = () => {
               <CardHeader>
                 <div className='flex items-center gap-2'>
                   <span className='bg-green-100 text-green-800 text-sm font-medium px-2.5 py-0.5 rounded'>
-                    {trainDetail.trainTypeName}
+                    {trainDetailDummy.trainTypeName}
                   </span>
-                  <p className='text-xl font-bold'>{trainDetail.trainNumber}号</p>
+                  <p className='text-xl font-bold'>{trainDetailDummy.trainNumber}号</p>
                 </div>
                 <p className='font-semibold pt-2'>
-                  {trainDetail.departureStationName} → {trainDetail.arrivalStationName}
+                  {trainDetailDummy.departureStationName} → {trainDetailDummy.arrivalStationName}
                 </p>
                 <p className='text-sm text-gray-500'>
-                  {new Date(trainDetail.date).toLocaleDateString('ja-JP', {
+                  {new Date(trainDetailDummy.date).toLocaleDateString('ja-JP', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
@@ -82,12 +118,12 @@ export const ReservationConfirmPage: React.FC = () => {
                 <Separator className='mb-4' />
                 <h3 className='font-semibold mb-3'>選択した座席</h3>
                 <div className='space-y-3'>
-                  {selectedSeats.map((seat, index) => (
+                  {selectedSeatsDummy.map((seat, index) => (
                     <div
                       key={index}
                       className='flex justify-between items-center'
                     >
-                      <p>{formatSeat(seat.seatId)}</p>
+                      <p>{formatSeat(seat.seatCd)}</p>
                       <p className='font-semibold'>¥{pricePerSeat.toLocaleString()}</p>
                     </div>
                   ))}
@@ -110,7 +146,7 @@ export const ReservationConfirmPage: React.FC = () => {
                     <Input
                       id='name'
                       placeholder='例：東日本 太朗'
-                      value={name}
+                      value={buyerName}
                       onChange={(e) => setName(e.target.value)}
                       className='pl-9'
                     />
@@ -124,7 +160,7 @@ export const ReservationConfirmPage: React.FC = () => {
                       id='email'
                       type='email'
                       placeholder='例：higasinihon@example.com'
-                      value={email}
+                      value={emailAddress}
                       onChange={(e) => setEmail(e.target.value)}
                       className='pl-9'
                     />
@@ -133,14 +169,14 @@ export const ReservationConfirmPage: React.FC = () => {
                 <Separator className='mb-4' />
                 <div className='grid grid-cols-2 items-center text-sm'>
                   <p className='text-gray-600'>座席数合計:</p>
-                  <p className='text-right'>{selectedSeats.length}席</p>
+                  <p className='text-right'>{selectedSeatsDummy.length}席</p>
                 </div>{' '}
                 <div className='grid grid-cols-2 items-center font-bold text-xl'>
                   <p>お支払い合計:</p>
                   <p className='text-right text-primary'>¥{totalPrice.toLocaleString()}</p>
                 </div>
                 <Button
-                  onClick={handleConfirmReservation}
+                  onClick={handleReserve}
                   className='w-full'
                   size='lg'
                 >
