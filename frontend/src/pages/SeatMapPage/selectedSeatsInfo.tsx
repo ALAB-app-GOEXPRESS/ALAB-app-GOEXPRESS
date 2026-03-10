@@ -4,6 +4,7 @@ import type { SelectedSeat } from '@/types/Seat';
 import { formatSeat } from '@/utils/seat';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency } from '@/utils/currency';
+import { Button } from '@/components/ui/button';
 
 interface SelectedSeatsInfoProps {
   selectedSeats: SelectedSeat[];
@@ -13,20 +14,19 @@ interface SelectedSeatsInfoProps {
 
 export const SelectedSeatsInfo: React.FC<SelectedSeatsInfoProps> = ({ selectedSeats, totalPrice }) => {
   return (
-    <div className='min-w-50 lg:block'>
-      <Card className='min-w-64'>
+      <Card className='w-66'>
         <CardHeader>
           <CardTitle>選択中の座席</CardTitle>
           <CardDescription>{selectedSeats.length} 席 選択中</CardDescription>
         </CardHeader>
-        <CardContent className='overflow-y-auto'>
+        <CardContent className='flex flex-col overflow-y-auto w-66'>
           {selectedSeats.length > 0 ? (
-            <div>
+            <div className='min-w-max'>
               <ul className='space-y-2'>
                 {selectedSeats.map(({ carNumber, seatCd, seatTypeName, price }) => (
                   <li
                     key={`${carNumber}-${seatCd}`}
-                    className='flex space-x-2 text-sm'
+                    className='flex justify-between text-sm min-w-max'
                   >
                     {/* <Badge variant='outline'>{carNumber}号車</Badge>
                   <span className='w-30'>
@@ -49,6 +49,7 @@ export const SelectedSeatsInfo: React.FC<SelectedSeatsInfoProps> = ({ selectedSe
           ) : (
             <p className='text-sm text-muted-foreground'>座席が選択されていません</p>
           )}
+          <Button className='w-auto mt-4' disabled={selectedSeats.length === 0}>予約する</Button>
         </CardContent>
         {/* <CardFooter>
           <Button
@@ -60,6 +61,5 @@ export const SelectedSeatsInfo: React.FC<SelectedSeatsInfoProps> = ({ selectedSe
           </Button>
         </CardFooter> */}
       </Card>
-    </div>
   );
 };
