@@ -2,7 +2,7 @@ import type { ReservationDetails } from '@/api/ReservationApi';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatSeat } from '@/lib/utils';
+import { formatSeat } from '@/utils/seat';
 import { normalizeTrainNumber } from '@/utils/train';
 import { formatJapaneseDate, toHHMM } from '@/utils/dateTime';
 import { QrCode, Ticket } from 'lucide-react';

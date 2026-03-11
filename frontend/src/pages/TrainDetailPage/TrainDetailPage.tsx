@@ -139,10 +139,11 @@ export const TrainDetailPage: React.FC = () => {
           <div className='mt-8'>
             <h2 className='text-lg font-semibold'>空席状況</h2>
             <div className='mt-4 grid grid-cols-1 gap-4 md:grid-cols-3'>
-              {trainDetail.seatClasses.map((seatInfo) => (
+              {trainDetail.seatClasses.map((seatInfo, index) => (
                 <SeatClassCard
                   key={seatInfo.type}
-                  seatInfo={seatInfo}
+                  index={index}
+                  seatClasses={trainDetail.seatClasses}
                   trainDetail={trainDetail}
                 />
               ))}

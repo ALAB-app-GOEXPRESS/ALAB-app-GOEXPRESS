@@ -1,5 +1,5 @@
 import type { TrainResult } from '@/api/TrainListApi';
-import { formatSeat } from '@/lib/utils';
+import { formatSeat } from '@/utils/seat';
 import { fetchJSON } from '@/lib/fetch';
 import type { StationCode } from '@/types/Station';
 import { toHHMM } from '@/utils/dateTime';

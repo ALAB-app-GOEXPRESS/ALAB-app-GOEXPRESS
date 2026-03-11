@@ -1,0 +1,1 @@
+export const MAX_SELECTABLE = 6 as const;

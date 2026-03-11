@@ -1,10 +1,11 @@
-import React from 'react';
 import { SeatButton, type SeatStatus } from '@/pages/SeatMapPage/seatButton';
 import { calculateAvailableSeat, convertRowColToSeatCd } from '@/utils/seat';
-
+import type { SelectedSeat } from '@/types/Seat';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { ReservedSeat } from '@/api/SeatApi';
+import type { SeatClassDetail } from '@/api/TrainDetailApi';
+import { MAX_SELECTABLE } from '@/constants/Seat';
 
 const SEAT_ROWS = 15;
 const SEAT_COLUMNS_3 = ['A', 'B', 'C'];
@@ -13,25 +14,32 @@ const SEAT_COLUMNS_2 = ['D', 'E'];
 type props = {
   reservedSeats: ReservedSeat[];
   carNumber: number;
+  seatClasses: SeatClassDetail[];
+  selectedSeats: SelectedSeat[];
+  setSelectedSeats: (value: React.SetStateAction<SelectedSeat[]>) => void;
 };
 
-export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber }) => {
+export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber, seatClasses, selectedSeats, setSelectedSeats }) => {
 
+  const handleSeatClick = (carNumber: number, seatCd: string) => {
+    const isReserved = reservedSeats.some((s) => s.carNumber === carNumber && s.seatCd === seatCd);
+    if (isReserved) return;
 
-  // const [selectedSeats, setSelectedSeats] = useState<SelectedSeat[]>([]);
+    const isSelected = selectedSeats.some((s) => s.carNumber === carNumber && s.seatCd === seatCd);
 
-  // const handleSeatClick = (carNumber: number, seatId: string) => {
-  //   const isReserved = DUMMY_RESERVED_SEATS.some((s) => s.carNumber === carNumber && s.seatId === seatId);
-  //   if (isReserved) return;
+    if (isSelected) {
+      setSelectedSeats((prev) => prev.filter((s) => !(s.carNumber === carNumber && s.seatCd === seatCd)));
+      return;
+    }
+    
+    if (selectedSeats.length >= MAX_SELECTABLE) {
+      return;
+    } else {
+      setSelectedSeats((prev) => [...prev, { carNumber, seatCd, seatTypeName: seatClasses[0].name, price: seatClasses[0].price }]);
+    };
 
-  //   const isSelected = selectedSeats.some((s) => s.carNumber === carNumber && s.seatId === seatId);
-
-  //   if (isSelected) {
-  //     setSelectedSeats((prev) => prev.filter((s) => !(s.carNumber === carNumber && s.seatId === seatId)));
-  //   } else {
-  //     setSelectedSeats((prev) => [...prev, { carNumber, seatId }]);
-  //   }
-  // };
+    console.log()
+  };
 
   return (
     <div
@@ -66,15 +74,16 @@ export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber }) => {
                   const isReserved = reservedSeats.find(
                     (seat) => seat.carNumber === carNumber && seat.seatCd === seatCd,
                   );
-                  // const isSelected = selectedSeats.some((s) => s.carNumber === carNumber && s.seatId === seatId);
-                  const status: SeatStatus = isReserved ? 'reserved' : 'available';
+                  const isSelected = selectedSeats.some((s) => s.carNumber === carNumber && s.seatCd === seatCd);
+                  const status: SeatStatus = isReserved ? 'reserved' : isSelected ? 'selected' : 'available';
 
                   return (
                     <SeatButton
                       key={seatCd}
-                      seatId={seatCd}
+                      seatCd={seatCd}
                       status={status}
-                      // onClick={() => handleSeatClick(carNumber, seatId)}
+                      onClick={() => handleSeatClick(carNumber, seatCd)}
+                      isSelectedMax={selectedSeats.length >= MAX_SELECTABLE}
                     />
                   );
                 }),
@@ -93,14 +102,15 @@ export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber }) => {
                       return seat.carNumber === carNumber;
                     })
                     .find((seat) => seat.seatCd === seatCd);
-                  // const isSelected = selectedSeats.some((s) => s.carNumber === carNumber && s.seatId === seatId);
-                  const status: SeatStatus = isReserved ? 'reserved' : 'available';
+                  const isSelected = selectedSeats.some((s) => s.carNumber === carNumber && s.seatCd === seatCd);
+                  const status: SeatStatus = isReserved ? 'reserved' : isSelected ? 'selected' : 'available';
                   return (
                     <SeatButton
                       key={seatCd}
-                      seatId={seatCd}
+                      seatCd={seatCd}
                       status={status}
-                      // onClick={() => handleSeatClick(carNumber, seatId)}
+                      onClick={() => handleSeatClick(carNumber, seatCd)}
+                      isSelectedMax={selectedSeats.length >= MAX_SELECTABLE}
                     />
                   );
                 }),
