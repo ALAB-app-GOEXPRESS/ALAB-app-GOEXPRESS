@@ -11,12 +11,14 @@ interface SelectedSeatsInfoProps {
   selectedSeats: SelectedSeat[];
   totalPrice: number;
   handleClickTrash: () => void;
+  handleReserve: () => void;
 }
 
 export const SelectedSeatsInfo: React.FC<SelectedSeatsInfoProps> = ({
   selectedSeats,
   totalPrice,
   handleClickTrash,
+  handleReserve,
 }) => {
   return (
     <Card className='w-66'>
@@ -63,6 +65,7 @@ export const SelectedSeatsInfo: React.FC<SelectedSeatsInfoProps> = ({
         <Button
           className='w-auto mt-4'
           disabled={selectedSeats.length === 0}
+          onClick={handleReserve}
         >
           予約する
         </Button>

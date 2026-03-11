@@ -4,48 +4,44 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { formatSeat } from '@/lib/utils';
+import { formatSeat } from '@/utils/seat';
 import { ArrowLeft, Mail, User } from 'lucide-react';
 import { createReservation } from '@/api/ReservationApi';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import type { TrainDetailResult } from '@/api/TrainDetailApi';
+import type { SelectedSeat } from '@/types/Seat';
+import { useTypedLocation } from '@/lib/router';
 import type { StationCode } from '@/types/Station';
-import type { ReservedSeat } from '@/api/SeatApi';
+
+type ReservationConfirmState = {
+  trainDetailResult: TrainDetailResult;
+  selectedSeats: SelectedSeat[];
+};
 
 // --- ここからダミーデータ ---
 // 本来は前の画面から渡されるデータですが、レイアウト確認のためにここで定義します。
-const trainDetailDummy = {
-  trainCd: '3002B',
-  trainNumber: '1',
-  trainTypeName: 'はやぶさ',
-  departureStationCd: '01' as StationCode,
-  arrivalStationCd: '02' as StationCode,
-  departureStationName: '東京',
-  arrivalStationName: '上野',
-  date: '2026-02-04T06:32:00',
-  trackNumber: '21',
-};
-
-const selectedSeatsDummy = [
-  { seatCd: '012', carNumber: 1 },
-  { seatCd: '013', carNumber: 1 },
-  { seatCd: '014', carNumber: 1 },
-] as ReservedSeat[];
-
 const pricePerSeat = 18870;
 // --- ここまでダミーデータ ---
 
 export const ReservationConfirmPage: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  //   const { trainDetailResult, selectedSeats } = location.state || {};
+  const location = useTypedLocation<ReservationConfirmState | undefined>();
 
   // お客様情報を管理するための状態
   const [buyerName, setName] = useState('');
   const [emailAddress, setEmail] = useState('');
 
-  const totalPrice = selectedSeatsDummy.length * pricePerSeat;
+  const state = location.state;
+
+  if (!state) {
+    navigate(-1);
+    return <></>;
+  }
+  console.log(state.trainDetailResult);
+  console.log(state.selectedSeats);
+
+  //const totalPrice = selectedSeats.length * pricePerSeat;
 
   const handleReserve = async () => {
     if (!buyerName || !emailAddress) {
@@ -53,22 +49,22 @@ export const ReservationConfirmPage: React.FC = () => {
       return;
     }
 
-    if (!trainDetailDummy) return;
+    if (!trainDetailResult) return;
 
     try {
       const reservationDetails = await createReservation(
         {
-          trainCd: trainDetailDummy.trainCd,
-          trainTypeName: trainDetailDummy.trainTypeName,
-          trainNumber: trainDetailDummy.trainNumber,
-          departureStationCd: trainDetailDummy.departureStationCd,
-          arrivalStationCd: trainDetailDummy.arrivalStationCd,
-          trackNumber: trainDetailDummy.trackNumber,
+          trainCd: trainDetailResult.trainCd,
+          trainTypeName: trainDetailResult.trainTypeName,
+          trainNumber: trainDetailResult.trainNumber,
+          departureStationCd: trainDetailResult.departureStationCd as StationCode,
+          arrivalStationCd: trainDetailResult.arrivalStationCd as StationCode,
+          trackNumber: trainDetailResult.trackNumber,
           buyerName: buyerName,
           emailAddress: emailAddress,
-          selectedSeat: selectedSeatsDummy,
+          selectedSeat: selectedSeats,
         },
-        trainDetailDummy.date,
+        trainDetailResult.date,
       );
 
       toast.success('予約が完了しました！', { position: 'bottom-right' });
@@ -102,15 +98,15 @@ export const ReservationConfirmPage: React.FC = () => {
               <CardHeader>
                 <div className='flex items-center gap-2'>
                   <span className='bg-green-100 text-green-800 text-sm font-medium px-2.5 py-0.5 rounded'>
-                    {trainDetailDummy.trainTypeName}
+                    {trainDetailResult.trainTypeName}
                   </span>
-                  <p className='text-xl font-bold'>{trainDetailDummy.trainNumber}号</p>
+                  <p className='text-xl font-bold'>{trainDetailResult.trainNumber}号</p>
                 </div>
                 <p className='font-semibold pt-2'>
-                  {trainDetailDummy.departureStationName} → {trainDetailDummy.arrivalStationName}
+                  {trainDetailResult.departureStationName} → {trainDetailResult.arrivalStationName}
                 </p>
                 <p className='text-sm text-gray-500'>
-                  {new Date(trainDetailDummy.date).toLocaleDateString('ja-JP', {
+                  {new Date(trainDetailResult.date).toLocaleDateString('ja-JP', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
@@ -122,7 +118,7 @@ export const ReservationConfirmPage: React.FC = () => {
                 <Separator className='mb-4' />
                 <h3 className='font-semibold mb-3'>選択した座席</h3>
                 <div className='space-y-3'>
-                  {selectedSeatsDummy.map((seat, index) => (
+                  {selectedSeats.map((seat, index) => (
                     <div
                       key={index}
                       className='flex justify-between items-center'
@@ -173,7 +169,7 @@ export const ReservationConfirmPage: React.FC = () => {
                 <Separator className='mb-4' />
                 <div className='grid grid-cols-2 items-center text-sm'>
                   <p className='text-gray-600'>座席数合計:</p>
-                  <p className='text-right'>{selectedSeatsDummy.length}席</p>
+                  <p className='text-right'>{selectedSeats.length}席</p>
                 </div>{' '}
                 <div className='grid grid-cols-2 items-center font-bold text-xl'>
                   <p>お支払い合計:</p>
