@@ -19,11 +19,6 @@ type ReservationConfirmState = {
   selectedSeats: SelectedSeat[];
 };
 
-// --- ここからダミーデータ ---
-// 本来は前の画面から渡されるデータですが、レイアウト確認のためにここで定義します。
-const pricePerSeat = 18870;
-// --- ここまでダミーデータ ---
-
 export const ReservationConfirmPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useTypedLocation<ReservationConfirmState | undefined>();
@@ -43,7 +38,7 @@ export const ReservationConfirmPage: React.FC = () => {
 
   const trainDetailResult = state.trainDetailResult;
   const selectedSeats = state.selectedSeats;
-  const totalPrice = selectedSeats.length * pricePerSeat;
+  const totalPrice = selectedSeats.reduce((sum, item) => sum + item.price, 0);
 
   const handleReserve = async () => {
     if (!buyerName || !emailAddress) {
@@ -99,7 +94,7 @@ export const ReservationConfirmPage: React.FC = () => {
             <Card>
               <CardHeader>
                 <div className='flex items-center gap-2'>
-                  <span className='bg-green-100 text-green-800 text-sm font-medium px-2.5 py-0.5 rounded'>
+                  <span className='text-primary border-2 text-sm font-medium px-2.5 py-0.5 rounded'>
                     {trainDetailResult.trainTypeName}
                   </span>
                   <p className='text-xl font-bold'>{trainDetailResult.trainNumber}</p>
@@ -117,8 +112,13 @@ export const ReservationConfirmPage: React.FC = () => {
                 </p>
               </CardHeader>
               <CardContent>
-                <Separator className='mb-4' />
-                <h3 className='font-semibold mb-3'>選択した座席</h3>
+                <Button
+                  variant='link'
+                  onClick={() => navigate(-1)}
+                  className='p-0 text-sm'
+                >
+                  座席選択に戻る
+                </Button>
                 <div className='space-y-3'>
                   {selectedSeats.map((seat, index) => (
                     <div
@@ -126,7 +126,7 @@ export const ReservationConfirmPage: React.FC = () => {
                       className='flex justify-between items-center'
                     >
                       <p>{formatSeat(seat.seatCd)}</p>
-                      <p className='font-semibold'>¥{pricePerSeat.toLocaleString()}</p>
+                      <p className='font-semibold'>¥{seat.price.toLocaleString()}</p>
                     </div>
                   ))}
                 </div>
