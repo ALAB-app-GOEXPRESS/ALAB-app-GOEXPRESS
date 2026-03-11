@@ -28,7 +28,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     implementation platform('software.amazon.awssdk:bom:2.42.9')
-	implementation("software.amazon.awssdk:ses:2.42.9")
+	implementation("software.amazon.awssdk:sesv2")
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
