@@ -85,7 +85,7 @@ public class ReservationService {
         savedReservation.getReservationId().value(),
         trainCd,
         depDate,
-        seat.getCarNumber(),
+        String.format("%02d", Integer.parseInt(seat.getCarNumber())),
         seat.getSeatCd(),
         depSt,
         arrSt,
@@ -97,7 +97,7 @@ public class ReservationService {
       seatReservation.reserveSeat(
         trainCd,
         depDate,
-        seat.getCarNumber(),
+        String.format("%02d", Integer.parseInt(seat.getCarNumber())),
         seat.getSeatCd(),
         depSt,
         arrSt,
