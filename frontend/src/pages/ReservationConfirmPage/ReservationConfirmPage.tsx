@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { formatSeat } from '@/utils/seat';
-import { ArrowLeft, Mail, User } from 'lucide-react';
+import { Mail, User } from 'lucide-react';
 import { createReservation } from '@/api/ReservationApi';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -13,6 +13,9 @@ import type { TrainDetailResult } from '@/api/TrainDetailApi';
 import type { SelectedSeat } from '@/types/Seat';
 import { useTypedLocation } from '@/lib/router';
 import type { StationCode } from '@/types/Station';
+import { Badge } from '@/components/ui/badge';
+import { TramFront } from 'lucide-react';
+import { specifyTrainTypeIconColor } from '@/utils/train';
 
 type ReservationConfirmState = {
   trainDetailResult: TrainDetailResult;
@@ -78,26 +81,23 @@ export const ReservationConfirmPage: React.FC = () => {
   return (
     <div className='min-h-screen bg-gray-50 p-4 sm:p-8'>
       <div className='max-w-6xl mx-auto'>
-        <Button
-          variant='link'
-          onClick={() => navigate(-1)}
-          className='p-0 text-black mb-4'
-        >
-          <ArrowLeft className='mr-1 h-4 w-4' />
-          座席選択に戻る
-        </Button>
-
         <h1 className='text-3xl font-bold mb-6'>予約内容の確認</h1>
 
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-8 items-start'>
           <div className='lg:col-span-2'>
             <Card>
               <CardHeader>
-                <div className='flex items-center gap-2'>
-                  <span className='text-primary border-2 text-sm font-medium px-2.5 py-0.5 rounded'>
-                    {trainDetailResult.trainTypeName}
-                  </span>
-                  <p className='text-xl font-bold'>{trainDetailResult.trainNumber}</p>
+                <div className='flex gap-2 items-center'>
+                  <TramFront
+                    className={`${specifyTrainTypeIconColor(trainDetailResult.trainTypeName)} text-white text-[30px] rounded-sm`}
+                  />
+
+                  <div className='flex flex-col'>
+                    <span className='font-sans text-[20px] font-bold'>
+                      {trainDetailResult.trainTypeName}
+                      {trainDetailResult.trainNumber}
+                    </span>
+                  </div>
                 </div>
                 <p className='font-semibold pt-2'>
                   {trainDetailResult.departureStationName} → {trainDetailResult.arrivalStationName}
@@ -125,7 +125,10 @@ export const ReservationConfirmPage: React.FC = () => {
                       key={index}
                       className='flex justify-between items-center'
                     >
-                      <p>{formatSeat(seat.seatCd)}</p>
+                      <div className='flex min-w-38 justify-between'>
+                        <span>{formatSeat(seat.seatCd)}</span>
+                        <Badge variant='outline'>{seat.seatTypeName}</Badge>
+                      </div>
                       <p className='font-semibold'>¥{seat.price.toLocaleString()}</p>
                     </div>
                   ))}
@@ -175,7 +178,7 @@ export const ReservationConfirmPage: React.FC = () => {
                 </div>{' '}
                 <div className='grid grid-cols-2 items-center font-bold text-xl'>
                   <p>お支払い合計:</p>
-                  <p className='text-right text-primary'>¥{totalPrice.toLocaleString()}</p>
+                  <p className='text-right text-primary text-3xl'>¥{totalPrice.toLocaleString()}</p>
                 </div>
                 <Button
                   onClick={handleReserve}
