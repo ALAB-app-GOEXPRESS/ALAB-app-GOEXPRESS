@@ -15,6 +15,7 @@ export const SeatMapPage: React.FC = () => {
   const location = useLocation();
 
   const { seatClasses, trainDetail } = location.state || {};
+
   const [selectedSeats, setSelectedSeats] = useState<SelectedSeat[]>([]);
 
   const [activeCar, setActiveCar] = useState<number>(1);
@@ -23,17 +24,6 @@ export const SeatMapPage: React.FC = () => {
     trainCd: trainDetail.trainCd,
     departureDate: trainDetail.date,
   });
-
-  // const handleConfirmReservation = () => {
-  //   if (selectedSeats.length === 0) {
-  //     alert('座席を1つ以上選択してください。');
-  //     return;
-  //   }
-  //   const selectedSeatLabels = selectedSeats
-  //     .map((s) => `${s.carNumber}号車 ${convertSeatCdToLabel(s.seatId)}`)
-  //     .join(', ');
-  //   alert(`以下の座席で予約します：\n${selectedSeatLabels}\n（この先の機能は別途実装が必要です）`);
-  // };
 
   if (!trainDetail) {
     return (
@@ -50,10 +40,6 @@ export const SeatMapPage: React.FC = () => {
 
   return (
     <div className='min-h-screen bg-gray-50 p-4 sm:p-8 relative'>
-      {/* <SelectedSeatsInfo
-        selectedSeats={selectedSeats}
-        onConfirm={handleConfirmReservation}
-      /> */}
 
       <div className='mx-auto max-w-5xl'>
         <Button
@@ -84,12 +70,10 @@ export const SeatMapPage: React.FC = () => {
                         key={carNumber}
                         variant={activeCar === carNumber ? 'default' : 'outline'}
                         className={[
-                          // どの状態でも border 幅を確保
                           'border',
                           activeCar === carNumber
                             ? 'disabled:bg-primary/10 disabled:text-primary border-primary'
                             : 'border-border',
-                          // 必要に応じて最小幅も追加
                           'px-3 py-1 sm:px-4 h-16 w-16 border-3',
                         ].join(' ')}
                         onClick={() => setActiveCar(carNumber)}
