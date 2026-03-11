@@ -13,6 +13,7 @@ import com.alab.goexpress.reservation.application.query.ReservationListItemView;
 import com.alab.goexpress.reservation.application.query.ReservationListView;
 import com.alab.goexpress.reservation.domain.model.Reservation;
 import com.alab.goexpress.reservation.domain.model.ReservationId;
+import com.alab.goexpress.utils.mail.MailSender;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.time.LocalDate;
@@ -30,6 +31,7 @@ public class ReservationService {
   private final MasterQueryPort masterQuery;
   private final SeatReservationPort seatReservation;
   private final AccountQueryPort accountQuery;
+  private final MailSender mailSender;
 
   @PersistenceContext
   private EntityManager entityManager;
@@ -104,6 +106,8 @@ public class ReservationService {
     if (entityManager != null) {
       entityManager.flush();
     }
+
+    mailSender.sendText("", "test", "test");
 
     return store.findItemWithTicketsAndOperationById(savedReservation.getReservationId().value());
   }
