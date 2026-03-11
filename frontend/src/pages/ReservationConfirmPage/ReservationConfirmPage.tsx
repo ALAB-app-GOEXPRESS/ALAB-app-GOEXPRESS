@@ -85,7 +85,7 @@ export const ReservationConfirmPage: React.FC = () => {
       <div className='max-w-6xl mx-auto'>
         <Button
           variant='link'
-          onClick={() => alert('座席選択ページに戻ります。（ダミー）')}
+          onClick={() => navigate(-1)}
           className='p-0 text-black mb-4'
         >
           <ArrowLeft className='mr-1 h-4 w-4' />
@@ -102,7 +102,7 @@ export const ReservationConfirmPage: React.FC = () => {
                   <span className='bg-green-100 text-green-800 text-sm font-medium px-2.5 py-0.5 rounded'>
                     {trainDetailResult.trainTypeName}
                   </span>
-                  <p className='text-xl font-bold'>{trainDetailResult.trainNumber}号</p>
+                  <p className='text-xl font-bold'>{trainDetailResult.trainNumber}</p>
                 </div>
                 <p className='font-semibold pt-2'>
                   {trainDetailResult.departureStationName} → {trainDetailResult.arrivalStationName}
@@ -113,7 +113,7 @@ export const ReservationConfirmPage: React.FC = () => {
                     month: 'long',
                     day: 'numeric',
                   })}{' '}
-                  06:32 発
+                  {trainDetailResult.departureTime} 発
                 </p>
               </CardHeader>
               <CardContent>
