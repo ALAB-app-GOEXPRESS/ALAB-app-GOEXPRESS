@@ -13,6 +13,7 @@ import com.alab.goexpress.reservation.application.query.ReservationListItemView;
 import com.alab.goexpress.reservation.application.query.ReservationListView;
 import com.alab.goexpress.reservation.domain.model.Reservation;
 import com.alab.goexpress.reservation.domain.model.ReservationId;
+import com.alab.goexpress.seat.dto.SelectedSeatDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.time.LocalDate;
@@ -60,46 +61,49 @@ public class ReservationService {
     LocalDate depDate = req.getDepartureDate();
     String depSt = req.getDepartureStationCd();
     String arrSt = req.getArrivalStationCd();
+    String buyerName = req.getBuyerName();
+    String emailAddress = req.getEmailAddress();
+    SelectedSeatDto selectedSeat[] = req.getSelectedSeat();
 
     String trainTypeCd = masterQuery.getTrainTypeCd(trainCd);
-
-    ChosenSeat seat = seatReservation.chooseSeat(trainCd, depDate);
-
-    int charge = masterQuery.getCharge(depSt, arrSt, trainTypeCd, seat.seatTypeCd());
 
     BuyerAccount buyer = accountQuery.getDefaultBuyerAccount();
     Reservation r = new Reservation();
     r.setInvalidFlg(false);
     r.setAccountId(buyer.accountId());
     r.setDepartureDate(depDate);
-    r.setBuyerName(buyer.accountName());
-    r.setEmailAddress(buyer.emailAddress());
+    r.setBuyerName(buyerName);
+    r.setEmailAddress(emailAddress);
     r.setCardNumber(buyer.cardNumber());
     r.setExpirationDate(buyer.expirationDate());
     Reservation savedReservation = store.save(r);
 
-    ticketCommand.createTicket(
-      savedReservation.getReservationId().value(),
-      trainCd,
-      depDate,
-      seat.trainCarCd(),
-      seat.seatCd(),
-      depSt,
-      arrSt,
-      charge,
-      savedReservation.getBuyerName(),
-      savedReservation.getEmailAddress()
-    );
+    for (SelectedSeatDto seat : selectedSeat) {
+      int charge = masterQuery.getCharge(depSt, arrSt, trainTypeCd, "10"); // 指定席で固定
 
-    seatReservation.reserveSeat(
-      trainCd,
-      depDate,
-      seat.trainCarCd(),
-      seat.seatCd(),
-      depSt,
-      arrSt,
-      savedReservation.getReservationId().value()
-    );
+      ticketCommand.createTicket(
+        savedReservation.getReservationId().value(),
+        trainCd,
+        depDate,
+        String.format("%02d", Integer.parseInt(seat.getCarNumber())),
+        seat.getSeatCd(),
+        depSt,
+        arrSt,
+        charge,
+        savedReservation.getBuyerName(),
+        savedReservation.getEmailAddress()
+      );
+
+      seatReservation.reserveSeat(
+        trainCd,
+        depDate,
+        String.format("%02d", Integer.parseInt(seat.getCarNumber())),
+        seat.getSeatCd(),
+        depSt,
+        arrSt,
+        savedReservation.getReservationId().value()
+      );
+    }
 
     if (entityManager != null) {
       entityManager.flush();

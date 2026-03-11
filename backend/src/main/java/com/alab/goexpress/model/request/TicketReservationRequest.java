@@ -1,5 +1,6 @@
 package com.alab.goexpress.model.request;
 
+import com.alab.goexpress.seat.dto.SelectedSeatDto;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -24,4 +25,13 @@ public class TicketReservationRequest {
 
   @NotNull
   private String arrivalStationCd;
+
+  @NotNull
+  private String buyerName;
+
+  @NotNull
+  private String emailAddress;
+
+  @NotNull
+  private SelectedSeatDto[] selectedSeat;
 }
