@@ -39,7 +39,7 @@ export const SeatMapPage: React.FC = () => {
   };
 
   const handleReserve = () => {
-    navigate('/reservation-confirm', { state: { trainDetail, selectedSeats } });
+    navigate('/reservation-confirm', { state: { trainDetailResult: trainDetail, selectedSeats } });
   };
 
   return (

@@ -41,7 +41,9 @@ export const ReservationConfirmPage: React.FC = () => {
   console.log(state.trainDetailResult);
   console.log(state.selectedSeats);
 
-  //const totalPrice = selectedSeats.length * pricePerSeat;
+  const trainDetailResult = state.trainDetailResult;
+  const selectedSeats = state.selectedSeats;
+  const totalPrice = selectedSeats.length * pricePerSeat;
 
   const handleReserve = async () => {
     if (!buyerName || !emailAddress) {
