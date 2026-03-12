@@ -153,6 +153,8 @@ export function useReservationList(size: number): UseReservationListReturn {
           };
         });
 
+        FormattedResults.sort((a, b) => new Date(b.buyDatetime).getTime() - new Date(a.buyDatetime).getTime());
+
         setTotalCount(response.totalCount);
         setPageResults(FormattedResults);
         setIsLoading(false);
