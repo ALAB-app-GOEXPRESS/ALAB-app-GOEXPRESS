@@ -2,20 +2,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ReservationCard } from './ReservationCard';
 import { useReservationList } from './useReservationList';
+import { ReservationCardSkeleton } from '@/components/ui/ReservationCardSkeleton'; // 作成したスケルトンをインポート
 
 export const ReservationListPage: React.FC = () => {
   const pageSize = 5;
 
-  const {
-    currentPage,
-    totalPages,
-    pageItems,
-    setPageToQuery,
-    isLoading,
-    apiErrorMessage,
-    // totalCount,
-    pageResults,
-  } = useReservationList(pageSize);
+  const { currentPage, totalPages, pageItems, setPageToQuery, isLoading, apiErrorMessage, pageResults } =
+    useReservationList(pageSize);
 
   return (
     <div className='min-h-[calc(100vh-64px)] bg-background'>
@@ -25,24 +18,28 @@ export const ReservationListPage: React.FC = () => {
             <div className='text-[28px] font-bold'>予約確認</div>
           </div>
         </div>
+
+        {/* ローディング中の表示をスケルトンに変更 */}
         {isLoading && (
-          <Card className='border-muted/60'>
-            <CardContent className='p-4 text-sm text-muted-foreground'>読み込み中...</CardContent>
-          </Card>
+          <ul>
+            {Array.from({ length: pageSize }).map((_, index) => (
+              <li key={index}>
+                <ReservationCardSkeleton />
+              </li>
+            ))}
+          </ul>
         )}
 
         {!isLoading && (
           <div>
             <ul>
-              {pageResults.map((result) => {
-                return (
-                  <li key={result.reservationId}>
-                    <ReservationCard reservationItem={result} />
-                  </li>
-                );
-              })}
+              {pageResults.map((result) => (
+                <li key={result.reservationId}>
+                  <ReservationCard reservationItem={result} />
+                </li>
+              ))}
             </ul>
-            {!isLoading && pageResults.length === 0 && !apiErrorMessage && (
+            {pageResults.length === 0 && !apiErrorMessage && (
               <Card className='border-muted/60'>
                 <CardContent className='p-4 text-sm text-muted-foreground'>
                   条件に一致する列車が見つかりませんでした。

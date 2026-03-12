@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { fetchTrainDetail } from '@/api/TrainDetailApi';
 import { formatJapaneseDate, todayYYYYMMDD } from '@/utils/dateTime';
-import { ArrowLeft, MapPin, TramFront, Loader2 } from 'lucide-react';
+import { ArrowLeft, MapPin, TramFront } from 'lucide-react';
 import { specifyTrainTypeIconColor } from '@/utils/train';
 import { SeatClassCard } from '@/pages/TrainDetailPage/SeatClassCard';
+import { TrainDetailPageSkeleton } from '@/components/ui/TrainDetailPageSkeleton'; // 作成したスケルトンをインポート
 
 import type { TrainDetailResult } from '@/api/TrainDetailApi';
 import type { StationCode } from '@/types/Station';
@@ -53,15 +54,9 @@ export const TrainDetailPage: React.FC = () => {
     loadTrainDetail();
   }, [trainCd, searchParams]);
 
+  // ローディング中の表示をスケルトンに変更
   if (isLoading) {
-    return (
-      <div className='min-h-screen bg-gray-50 p-4 sm:p-8 flex justify-center items-center'>
-        <div className='flex items-center gap-2 text-muted-foreground'>
-          <Loader2 className='h-6 w-6 animate-spin' />
-          <p>詳細情報を読み込んでいます...</p>
-        </div>
-      </div>
-    );
+    return <TrainDetailPageSkeleton />;
   }
 
   if (error || !trainDetail) {
