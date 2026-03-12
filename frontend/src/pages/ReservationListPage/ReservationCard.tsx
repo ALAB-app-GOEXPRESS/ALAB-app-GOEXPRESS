@@ -43,7 +43,7 @@ export const ReservationCard: React.FC<Props> = ({ reservationItem }: Props) => 
     <Card className='border-brand-green-light my-4'>
       <CardHeader className='pb-2'>
         <CardTitle className='text-left flex space-y-0.5'>
-          <div className='flex flex-col grow-1 shrink-1 basis-0'>
+          <div className='flex flex-col grow shrink basis-0'>
             <p className='flex items-center text-xl font-semibold'>
               <Ticket />
               {reservationItem.tickets[0].trainTypeName + reservationItem.tickets[0].trainNumber}号
@@ -53,19 +53,19 @@ export const ReservationCard: React.FC<Props> = ({ reservationItem }: Props) => 
               {reservationItem.tickets[0].operation.toStationName}
             </p>
           </div>
-          <div className='grow-1 shrink-1 basis-0 w-full text-right'>
+          <div className='grow shrink basis-0 w-full text-right'>
             <Badge className=''>{validation}</Badge>
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent className='flex flex-col items-left gap-2'>
         <div className='flex item-left'>
-          <div className='grow-1 shrink-1 basis-0'>
+          <div className='grow shrink basis-0'>
             <p className='text-sm text-muted-foreground font-normal'>出発</p>
             <p className='text-sm font-semibold'>{formatJapaneseDate(reservationItem.departureDate)}</p>
             <p className='text-sm'>{departureTime}</p>
           </div>
-          <div className='grow-1 shrink-1 basis-0'>
+          <div className='grow shrink basis-0'>
             <p className='text-sm text-muted-foreground font-normal'>ホーム</p>
             <p className='text-sm font-semibold'>{reservationItem.tickets[0].operation.fromTrackNumber}番線</p>
           </div>
@@ -85,10 +85,10 @@ export const ReservationCard: React.FC<Props> = ({ reservationItem }: Props) => 
       </CardContent>
       <hr className='mx-4' />
       <CardFooter className='flex items-left gap-2 pt-2'>
-        <p className='flex grow-1 shrink-1 text-xl font-semibold'>
+        <p className='flex grow shrink text-xl font-semibold'>
           合計: {formatCurrency(reservationItem.tickets[0].charge)}
         </p>
-        <div className='flex grow-1 shrink-1 basis-0 justify-end gap-2'>
+        <div className='flex grow shrink basis-0 justify-end gap-2'>
           <Button onClick={() => navigate('/reservation-detail', { state: { reservationDetails } })}>
             <QrCode />
             チケットを表示
