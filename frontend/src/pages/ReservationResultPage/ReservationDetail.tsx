@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { type TrainResult } from '@/api/TrainListApi';
 import { Clock, MapPin, TrainFront } from 'lucide-react';
 import { formatJapaneseDate } from '@/utils/dateTime';
-import { Badge } from '@/components/ui/badge';
 
 type Props = {
   trainDetails: TrainResult;
