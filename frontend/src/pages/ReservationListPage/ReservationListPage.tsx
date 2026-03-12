@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ReservationCard } from './ReservationCard';
 import { useReservationList } from './useReservationList';
-import { ReservationCardSkeleton } from '@/components/ui/ReservationCardSkeleton'; // 作成したスケルトンをインポート
+import { ReservationCardSkeleton } from '@/components/ui/ReservationCardSkeleton';
 
 export const ReservationListPage: React.FC = () => {
   const pageSize = 5;
@@ -19,7 +19,6 @@ export const ReservationListPage: React.FC = () => {
           </div>
         </div>
 
-        {/* ローディング中の表示をスケルトンに変更 */}
         {isLoading && (
           <ul>
             {Array.from({ length: pageSize }).map((_, index) => (

@@ -89,7 +89,6 @@ export const ReservationCard: React.FC<Props> = ({ reservationItem }: Props) => 
           合計: {formatCurrency(reservationItem.tickets[0].charge)}
         </p>
         <div className='flex grow-1 shrink-1 basis-0 justify-end gap-2'>
-          {/* <Button>キャンセル</Button> */}
           <Button onClick={() => navigate('/reservation-detail', { state: { reservationDetails } })}>
             <QrCode />
             チケットを表示

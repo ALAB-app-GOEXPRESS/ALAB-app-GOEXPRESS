@@ -8,7 +8,7 @@ import { useSeatMap } from '@/pages/SeatMapPage/useSeatMap';
 import { calculateAvailableSeat } from '@/utils/seat';
 import type { SelectedSeat } from '@/types/Seat';
 import { SelectedSeatsInfo } from './selectedSeatsInfo';
-import { SeatMapPageSkeleton } from '@/components/ui/SeatMapPageSkeleton'; // 作成したスケルトンをインポート
+import { SeatMapPageSkeleton } from '@/components/ui/SeatMapPageSkeleton';
 
 const TOTAL_CARS = 8;
 
@@ -21,13 +21,11 @@ export const SeatMapPage: React.FC = () => {
   const [selectedSeats, setSelectedSeats] = useState<SelectedSeat[]>([]);
   const [activeCar, setActiveCar] = useState<number>(1);
 
-  // useSeatMapからisLoadingを受け取るようにします
   const { reservedSeats, isLoading } = useSeatMap({
     trainCd: trainDetail.trainCd,
     departureDate: trainDetail.date,
   });
 
-  // ローディング中はスケルトンを表示
   if (isLoading) {
     return <SeatMapPageSkeleton />;
   }

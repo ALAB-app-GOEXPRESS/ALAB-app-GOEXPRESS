@@ -13,7 +13,7 @@ import { useSearchResults } from './useSearchResults';
 import { type SeatClass } from '@/utils/seat';
 import { TrainCard } from './TrainCard';
 import { StationNameMap } from '@/constants/Station';
-import { TrainCardSkeleton } from '@/components/ui/TrainCardSkeleton'; // 作成したスケルトンをインポート
+import { TrainCardSkeleton } from '@/components/ui/TrainCardSkeleton';
 
 type SeatClassFilter = 'all' | SeatClass;
 
@@ -37,8 +37,6 @@ export const SearchResultPage: React.FC = () => {
       time: searchParams.get('time')!,
     } as TrainSearchParams;
   }, [searchParams]);
-
-  // const [paramsUi, setParamsUi] = useState<TrainSearchParams>(defaultParams);
 
   const pageSize = 10;
 
@@ -177,7 +175,6 @@ export const SearchResultPage: React.FC = () => {
         )}
 
         <div className='mt-4'>
-          {/* ローディング中のスケルトン表示 */}
           {isLoading && (
             <ul className='space-y-3'>
               {Array.from({ length: pageSize }).map((_, index) => (
@@ -188,7 +185,6 @@ export const SearchResultPage: React.FC = () => {
             </ul>
           )}
 
-          {/* 結果なしの表示 */}
           {!isLoading && pageResults.length === 0 && !apiErrorMessage && (
             <Card className='border-muted/60'>
               <CardContent className='p-4 text-sm text-muted-foreground'>
@@ -197,7 +193,6 @@ export const SearchResultPage: React.FC = () => {
             </Card>
           )}
 
-          {/* 結果ありの表示 */}
           {!isLoading && pageResults.length > 0 && (
             <div>
               <ul className='space-y-3'>

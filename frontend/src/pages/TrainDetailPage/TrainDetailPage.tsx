@@ -7,7 +7,7 @@ import { formatJapaneseDate, todayYYYYMMDD } from '@/utils/dateTime';
 import { ArrowLeft, MapPin, TramFront } from 'lucide-react';
 import { specifyTrainTypeIconColor } from '@/utils/train';
 import { SeatClassCard } from '@/pages/TrainDetailPage/SeatClassCard';
-import { TrainDetailPageSkeleton } from '@/components/ui/TrainDetailPageSkeleton'; // 作成したスケルトンをインポート
+import { TrainDetailPageSkeleton } from '@/components/ui/TrainDetailPageSkeleton';
 
 import type { TrainDetailResult } from '@/api/TrainDetailApi';
 import type { StationCode } from '@/types/Station';
@@ -54,7 +54,6 @@ export const TrainDetailPage: React.FC = () => {
     loadTrainDetail();
   }, [trainCd, searchParams]);
 
-  // ローディング中の表示をスケルトンに変更
   if (isLoading) {
     return <TrainDetailPageSkeleton />;
   }
