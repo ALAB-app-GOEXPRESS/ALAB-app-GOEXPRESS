@@ -26,7 +26,7 @@ export const ReservationDetail: React.FC<Props> = ({
     date: reservationDate,
     departure: `${trainDetails.departureTime} ${departureStationName}`,
     arrival: `${trainDetails.arrivalTime} ${arrivalStationName}`,
-    seat: confirmedSeats[0],
+    seat: confirmedSeats.join(),
   };
 
   const qrCodeJson = JSON.stringify(qrCodeData);
