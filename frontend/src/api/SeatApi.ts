@@ -1,30 +1,30 @@
 import { fetchJSON } from '@/lib/fetch';
 
 export type SeatBetweenApiItem = {
-    seatCd: string;
-}
+  seatCd: string;
+};
 
 export type SeatsParams = {
-    trainCd: string;
-    departureDate: string;
+  trainCd: string;
+  departureDate: string;
 };
 
 export type ReservedSeat = {
-    seatCd: string;
-    carNumber: number;
-}
+  seatCd: string;
+  carNumber: number;
+};
 
 export async function FetchSeats(params: SeatsParams) {
-    const endpoint = `/api/seats?train_cd=${encodeURIComponent(params.trainCd)}&departure_date=${encodeURIComponent(params.departureDate)}`;
+  const endpoint = `/api/seats?train_cd=${encodeURIComponent(params.trainCd)}&departure_date=${encodeURIComponent(params.departureDate)}`;
 
-    const data = await fetchJSON<SeatBetweenApiItem[]>(endpoint);
+  const data = await fetchJSON<SeatBetweenApiItem[]>(endpoint);
 
-    const resetvedSeats: ReservedSeat[] = data.map((seat) => {
-        return {
-            seatCd: seat.seatCd,
-            carNumber: Math.floor((parseInt(seat.seatCd) - 1) / 75) + 1
-        }
-    });
+  const reservedSeats: ReservedSeat[] = data.map((seat) => {
+    return {
+      seatCd: seat.seatCd,
+      carNumber: Math.floor((parseInt(seat.seatCd) - 1) / 75) + 1,
+    };
+  });
 
-    return resetvedSeats;
-};
+  return reservedSeats;
+}

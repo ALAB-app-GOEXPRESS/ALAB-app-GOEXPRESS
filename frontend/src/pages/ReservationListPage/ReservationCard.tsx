@@ -2,7 +2,7 @@ import type { ReservationDetails } from '@/api/ReservationApi';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatSeat } from '@/utils/seat';
+import { formatSeat, formatSeats } from '@/utils/seat';
 import { normalizeTrainNumber } from '@/utils/train';
 import { formatJapaneseDate, toHHMM } from '@/utils/dateTime';
 import { QrCode, Ticket } from 'lucide-react';
@@ -22,9 +22,6 @@ export const ReservationCard: React.FC<Props> = ({ reservationItem }: Props) => 
   const validation = reservationItem.invalidFlg === true ? '無効' : '有効';
 
   const reservationDetails: ReservationDetails = {
-    confirmedSeat: formatSeat(reservationItem.tickets[0].seatCd),
-    trackNumber: reservationItem.tickets[0].operation.fromTrackNumber,
-    reservationDate: reservationItem.departureDate,
     trainDetails: {
       trainCd: reservationItem.tickets[0].trainCd,
       trainTypeName: reservationItem.tickets[0].trainTypeName,
@@ -35,7 +32,12 @@ export const ReservationCard: React.FC<Props> = ({ reservationItem }: Props) => 
       arrivalStationCd: reservationItem.tickets[0].operation.toStationCd,
       trackNumber: reservationItem.tickets[0].operation.fromTrackNumber,
     },
+    confirmedSeats: formatSeats(reservationItem.tickets.map((ticket) => ticket.seatCd)),
+    reservationDate: reservationItem.departureDate,
+    trackNumber: reservationItem.tickets[0].operation.fromTrackNumber,
   };
+
+  console.log(reservationDetails);
 
   return (
     <Card className='border-brand-green-light my-4'>

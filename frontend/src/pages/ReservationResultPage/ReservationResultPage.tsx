@@ -46,7 +46,7 @@ export const ReservationResultPage: React.FC = () => {
     );
   }
 
-  const { trainDetails, confirmedSeat, reservationDate, trackNumber } = reservationDetails;
+  const { trainDetails, confirmedSeats, reservationDate, trackNumber } = reservationDetails;
   const departureStationCd = StationNameMap[trainDetails.departureStationCd];
   const arrivalStationCd = StationNameMap[trainDetails.arrivalStationCd];
 
@@ -65,7 +65,7 @@ export const ReservationResultPage: React.FC = () => {
         </div>
         <ReservationDetail
           trainDetails={trainDetails}
-          confirmedSeat={confirmedSeat}
+          confirmedSeats={confirmedSeats}
           reservationDate={reservationDate}
           trackNumber={trackNumber}
           departureStationName={departureStationCd}
