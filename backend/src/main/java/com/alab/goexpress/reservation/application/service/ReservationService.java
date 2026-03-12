@@ -13,6 +13,7 @@ import com.alab.goexpress.reservation.application.query.ReservationListItemView;
 import com.alab.goexpress.reservation.application.query.ReservationListView;
 import com.alab.goexpress.reservation.domain.model.Reservation;
 import com.alab.goexpress.reservation.domain.model.ReservationId;
+import com.alab.goexpress.utils.mail.MailSender;
 import com.alab.goexpress.seat.dto.SelectedSeatDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -21,6 +22,8 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.alab.goexpress.utils.mail.MailBody.MailBody;
 
 @RequiredArgsConstructor
 @Service
@@ -31,6 +34,7 @@ public class ReservationService {
   private final MasterQueryPort masterQuery;
   private final SeatReservationPort seatReservation;
   private final AccountQueryPort accountQuery;
+  private final MailSender mailSender;
 
   @PersistenceContext
   private EntityManager entityManager;
@@ -108,6 +112,8 @@ public class ReservationService {
     if (entityManager != null) {
       entityManager.flush();
     }
+
+    mailSender.sendText(emailAddress, "test", MailBody);
 
     return store.findItemWithTicketsAndOperationById(savedReservation.getReservationId().value());
   }
