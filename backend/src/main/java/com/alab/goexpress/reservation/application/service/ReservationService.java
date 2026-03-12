@@ -23,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.alab.goexpress.utils.mail.MailBody.MailBody;
+
 @RequiredArgsConstructor
 @Service
 public class ReservationService {
@@ -111,7 +113,7 @@ public class ReservationService {
       entityManager.flush();
     }
 
-    mailSender.sendText("", "test", "test");
+    mailSender.sendText(emailAddress, "test", MailBody);
 
     return store.findItemWithTicketsAndOperationById(savedReservation.getReservationId().value());
   }
