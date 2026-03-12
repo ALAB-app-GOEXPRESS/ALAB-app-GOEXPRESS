@@ -36,11 +36,14 @@ export const SeatMapPage: React.FC = () => {
 
   const handleClickTrash = () => {
     setSelectedSeats([]);
-  }
+  };
+
+  const handleReserve = () => {
+    navigate('/reservation-confirm', { state: { trainDetailResult: trainDetail, selectedSeats } });
+  };
 
   return (
     <div className='min-h-screen bg-gray-50 p-4 sm:p-8 relative'>
-
       <div className='mx-auto max-w-5xl'>
         <Button
           variant='link'
@@ -127,6 +130,7 @@ export const SeatMapPage: React.FC = () => {
             selectedSeats={selectedSeats}
             totalPrice={selectedSeats.reduce((acc, current) => acc + current.price, 0)}
             handleClickTrash={handleClickTrash}
+            handleReserve={handleReserve}
           />
         </div>
       </div>

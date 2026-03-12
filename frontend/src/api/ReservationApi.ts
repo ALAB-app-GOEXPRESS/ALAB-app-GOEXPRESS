@@ -4,6 +4,7 @@ import { fetchJSON } from '@/lib/fetch';
 import type { StationCode } from '@/types/Station';
 import { toHHMM } from '@/utils/dateTime';
 import { normalizeTrainNumber } from '@/utils/train';
+import type { ReservedSeat } from './SeatApi';
 
 export type ReservationListItem = {
   items: ReservationItem[];
@@ -92,6 +93,9 @@ export interface ReservationParams {
   departureStationCd: StationCode;
   arrivalStationCd: StationCode;
   trackNumber: string;
+  buyerName: string;
+  emailAddress: string;
+  selectedSeat: ReservedSeat[];
 }
 
 export interface ReservationDetails {
@@ -112,6 +116,9 @@ export const createReservation = async (
     departureStationCd: reservationParams.departureStationCd,
     arrivalStationCd: reservationParams.arrivalStationCd,
     departureDate: date,
+    buyerName: reservationParams.buyerName,
+    emailAddress: reservationParams.emailAddress,
+    selectedSeat: reservationParams.selectedSeat,
   };
 
   const createResponse = await fetchJSON<{

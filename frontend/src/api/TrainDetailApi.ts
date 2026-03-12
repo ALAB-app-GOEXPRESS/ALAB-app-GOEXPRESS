@@ -41,6 +41,8 @@ export type TrainDetailResult = {
   trainNumber: string;
   departureTime: string;
   arrivalTime: string;
+  departureStationCd: string;
+  arrivalStationCd: string;
   departureStationName: string;
   arrivalStationName: string;
   trackNumber: string;
@@ -62,7 +64,6 @@ export async function fetchTrainDetail(params: TrainDetailParams): Promise<Train
     trainCd,
   )}/detail?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
 
-
   const data = await fetchJSON<TrainDetailApiItem>(endpoint);
 
   const converted: TrainDetailResult = {
@@ -71,6 +72,8 @@ export async function fetchTrainDetail(params: TrainDetailParams): Promise<Train
     trainNumber: `${normalizeTrainNumber(data.trainBasicInfo.trainNumber)}号`,
     departureTime: toHHMM(data.trainBasicInfo.departureTime),
     arrivalTime: toHHMM(data.trainBasicInfo.arrivalTime),
+    departureStationCd: data.trainBasicInfo.fromStationCd,
+    arrivalStationCd: data.trainBasicInfo.toStationCd,
     departureStationName: StationNameMap[data.trainBasicInfo.fromStationCd],
     arrivalStationName: StationNameMap[data.trainBasicInfo.toStationCd],
     trackNumber: data.trackNumber,
