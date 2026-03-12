@@ -4,10 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { type TrainResult } from '@/api/TrainListApi';
 import { Clock, MapPin, TrainFront } from 'lucide-react';
 import { formatJapaneseDate } from '@/utils/dateTime';
+import { Badge } from '@/components/ui/badge';
 
 type Props = {
   trainDetails: TrainResult;
-  confirmedSeat: string;
+  confirmedSeats: string[];
   reservationDate: string;
   trackNumber: string;
   departureStationName: string;
@@ -16,7 +17,7 @@ type Props = {
 
 export const ReservationDetail: React.FC<Props> = ({
   trainDetails,
-  confirmedSeat,
+  confirmedSeats,
   reservationDate,
   trackNumber,
   departureStationName,
@@ -26,7 +27,7 @@ export const ReservationDetail: React.FC<Props> = ({
     date: reservationDate,
     departure: `${trainDetails.departureTime} ${departureStationName}`,
     arrival: `${trainDetails.arrivalTime} ${arrivalStationName}`,
-    seat: confirmedSeat,
+    seat: confirmedSeats[0],
   };
 
   const qrCodeJson = JSON.stringify(qrCodeData);
@@ -76,9 +77,17 @@ export const ReservationDetail: React.FC<Props> = ({
 
           <figure className='mt-4'>
             <figcaption className='text-sm text-muted-foreground mb-2'>座席</figcaption>
-            <div className='inline-flex items-center gap-2 rounded-md bg-green-50 px-3 py-1'>
-              <TrainFront className='h-4 w-4 text-green-700 shrink-0' />
-              <p className='text-sm font-semibold text-green-700'>{confirmedSeat}</p>
+            <div className='flex gap-2 flex-wrap'>
+              {confirmedSeats.map((seat) => {
+                return (
+                  <div>
+                    <div className='inline-flex items-center gap-1 rounded-md bg-green-50 px-3 py-1'>
+                      <TrainFront className='h-3 w-3 text-green-700 shrink-0' />
+                      <p className='text-xs font-semibold text-green-700'>{seat}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </figure>
         </CardContent>

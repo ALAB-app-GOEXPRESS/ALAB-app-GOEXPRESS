@@ -1,5 +1,5 @@
 import type { TrainResult } from '@/api/TrainListApi';
-import { formatSeat } from '@/utils/seat';
+import { formatSeats } from '@/utils/seat';
 import { fetchJSON } from '@/lib/fetch';
 import type { StationCode } from '@/types/Station';
 import { toHHMM } from '@/utils/dateTime';
@@ -99,7 +99,7 @@ export interface ReservationParams {
 }
 
 export interface ReservationDetails {
-  confirmedSeat: string;
+  confirmedSeats: string[];
   trackNumber: string;
   reservationDate: string;
   trainDetails: TrainResult;
@@ -138,7 +138,7 @@ export const createReservation = async (
   const trainName = ticket.trainName;
 
   const formattedData: ReservationDetails = {
-    confirmedSeat: formatSeat(ticket.seatCd),
+    confirmedSeats: formatSeats(detailResponse.tickets.map((ticket) => ticket.seatCd)),
     trackNumber: operation.fromTrackNumber,
     reservationDate: detailResponse.departureDate,
     trainDetails: {

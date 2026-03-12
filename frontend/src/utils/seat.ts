@@ -70,3 +70,12 @@ export const formatSeat = (seatCd: string): string => {
     return seatCd;
   }
 };
+
+export const formatSeats = (seatCdList: string[]): string[] => {
+  try {
+    return seatCdList.map((seat) => formatSeat(seat));
+  } catch (error) {
+    console.error('座席コードのフォーマット中にエラーが発生しました:', error);
+    return seatCdList;
+  }
+};
