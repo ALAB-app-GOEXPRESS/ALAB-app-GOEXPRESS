@@ -113,7 +113,7 @@ public class ReservationService {
       entityManager.flush();
     }
 
-    mailSender.sendText(emailAddress, "test", MailBody);
+    mailSender.sendText(emailAddress, "【GO EXPRESS】予約内容のご確認", MailBody);
 
     return store.findItemWithTicketsAndOperationById(savedReservation.getReservationId().value());
   }
