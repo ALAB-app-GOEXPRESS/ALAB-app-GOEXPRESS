@@ -13,7 +13,7 @@ import { useSearchResults } from './useSearchResults';
 import { type SeatClass } from '@/utils/seat';
 import { TrainCard } from './TrainCard';
 import { StationNameMap } from '@/constants/Station';
-import { TrainCardSkeleton } from '@/pages/SearchResultPage/TrainCardSkeleton';
+import { TrainCardSkeleton } from './TrainCardSkeleton';
 
 type SeatClassFilter = 'all' | SeatClass;
 

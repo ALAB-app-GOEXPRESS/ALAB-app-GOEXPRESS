@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ReservationCard } from './ReservationCard';
 import { useReservationList } from './useReservationList';
-import { ReservationCardSkeleton } from '@/pages/ReservationListPage/ReservationCardSkeleton';
+import { ReservationCardSkeleton } from './ReservationCardSkeleton';
 
 export const ReservationListPage: React.FC = () => {
   const pageSize = 5;
