@@ -7,7 +7,7 @@ import { formatJapaneseDate, todayYYYYMMDD } from '@/utils/dateTime';
 import { ArrowLeft, MapPin, TramFront } from 'lucide-react';
 import { specifyTrainTypeIconColor } from '@/utils/train';
 import { SeatClassCard } from '@/pages/TrainDetailPage/SeatClassCard';
-import { TrainDetailPageSkeleton } from '@/components/ui/TrainDetailPageSkeleton';
+import { TrainDetailPageSkeleton } from '@/pages/TrainDetailPage/TrainDetailPageSkeleton';
 
 import type { TrainDetailResult } from '@/api/TrainDetailApi';
 import type { StationCode } from '@/types/Station';

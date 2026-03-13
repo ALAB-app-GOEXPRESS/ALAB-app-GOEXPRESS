@@ -8,7 +8,7 @@ import { useSeatMap } from '@/pages/SeatMapPage/useSeatMap';
 import { calculateAvailableSeat } from '@/utils/seat';
 import type { SelectedSeat } from '@/types/Seat';
 import { SelectedSeatsInfo } from './selectedSeatsInfo';
-import { SeatMapPageSkeleton } from '@/components/ui/SeatMapPageSkeleton';
+import { SeatMapPageSkeleton } from '@/pages/SeatMapPage/SeatMapPageSkeleton';
 
 const TOTAL_CARS = 8;
 
