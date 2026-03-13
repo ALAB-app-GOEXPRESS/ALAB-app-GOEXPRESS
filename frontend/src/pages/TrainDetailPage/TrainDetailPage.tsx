@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { fetchTrainDetail } from '@/api/TrainDetailApi';
 import { formatJapaneseDate, todayYYYYMMDD } from '@/utils/dateTime';
-import { ArrowLeft, MapPin, TramFront, Loader2 } from 'lucide-react';
+import { ArrowLeft, MapPin, TramFront } from 'lucide-react';
 import { specifyTrainTypeIconColor } from '@/utils/train';
 import { SeatClassCard } from '@/pages/TrainDetailPage/SeatClassCard';
+import { TrainDetailPageSkeleton } from './TrainDetailPageSkeleton';
 
 import type { TrainDetailResult } from '@/api/TrainDetailApi';
 import type { StationCode } from '@/types/Station';
@@ -54,14 +55,7 @@ export const TrainDetailPage: React.FC = () => {
   }, [trainCd, searchParams]);
 
   if (isLoading) {
-    return (
-      <div className='min-h-screen bg-gray-50 p-4 sm:p-8 flex justify-center items-center'>
-        <div className='flex items-center gap-2 text-muted-foreground'>
-          <Loader2 className='h-6 w-6 animate-spin' />
-          <p>詳細情報を読み込んでいます...</p>
-        </div>
-      </div>
-    );
+    return <TrainDetailPageSkeleton />;
   }
 
   if (error || !trainDetail) {

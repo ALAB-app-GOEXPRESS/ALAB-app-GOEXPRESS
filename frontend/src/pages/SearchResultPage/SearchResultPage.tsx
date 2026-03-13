@@ -13,6 +13,7 @@ import { useSearchResults } from './useSearchResults';
 import { type SeatClass } from '@/utils/seat';
 import { TrainCard } from './TrainCard';
 import { StationNameMap } from '@/constants/Station';
+import { TrainCardSkeleton } from './TrainCardSkeleton';
 
 type SeatClassFilter = 'all' | SeatClass;
 
@@ -36,8 +37,6 @@ export const SearchResultPage: React.FC = () => {
       time: searchParams.get('time')!,
     } as TrainSearchParams;
   }, [searchParams]);
-
-  // const [paramsUi, setParamsUi] = useState<TrainSearchParams>(defaultParams);
 
   const pageSize = 10;
 
@@ -175,11 +174,15 @@ export const SearchResultPage: React.FC = () => {
           </div>
         )}
 
-        <div className='mt-4 space-y-3'>
+        <div className='mt-4'>
           {isLoading && (
-            <Card className='border-muted/60'>
-              <CardContent className='p-4 text-sm text-muted-foreground'>読み込み中...</CardContent>
-            </Card>
+            <ul className='space-y-3'>
+              {Array.from({ length: pageSize }).map((_, index) => (
+                <li key={index}>
+                  <TrainCardSkeleton />
+                </li>
+              ))}
+            </ul>
           )}
 
           {!isLoading && pageResults.length === 0 && !apiErrorMessage && (
@@ -190,9 +193,9 @@ export const SearchResultPage: React.FC = () => {
             </Card>
           )}
 
-          {!isLoading && (
+          {!isLoading && pageResults.length > 0 && (
             <div>
-              <ul>
+              <ul className='space-y-3'>
                 {pageResults.map((result) => {
                   const departureName = StationNameMap[result.departureStationCd];
                   const arrivalName = StationNameMap[result.arrivalStationCd];

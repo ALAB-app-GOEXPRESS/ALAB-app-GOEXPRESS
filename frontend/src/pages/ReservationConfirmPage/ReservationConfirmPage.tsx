@@ -26,7 +26,6 @@ export const ReservationConfirmPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useTypedLocation<ReservationConfirmState | undefined>();
 
-  // お客様情報を管理するための状態
   const [buyerName, setName] = useState('');
   const [emailAddress, setEmail] = useState('');
 
