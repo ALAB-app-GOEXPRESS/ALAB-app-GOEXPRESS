@@ -35,8 +35,6 @@ export const ReservationConfirmPage: React.FC = () => {
     navigate(-1);
     return <></>;
   }
-  console.log(state.trainDetailResult);
-  console.log(state.selectedSeats);
 
   const trainDetailResult = state.trainDetailResult;
   const selectedSeats = state.selectedSeats;
