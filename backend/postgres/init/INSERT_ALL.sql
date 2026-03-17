@@ -53,7 +53,7 @@ VALUES
     (
         101,
         'tarou',
-        '123@example.com',
+        'ykurosawa@jeisryokai.onmicrosoft.com',
         'aiueo',
         '1234567890123456',
         '2026-02-10'
@@ -643,6 +643,7 @@ VALUES
         '04',
         '2026-02-09 17:10:00'
     );
+
 
 INSERT INTO
     M_PLAN (
