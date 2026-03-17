@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,13 +29,16 @@ public class SecurityConfig {
   @Autowired
   private AccountService accountService;
 
+  @Value("${auth.origin-uri}")
+  private String originUri;
+
   @Bean
   // CORSの設定を行うメソッド
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
 
     // 許可するオリジン（フロントエンドのURL）を指定
-    configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+    configuration.setAllowedOrigins(Arrays.asList(originUri));
 
     // 許可するHTTPメソッドを指定（GET, POST, PUT, DELETE, OPTIONSを許可）
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));

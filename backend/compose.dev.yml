@@ -22,6 +22,7 @@ services:
       JWK_SET_URI: ${JWK_SET_URI}
       ISSUER_URI: ${ISSUER_URI}
       REDIRECT_URI: ${REDIRECT_URI}
+      ORIGIN_URI: ${ORIGIN_URI}
     ports:
       - "8080:8080"
       - "5005:5005"
