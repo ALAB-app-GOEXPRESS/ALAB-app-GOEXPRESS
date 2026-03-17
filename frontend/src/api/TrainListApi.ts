@@ -1,5 +1,3 @@
-// TrainListApi.ts
-
 import { toHHMM } from '@/utils/dateTime';
 import { normalizeTrainNumber } from '@/utils/train';
 export type { SeatClass } from '@/utils/seat';
@@ -45,7 +43,9 @@ export type TrainResult = {
  * - results はフィルタ後に limit / offset した最大 limit 件
  */
 export async function fetchTrains(params: TrainSearchParams): Promise<TrainResult[]> {
-  const endpoint = `/api/trains?from=${encodeURIComponent(params.from)}&to=${encodeURIComponent(params.to)}`;
+  const endpoint = `/api/trains?from=${encodeURIComponent(params.from)}&to=${encodeURIComponent(
+    params.to,
+  )}&date=${encodeURIComponent(params.date)}&time=${encodeURIComponent(params.time)}`;
 
   const data = await fetchJSON<TrainBetweenApiItem[]>(endpoint);
 
