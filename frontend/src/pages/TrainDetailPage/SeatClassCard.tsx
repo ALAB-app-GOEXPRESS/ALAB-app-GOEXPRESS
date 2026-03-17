@@ -3,18 +3,20 @@ import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/utils/currency';
 import { useNavigate } from 'react-router-dom';
 import type { SeatClassDetail, TrainDetailResult } from '@/api/TrainDetailApi';
+import type { StationCode } from '@/types/Station';
 
 export const SeatClassCard: React.FC<{
   index: number;
   seatClasses: SeatClassDetail[];
   trainDetail: TrainDetailResult;
-}> = ({ index, seatClasses, trainDetail }) => {
+  searchParams: { from: StationCode; to: StationCode; date: string };
+}> = ({ index, seatClasses, trainDetail, searchParams }) => {
   const navigate = useNavigate();
 
   const seatInfo = seatClasses[index];
 
   const handleSelect = () => {
-    navigate('/seat-map', { state: { seatClasses, trainDetail } });
+    navigate('/seat-map', { state: { seatClasses, trainDetail, searchParams } });
   };
 
   return (

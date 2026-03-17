@@ -23,8 +23,8 @@ export type TrainBetweenApiItem = {
 export type TrainSearchParams = {
   from: StationCode;
   to: StationCode;
-  // date: string;
-  // time: string;
+  date: string;
+  time: string;
 };
 
 export type TrainResult = {

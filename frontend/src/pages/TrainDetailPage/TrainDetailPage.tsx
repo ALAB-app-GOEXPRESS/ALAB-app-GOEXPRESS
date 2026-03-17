@@ -39,7 +39,7 @@ export const TrainDetailPage: React.FC = () => {
           trainCd,
           from: searchParams.from,
           to: searchParams.to,
-          date: todayYYYYMMDD(),
+          date: searchParams.date,
         };
         const data = await fetchTrainDetail(params);
         setTrainDetail(data);
@@ -139,6 +139,7 @@ export const TrainDetailPage: React.FC = () => {
                   index={index}
                   seatClasses={trainDetail.seatClasses}
                   trainDetail={trainDetail}
+                  searchParams={searchParams!}
                 />
               ))}
             </div>

@@ -70,8 +70,8 @@ export const SearchResultPage: React.FC = () => {
         searchParams: {
           from: train.departureStationCd,
           to: train.arrivalStationCd,
-          // date: paramsFromQuery.date,
-          // time: train.departureTime,
+          date: paramsFromQuery.date,
+          time: train.departureTime,
         },
       },
     });
