@@ -37,7 +37,7 @@ export const ReservationCard: React.FC<Props> = ({ reservationItem }: Props) => 
     trackNumber: reservationItem.tickets[0].operation.fromTrackNumber,
   };
 
-  console.log(reservationDetails);
+  const totalChange = reservationItem.tickets.reduce((sum, ticket) => sum + ticket.charge, 0);
 
   return (
     <Card className='border-brand-green-light my-4'>
@@ -85,9 +85,7 @@ export const ReservationCard: React.FC<Props> = ({ reservationItem }: Props) => 
       </CardContent>
       <hr className='mx-4' />
       <CardFooter className='flex items-left gap-2 pt-2'>
-        <p className='flex grow shrink text-xl font-semibold'>
-          合計: {formatCurrency(reservationItem.tickets[0].charge)}
-        </p>
+        <p className='flex grow shrink text-xl font-semibold'>合計: {formatCurrency(totalChange)}</p>
         <div className='flex grow shrink basis-0 justify-end gap-2'>
           <Button onClick={() => navigate('/reservation-detail', { state: { reservationDetails } })}>
             <QrCode />
