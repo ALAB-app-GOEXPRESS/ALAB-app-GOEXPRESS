@@ -53,7 +53,7 @@ VALUES
     (
         101,
         'tarou',
-        'ykurosawa@jeisryokai.onmicrosoft.com',
+        'example@example.com',
         'aiueo',
         '1234567890123456',
         '2026-02-10'
@@ -61,7 +61,7 @@ VALUES
     (
         102,
         'jirou',
-        'aiueo@example.com',
+        'example@example.com',
         'irohani',
         '3214321347902321',
         '2026-02-10'
@@ -69,7 +69,7 @@ VALUES
     (
         103,
         'hanako',
-        '546@example.com',
+        'example@example.com',
         'hoheto',
         '9218319461221498',
         '2026-02-10'
@@ -77,7 +77,7 @@ VALUES
     (
         104,
         'takeo',
-        'kikuchi@example.com',
+        'example@example.com',
         'tirinuruw0',
         '1243249247821432',
         '2026-02-10'
