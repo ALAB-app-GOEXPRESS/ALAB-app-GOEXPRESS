@@ -1,11 +1,14 @@
 spring:
   security:
     oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://cognito-idp.ap-northeast-1.amazonaws.com/ap-northeast-1_uSOiCgi0X
       client:
         registration:
           cognito:
             client-id: s0ksgqnpm35f0a3jlnkqc329d
-            client-secret: <client secret>
+            client-secret: s0ksgqnpm35f0a3jlnkqc329d--1773638959560
             scope:
               - email
               - openid
