@@ -45,12 +45,12 @@ export const SearchResultPage: React.FC = () => {
     // handleSeatClassFilterChange,
     currentPage,
     totalPages,
-    pageItems,
     setPageToQuery,
     isLoading,
     apiErrorMessage,
     // totalCount,
     pageResults,
+    isInitialView,
   } = useSearchResults({
     defaultParams: paramsFromQuery,
     pageSize,
@@ -76,6 +76,27 @@ export const SearchResultPage: React.FC = () => {
       },
     });
   };
+
+  const PaginationButtons = () => (
+    <div className='flex items-center justify-between'>
+      <Button
+        variant='outline'
+        size='sm'
+        disabled={!isInitialView && currentPage <= 1}
+        onClick={() => setPageToQuery(currentPage - 1)}
+      >
+        前へ
+      </Button>
+      <Button
+        variant='outline'
+        size='sm'
+        disabled={!isInitialView && currentPage >= totalPages}
+        onClick={() => setPageToQuery(currentPage + 1)}
+      >
+        次へ
+      </Button>
+    </div>
+  );
 
   return (
     <div className='min-h-[calc(100vh-64px)] bg-background'>
@@ -194,7 +215,9 @@ export const SearchResultPage: React.FC = () => {
           )}
 
           {!isLoading && pageResults.length > 0 && (
-            <div>
+            <div className='space-y-4'>
+              <PaginationButtons />
+
               <ul className='space-y-3'>
                 {pageResults.map((result) => {
                   const departureName = StationNameMap[result.departureStationCd];
@@ -215,57 +238,8 @@ export const SearchResultPage: React.FC = () => {
                   );
                 })}
               </ul>
-              <ul className='mt-6 flex items-center justify-center gap-2'>
-                <li key={'forward'}>
-                  <Button
-                    variant='outline'
-                    size='sm'
-                    disabled={currentPage <= 1}
-                    onClick={() => setPageToQuery(currentPage - 1)}
-                  >
-                    前へ
-                  </Button>
-                </li>
 
-                {pageItems.map((item, index) => {
-                  if (item === '...') {
-                    return (
-                      <li key={item}>
-                        <span
-                          key={`ellipsis-${index}`}
-                          className='px-2 text-sm text-muted-foreground'
-                        >
-                          …
-                        </span>
-                      </li>
-                    );
-                  }
-
-                  return (
-                    <li key={item}>
-                      <Button
-                        key={item}
-                        size='sm'
-                        variant={item === currentPage ? 'default' : 'outline'}
-                        onClick={() => setPageToQuery(item)}
-                      >
-                        {item}
-                      </Button>
-                    </li>
-                  );
-                })}
-
-                <li key={'back'}>
-                  <Button
-                    variant='outline'
-                    size='sm'
-                    disabled={currentPage >= totalPages}
-                    onClick={() => setPageToQuery(currentPage + 1)}
-                  >
-                    次へ
-                  </Button>
-                </li>
-              </ul>
+              <PaginationButtons />
             </div>
           )}
         </div>

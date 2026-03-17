@@ -6,11 +6,8 @@ import com.alab.goexpress.train.dto.SeatClassDto;
 import com.alab.goexpress.train.dto.TrainDetailResponse;
 import com.alab.goexpress.train.dto.TrainDto;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -25,30 +22,10 @@ public class TrainService {
 
   @Transactional(readOnly = true)
   public List<TrainDto> find(String fromStationCd, String toStationCd, LocalDate date, LocalTime time) {
-    ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Tokyo"));
-    LocalTime searchEndTime = time.plusHours(1);
-
-    if (date.isBefore(now.toLocalDate()) || (date.isEqual(now.toLocalDate()) && searchEndTime.isBefore(now.toLocalTime()))) {
-      return Collections.emptyList();
-    }
-
-    final LocalTime finalSearchStartTime;
-    final LocalTime finalSearchEndTime = searchEndTime;
-
-    if (date.isEqual(now.toLocalDate())) {
-      LocalTime baseStartTime = time.minusHours(1);
-      finalSearchStartTime = now.toLocalTime().isAfter(baseStartTime) ? now.toLocalTime() : baseStartTime;
-    } else {
-      finalSearchStartTime = time.minusHours(1);
-    }
-
     List<TrainDto> allTrains = mapper.selectTrainList(fromStationCd, toStationCd);
 
     return allTrains.stream()
-      .filter(train -> {
-        LocalTime departureTime = train.departureTime();
-        return !departureTime.isBefore(finalSearchStartTime) && !departureTime.isAfter(finalSearchEndTime);
-      })
+      .sorted(Comparator.comparing(TrainDto::departureTime))
       .collect(Collectors.toList());
   }
 

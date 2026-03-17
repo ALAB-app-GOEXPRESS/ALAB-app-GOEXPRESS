@@ -19,6 +19,7 @@ type UseTrainResultsReturn = {
   currentPage: number;
   totalPages: number;
   pageItems: Array<number | '...'>;
+  isInitialView: boolean;
 
   setPageToQuery: (nextPage: number) => void;
 
@@ -75,6 +76,11 @@ function getPageItems(currentPage: number, totalPages: number): Array<number | '
   return items;
 }
 
+function timeToMinutes(time: string): number {
+  const [hours, minutes] = time.split(':').map(Number);
+  return hours * 60 + minutes;
+}
+
 export function useSearchResults(args: UseTrainResultsArgs): UseTrainResultsReturn {
   const { defaultParams, pageSize, seatClassFilterOptions } = args;
 
@@ -82,36 +88,83 @@ export function useSearchResults(args: UseTrainResultsArgs): UseTrainResultsRetu
 
   const [seatClassFilter, setSeatClassFilter] = useState<SeatClassFilter>('all');
 
+  const isInitialView = useMemo(() => !searchParams.has('page'), [searchParams]);
+
   const currentPage = useMemo(() => {
     return parsePositiveInt(searchParams.get('page'), 1);
   }, [searchParams]);
 
   const trainsQuery = useQuery({ queryKey: ['between', defaultParams], queryFn: () => fetchTrains(defaultParams) });
 
-  const totalCount = trainsQuery.data?.length ?? 0;
-
-  const offset = useMemo(() => {
-    return (currentPage - 1) * pageSize;
-  }, [currentPage, pageSize]);
+  const allTrains = trainsQuery.data ?? [];
+  const totalCount = allTrains.length;
 
   const totalPages = useMemo(() => {
     return Math.max(1, Math.ceil(totalCount / pageSize));
   }, [totalCount, pageSize]);
 
+  const pageResults = useMemo(() => {
+    if (!allTrains.length) {
+      return [];
+    }
+
+    // 初期表示（URLにpageパラメータなし）の場合のロジック
+    if (isInitialView) {
+      const searchTimeInMinutes = timeToMinutes(defaultParams.time);
+      const firstVisibleIndex = allTrains.findIndex(
+        (train) => timeToMinutes(train.departureTime) >= searchTimeInMinutes,
+      );
+
+      // 指定時刻以降の列車が見つからない場合は、最終ページと同じ内容を表示
+      if (firstVisibleIndex === -1) {
+        if (totalCount <= pageSize) return allTrains;
+        return allTrains.slice(totalCount - pageSize);
+      }
+
+      // 見つかった場合は、その列車を先頭に10件表示
+      return allTrains.slice(firstVisibleIndex, firstVisibleIndex + pageSize);
+    }
+
+    // ページ移動後のロジック
+    // 最終ページの場合
+    if (currentPage === totalPages && totalCount > pageSize) {
+      const startIndex = totalCount - pageSize;
+      return allTrains.slice(startIndex);
+    }
+    // 通常のページ
+    const offset = (currentPage - 1) * pageSize;
+    return allTrains.slice(offset, offset + pageSize);
+  }, [allTrains, isInitialView, defaultParams.time, currentPage, totalPages, totalCount, pageSize]);
+
   const pageItems = useMemo(() => {
     return getPageItems(currentPage, totalPages);
   }, [currentPage, totalPages]);
 
-  const pageResults = useMemo(() => {
-    return trainsQuery.data?.slice(offset, offset + pageSize) ?? [];
-  }, [trainsQuery, offset, pageSize]);
-
   const setPageToQuery = (nextPage: number) => {
-    const clampedPage = Math.min(Math.max(1, nextPage), totalPages);
+    let targetPage = nextPage;
+
+    // 初期表示から初めてページ移動する場合のページ番号を計算
+    if (isInitialView) {
+      const searchTimeInMinutes = timeToMinutes(defaultParams.time);
+      const firstVisibleIndex = allTrains.findIndex(
+        (train) => timeToMinutes(train.departureTime) >= searchTimeInMinutes,
+      );
+      const startIndex = firstVisibleIndex === -1 ? totalCount - pageSize : firstVisibleIndex;
+
+      if (nextPage > 1) {
+        // 「次へ」ボタン
+        const nextTrainIndex = startIndex + pageSize;
+        targetPage = Math.floor(nextTrainIndex / pageSize) + 1;
+      } else {
+        // 「前へ」ボタン
+        const prevTrainIndex = startIndex - 1;
+        targetPage = Math.floor(prevTrainIndex / pageSize) + 1;
+      }
+    }
+
+    const clampedPage = Math.min(Math.max(1, targetPage), totalPages > 0 ? totalPages : 1);
     const next = new URLSearchParams(searchParams);
-
     next.set('page', String(clampedPage));
-
     setSearchParams(next);
   };
 
@@ -142,6 +195,7 @@ export function useSearchResults(args: UseTrainResultsArgs): UseTrainResultsRetu
     currentPage,
     totalPages,
     pageItems,
+    isInitialView,
 
     setPageToQuery,
 
