@@ -570,7 +570,7 @@ SELECT
     arr.station_cd AS arrival_station_cd,
     tt.train_type_cd,
     st.seat_type_cd,
-    ABS(dep.ord - arr.ord) * 1000 AS charge -- 1区間=1000円
+    ABS(dep.ord - arr.ord) * 1000 AS charge
 FROM
     station_order dep
     JOIN station_order arr ON dep.station_cd <> arr.station_cd
@@ -730,3 +730,75 @@ VALUES
     ('0352B', '03', '14:30:00', '14:30:50', '15'),
     ('0352B', '02', '14:50:00', '14:50:50', '15'),
     ('0352B', '01', '14:55:00', '14:55:50', '15');
+
+INSERT INTO M_TRAIN (train_cd, train_type_cd, train_number)
+SELECT
+    'T' || to_char(start_time, 'HH24MI') AS train_cd,
+    '03' AS train_type_cd,
+    to_char(start_time, 'HH24MI') AS train_number
+FROM
+    generate_series(
+        '2000-01-01 06:00:00'::timestamp,
+        '2000-01-01 23:45:00'::timestamp,
+        '15 minutes'
+    ) AS start_time
+ON CONFLICT (train_cd) DO NOTHING;
+
+WITH new_trains AS (
+    SELECT 'T' || to_char(start_time, 'HH24MI') AS train_cd
+    FROM generate_series(
+        '2000-01-01 06:00:00'::timestamp,
+        '2000-01-01 23:45:00'::timestamp,
+        '15 minutes'
+    ) AS start_time
+),
+car_definitions AS (
+    SELECT '01' AS train_car_cd, '10' AS seat_type_cd, 75 AS max_seat_number
+    UNION ALL
+    SELECT '02' AS train_car_cd, '20' AS seat_type_cd, 56 AS max_seat_number
+    UNION ALL
+    SELECT '03' AS train_car_cd, '30' AS seat_type_cd, 18 AS max_seat_number
+)
+INSERT INTO M_TRAIN_CAR (train_cd, train_car_cd, seat_type_cd, max_seat_number)
+SELECT
+    nt.train_cd,
+    cd.train_car_cd,
+    cd.seat_type_cd,
+    cd.max_seat_number
+FROM
+    new_trains nt
+CROSS JOIN
+    car_definitions cd
+ON CONFLICT (train_cd, train_car_cd) DO NOTHING;
+
+WITH start_times AS (
+    SELECT
+        'T' || to_char(start_time, 'HH24MI') AS train_cd,
+        start_time::time AS time_val
+    FROM
+        generate_series(
+            '2000-01-01 06:00:00'::timestamp,
+            '2000-01-01 23:45:00'::timestamp,
+            '15 minutes'
+        ) AS start_time
+),
+station_orders AS (
+    SELECT
+        station_cd,
+        ROW_NUMBER() OVER (ORDER BY station_cd) AS station_order
+    FROM
+        M_STATION
+)
+INSERT INTO M_PLAN (train_cd, arrival_station_cd, arrival_time, departure_time, track_number)
+SELECT
+    st.train_cd,
+    so.station_cd AS arrival_station_cd,
+    (st.time_val + (so.station_order - 1) * INTERVAL '15 minutes') AS arrival_time,
+    (st.time_val + (so.station_order - 1) * INTERVAL '15 minutes' + INTERVAL '50 seconds') AS departure_time,
+    '15' AS track_number
+FROM
+    start_times st
+CROSS JOIN
+    station_orders so
+ON CONFLICT (train_cd, arrival_station_cd) DO NOTHING;
+ 
