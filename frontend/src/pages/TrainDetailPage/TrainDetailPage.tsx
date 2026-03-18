@@ -139,7 +139,6 @@ export const TrainDetailPage: React.FC = () => {
                   index={index}
                   seatClasses={trainDetail.seatClasses}
                   trainDetail={trainDetail}
-                  searchParams={searchParams!}
                 />
               ))}
             </div>

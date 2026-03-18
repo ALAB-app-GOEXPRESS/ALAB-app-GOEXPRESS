@@ -72,6 +72,6 @@ public class TrainService {
       })
       .toList();
 
-    return new TrainDetailResponse(trainBasicInfo, departureInfo.trackNumber(), seatClasses);
+    return new TrainDetailResponse(trainBasicInfo, departureInfo.trackNumber(), seatClasses, date);
   }
 }
