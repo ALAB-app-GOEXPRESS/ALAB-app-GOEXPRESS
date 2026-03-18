@@ -69,9 +69,6 @@ public class SecurityConfig {
       // HTTPリクエストの認可設定
       .authorizeHttpRequests(authorize ->
         authorize
-          // /auth/で始まるURLへのアクセスを認証なしで許可
-          .requestMatchers("/auth/**")
-          .permitAll()
           // OPTIONSメソッド（事前リクエスト）の全てのパスへのアクセスを認証なしで許可
           .requestMatchers(HttpMethod.OPTIONS, "/**")
           .permitAll()
