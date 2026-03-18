@@ -24,8 +24,13 @@ public class TrainService {
   public List<TrainDto> find(String fromStationCd, String toStationCd, LocalDate date, LocalTime time) {
     List<TrainDto> allTrains = mapper.selectTrainList(fromStationCd, toStationCd);
 
+    // 6時を日付の境界とみなし、それより前の時刻はリストの後方に配置するソート
+    final LocalTime boundary = LocalTime.of(6, 0);
+
     return allTrains.stream()
-      .sorted(Comparator.comparing(TrainDto::departureTime))
+      .sorted(Comparator.comparing(
+          (TrainDto train) -> train.departureTime().isBefore(boundary)
+        ).thenComparing(TrainDto::departureTime))
       .collect(Collectors.toList());
   }
 

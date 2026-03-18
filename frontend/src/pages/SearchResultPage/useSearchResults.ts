@@ -158,7 +158,11 @@ export function useSearchResults(args: UseTrainResultsArgs): UseTrainResultsRetu
       } else {
         // 「前へ」ボタン
         const prevTrainIndex = startIndex - 1;
-        targetPage = Math.floor(prevTrainIndex / pageSize) + 1;
+        if (prevTrainIndex < 0) {
+          targetPage = 1;
+        } else {
+          targetPage = Math.floor(prevTrainIndex / pageSize) + 1;
+        }
       }
     }
 
