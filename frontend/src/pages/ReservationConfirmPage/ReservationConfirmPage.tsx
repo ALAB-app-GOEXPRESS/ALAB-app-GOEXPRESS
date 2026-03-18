@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { formatSeat } from '@/utils/seat';
-import { Mail, User } from 'lucide-react';
+import { Mail, User, Loader2, TramFront } from 'lucide-react';
 import { createReservation } from '@/api/ReservationApi';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -14,7 +14,6 @@ import type { SelectedSeat } from '@/types/Seat';
 import { useTypedLocation } from '@/lib/router';
 import type { StationCode } from '@/types/Station';
 import { Badge } from '@/components/ui/badge';
-import { TramFront } from 'lucide-react';
 import { specifyTrainTypeIconColor } from '@/utils/train';
 
 type ReservationConfirmState = {
@@ -28,6 +27,7 @@ export const ReservationConfirmPage: React.FC = () => {
 
   const [buyerName, setName] = useState('');
   const [emailAddress, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const state = location.state;
 
@@ -47,6 +47,8 @@ export const ReservationConfirmPage: React.FC = () => {
     }
 
     if (!trainDetailResult) return;
+
+    setIsSubmitting(true);
 
     try {
       const reservationDetails = await createReservation(
@@ -72,6 +74,7 @@ export const ReservationConfirmPage: React.FC = () => {
     } catch (error) {
       console.error(error);
       alert(error instanceof Error ? error.message : '予期せぬエラーが発生しました。');
+      setIsSubmitting(false);
     }
   };
 
@@ -181,9 +184,22 @@ export const ReservationConfirmPage: React.FC = () => {
                   onClick={handleReserve}
                   className='w-full'
                   size='lg'
+                  disabled={isSubmitting}
                 >
-                  予約を確定
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                      予約処理中...
+                    </>
+                  ) : (
+                    '予約を確定'
+                  )}
                 </Button>
+                {isSubmitting && (
+                  <p className='mt-2 text-sm text-center text-muted-foreground'>
+                    画面を閉じず、しばらくお待ちください。
+                  </p>
+                )}
               </CardContent>
             </Card>
           </div>
