@@ -25,6 +25,7 @@ export type TrainDetailApiItem = {
     charge: number;
     remainingSeats: number;
   }>;
+  date: string;
 };
 
 export type SeatClassDetail = {
@@ -77,7 +78,7 @@ export async function fetchTrainDetail(params: TrainDetailParams): Promise<Train
     departureStationName: StationNameMap[data.trainBasicInfo.fromStationCd],
     arrivalStationName: StationNameMap[data.trainBasicInfo.toStationCd],
     trackNumber: data.trackNumber,
-    date: params.date,
+    date: data.date,
     seatClasses: data.seatClasses.map((sc) => {
       const type = toSeatClassType(sc.seatTypeCd);
       return {

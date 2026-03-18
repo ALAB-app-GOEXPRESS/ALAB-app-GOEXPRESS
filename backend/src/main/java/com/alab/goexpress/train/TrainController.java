@@ -3,6 +3,7 @@ package com.alab.goexpress.train;
 import com.alab.goexpress.train.dto.TrainDetailResponse;
 import com.alab.goexpress.train.dto.TrainDto;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,8 +18,12 @@ public class TrainController {
   private final TrainService service;
 
   @GetMapping
-  public List<TrainDto> get(@RequestParam("from") String fromStationCd, @RequestParam("to") String toStationCd) {
-    return service.find(fromStationCd, toStationCd);
+  public List<TrainDto> get(
+    @RequestParam("from") String fromStationCd,
+    @RequestParam("to") String toStationCd,
+    @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+    @RequestParam("time") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime time) {
+    return service.find(fromStationCd, toStationCd,date,time);
   }
 
   /**
