@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 
 import { fetchTrains, type SeatClass, type TrainResult, type TrainSearchParams } from '@/api/TrainListApi';
 import { useQuery } from '@tanstack/react-query';
+import { timeToMinutes } from '@/utils/dateTime';
 
 type SeatClassFilter = 'all' | SeatClass;
 
@@ -77,11 +78,6 @@ function getPageItems(currentPage: number, totalPages: number): Array<number | '
   items.push(totalPages);
 
   return items;
-}
-
-function timeToMinutes(time: string): number {
-  const [hours, minutes] = time.split(':').map(Number);
-  return hours * 60 + minutes;
 }
 
 export function useSearchResults(args: UseTrainResultsArgs): UseTrainResultsReturn {
