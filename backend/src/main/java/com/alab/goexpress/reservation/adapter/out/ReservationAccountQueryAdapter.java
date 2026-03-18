@@ -1,6 +1,7 @@
 package com.alab.goexpress.reservation.adapter.out;
 
 import com.alab.goexpress.account.Account;
+import com.alab.goexpress.account.AccountService;
 import com.alab.goexpress.reservation.application.port.out.AccountQueryPort;
 import com.alab.goexpress.reservation.application.port.out.model.BuyerAccount;
 import jakarta.persistence.EntityManager;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 public class ReservationAccountQueryAdapter implements AccountQueryPort {
 
   private final EntityManager em;
+  private final AccountService accountService;
 
   @Override
   public BuyerAccount getDefaultBuyerAccount() {
@@ -24,6 +26,25 @@ public class ReservationAccountQueryAdapter implements AccountQueryPort {
       throw new IllegalArgumentException("no account found to create reservation");
     }
     Account a = list.getFirst();
-    return new BuyerAccount(a.getAccountId(), a.getAccountName(), a.getEmailAddress(), a.getCardNumber(), a.getExpirationDate());
+    return new BuyerAccount(
+      a.getAccountId(),
+      a.getAccountName(),
+      a.getEmailAddress(),
+      a.getCardNumber(),
+      a.getExpirationDate()
+    );
+  }
+
+  @Override
+  public BuyerAccount findBuyerAccount(String userEmail) {
+    Account account = accountService.findUserByEmailAddres(userEmail);
+
+    return BuyerAccount.builder()
+      .accountId(account.getAccountId())
+      .accountName(account.getAccountName())
+      .cardNumber(account.getCardNumber())
+      .emailAddress(account.getEmailAddress())
+      .expirationDate(account.getExpirationDate())
+      .build();
   }
 }
