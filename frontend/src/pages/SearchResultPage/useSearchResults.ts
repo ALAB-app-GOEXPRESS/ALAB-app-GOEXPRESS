@@ -21,6 +21,9 @@ type UseTrainResultsReturn = {
   pageItems: Array<number | '...'>;
   isInitialView: boolean;
 
+  blGoToPrev: boolean;
+  blGoToNext: boolean;
+
   setPageToQuery: (nextPage: number) => void;
 
   isLoading: boolean;
@@ -136,6 +139,25 @@ export function useSearchResults(args: UseTrainResultsArgs): UseTrainResultsRetu
     return allTrains.slice(offset, offset + pageSize);
   }, [allTrains, isInitialView, defaultParams.time, currentPage, totalPages, totalCount, pageSize]);
 
+  const { blGoToPrev, blGoToNext } = useMemo(() => {
+    // 表示する列車がない、または全列車が1ページに収まる場合は、どちらのボタンも非活性
+    if (!pageResults.length || allTrains.length <= pageSize) {
+      return { blGoToPrev: false, blGoToNext: false };
+    }
+
+    // 表示されている最初の列車が、全体の最初の列車と同じかチェック
+    const isFirstTrainVisible = pageResults[0]?.trainCd === allTrains[0]?.trainCd;
+
+    // 表示されている最後の列車が、全体の最後の列車と同じかチェック
+    const isLastTrainVisible =
+      pageResults[pageResults.length - 1]?.trainCd === allTrains[allTrains.length - 1]?.trainCd;
+
+    return {
+      blGoToPrev: !isFirstTrainVisible, // 最初の列車が表示されていなければ「前へ」は押せる
+      blGoToNext: !isLastTrainVisible, // 最後の列車が表示されていなければ「次へ」は押せる
+    };
+  }, [pageResults, allTrains, pageSize]);
+
   const pageItems = useMemo(() => {
     return getPageItems(currentPage, totalPages);
   }, [currentPage, totalPages]);
@@ -200,6 +222,9 @@ export function useSearchResults(args: UseTrainResultsArgs): UseTrainResultsRetu
     totalPages,
     pageItems,
     isInitialView,
+
+    blGoToPrev,
+    blGoToNext,
 
     setPageToQuery,
 

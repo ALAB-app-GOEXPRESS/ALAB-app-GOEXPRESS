@@ -44,13 +44,13 @@ export const SearchResultPage: React.FC = () => {
     // seatClassFilter,
     // handleSeatClassFilterChange,
     currentPage,
-    totalPages,
     setPageToQuery,
     isLoading,
     apiErrorMessage,
     // totalCount,
     pageResults,
-    isInitialView,
+    blGoToPrev,
+    blGoToNext,
   } = useSearchResults({
     defaultParams: paramsFromQuery,
     pageSize,
@@ -82,7 +82,7 @@ export const SearchResultPage: React.FC = () => {
       <Button
         variant='outline'
         size='sm'
-        disabled={!isInitialView && currentPage <= 1}
+        disabled={!blGoToPrev}
         onClick={() => setPageToQuery(currentPage - 1)}
       >
         前へ
@@ -90,7 +90,7 @@ export const SearchResultPage: React.FC = () => {
       <Button
         variant='outline'
         size='sm'
-        disabled={!isInitialView && currentPage >= totalPages}
+        disabled={!blGoToNext}
         onClick={() => setPageToQuery(currentPage + 1)}
       >
         次へ
