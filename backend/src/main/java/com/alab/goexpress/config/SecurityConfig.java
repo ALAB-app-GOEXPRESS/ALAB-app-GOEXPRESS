@@ -1,27 +1,26 @@
 package com.alab.goexpress.config;
 
+import com.alab.goexpress.account.AccountService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import java.util.Map;
-
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import com.alab.goexpress.account.AccountService;
-
-import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableMethodSecurity
@@ -30,13 +29,16 @@ public class SecurityConfig {
   @Autowired
   private AccountService accountService;
 
+  @Value("${auth.origin-uri}")
+  private String originUri;
+
   @Bean
   // CORSの設定を行うメソッド
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
 
     // 許可するオリジン（フロントエンドのURL）を指定
-    configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080"));
+    configuration.setAllowedOrigins(Arrays.asList(originUri));
 
     // 許可するHTTPメソッドを指定（GET, POST, PUT, DELETE, OPTIONSを許可）
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
@@ -118,7 +120,7 @@ public class SecurityConfig {
     }
   }
 
-  private void writeJsonResponse(HttpServletResponse response, String idToken, Long userId) throws IOException {
+  private void writeJsonResponse(HttpServletResponse response, String idToken, Integer userId) throws IOException {
     // レスポンスのContent-TypeをJSONに設定
     response.setContentType("application/json");
 
