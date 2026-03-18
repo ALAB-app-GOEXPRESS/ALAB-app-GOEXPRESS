@@ -1,7 +1,9 @@
 import { NavLink } from 'react-router-dom';
-import { Ticket, TrainFront } from 'lucide-react';
+import { Ticket, TrainFront, CircleUser } from 'lucide-react';
 
 export const Header: React.FC = () => {
+  const userName = localStorage.getItem('userName');
+
   return (
     <header className='sticky top-0 z-50 border-b bg-white'>
       <div className='mx-auto px-4 sm:px-6 lg:px-8 max-w-screen-2xl flex h-16 items-center'>
@@ -35,6 +37,10 @@ export const Header: React.FC = () => {
             <Ticket />
             予約確認
           </NavLink>
+          <div className='flex items-center gap-1'>
+            <CircleUser />
+            <p>{userName}</p>
+          </div>
         </nav>
       </div>
     </header>
