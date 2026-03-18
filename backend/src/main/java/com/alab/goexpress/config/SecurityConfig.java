@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -97,6 +96,7 @@ public class SecurityConfig {
       String idToken = oidcUser.getIdToken().getTokenValue();
       String email = (String) oidcUser.getClaims().get("email");
       Integer userId = accountService.findUserByEmailAddres(email).getAccountId();
+      String userName = accountService.findUserByEmailAddres(email).getAccountName();
 
       String redirect =
         originUri +
@@ -104,7 +104,9 @@ public class SecurityConfig {
         "#id_token=" +
         URLEncoder.encode(idToken, StandardCharsets.UTF_8) +
         "&user_id=" +
-        userId;
+        userId +
+        "&user_name=" +
+        userName;
 
       response.setStatus(HttpServletResponse.SC_FOUND);
       response.setHeader("Location", redirect);
