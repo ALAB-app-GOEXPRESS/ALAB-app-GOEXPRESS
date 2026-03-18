@@ -21,8 +21,16 @@ export class ApiError extends Error {
 }
 
 export async function fetchJSON<T>(url: string, init?: RequestInit): Promise<T> {
+  const token = localStorage.getItem('idToken');
+  const headers = {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    ...(init?.headers || {}),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+
   const res = await fetch(url, {
-    headers: { Accept: 'application/json', 'Content-Type': 'application/json', ...(init?.headers || {}) },
+    headers,
     ...init,
   });
 

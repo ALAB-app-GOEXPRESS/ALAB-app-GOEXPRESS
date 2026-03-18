@@ -9,6 +9,7 @@ import { ReservationDetailPage } from './pages/ReservationDetailPage/Reservation
 import { SeatMapPage } from './pages/SeatMapPage/SeatMapPage';
 import { ReservationConfirmPage } from './pages/ReservationConfirmPage/ReservationConfirmPage';
 import { LoginPage } from './pages/LoginPage';
+import { LoginCallbackPage } from './pages/LoginCallbackPage';
 
 export const router = createBrowserRouter([
   {
@@ -23,7 +24,8 @@ export const router = createBrowserRouter([
       { path: 'reservation-detail', element: <ReservationDetailPage /> },
       { path: 'seat-map', element: <SeatMapPage /> },
       { path: 'reservation-confirm', element: <ReservationConfirmPage /> },
-      { path: 'login-page', element: <LoginPage />},
+      { path: 'login-page', element: <LoginPage /> },
+      { path: 'login/callback', element: <LoginCallbackPage /> },
     ],
   },
 ]);
