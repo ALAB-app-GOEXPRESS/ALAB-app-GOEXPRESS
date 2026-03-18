@@ -6,9 +6,11 @@ export const LoginCallbackPage: React.FC = () => {
     const params = new URLSearchParams(hash);
     const idToken = params.get('id_token');
     const userId = params.get('user_id');
+    const userName = params.get('user_name');
 
     if (idToken) localStorage.setItem('idToken', idToken);
     if (userId) localStorage.setItem('userId', userId || '');
+    if (userName) localStorage.setItem('userName', userName || '');
 
     // トークンを保存したら任意の画面へ遷移
     window.location.replace('/search');
