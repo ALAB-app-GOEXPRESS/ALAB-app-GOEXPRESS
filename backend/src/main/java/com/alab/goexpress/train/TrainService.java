@@ -75,4 +75,3 @@ public class TrainService {
     return new TrainDetailResponse(trainBasicInfo, departureInfo.trackNumber(), seatClasses);
   }
 }
- 

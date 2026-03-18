@@ -114,4 +114,3 @@ SELECT generate_all_train_data('Z', '03', 6, 22, 15, 'DESC', 15, 8);-- 上り
 -- なすの (04)
 SELECT generate_all_train_data('N', '04', 6, 22, 30, 'ASC', 18, 1); -- 下り
 SELECT generate_all_train_data('M', '04', 6, 22, 30, 'DESC', 18, 6);-- 上り
- 
