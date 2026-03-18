@@ -7,6 +7,7 @@ import com.alab.goexpress.train.dto.TrainDetailResponse;
 import com.alab.goexpress.train.dto.TrainDto;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,17 @@ public class TrainService {
   private final TrainMapper mapper;
 
   @Transactional(readOnly = true)
-  public List<TrainDto> find(String fromStationCd, String toStationCd) {
-    return mapper.selectTrainList(fromStationCd, toStationCd);
+  public List<TrainDto> find(String fromStationCd, String toStationCd, LocalDate date, LocalTime time) {
+    List<TrainDto> allTrains = mapper.selectTrainList(fromStationCd, toStationCd);
+
+    final LocalTime boundary = LocalTime.of(6, 0);
+
+    // 6時を日付の境界とみなし、それより前の時刻はリストの後方に配置するソート
+    return allTrains.stream()
+      .sorted(Comparator.comparing(
+          (TrainDto train) -> train.departureTime().isBefore(boundary)
+        ).thenComparing(TrainDto::departureTime))
+      .collect(Collectors.toList());
   }
 
   /**
@@ -62,6 +72,6 @@ public class TrainService {
       })
       .toList();
 
-    return new TrainDetailResponse(trainBasicInfo, departureInfo.trackNumber(), seatClasses);
+    return new TrainDetailResponse(trainBasicInfo, departureInfo.trackNumber(), seatClasses, date);
   }
 }
