@@ -8,8 +8,8 @@ import { ReservationListPage } from './pages/ReservationListPage/ReservationList
 import { ReservationDetailPage } from './pages/ReservationDetailPage/ReservationDetailPage';
 import { SeatMapPage } from './pages/SeatMapPage/SeatMapPage';
 import { ReservationConfirmPage } from './pages/ReservationConfirmPage/ReservationConfirmPage';
-import { LoginPage } from './pages/LoginPage';
-import { LoginCallbackPage } from './pages/LoginCallbackPage';
+import { LoginPage } from './pages/LoginPage/LoginPage';
+import { LoginCallbackPage } from './pages/LoginPage/LoginCallbackPage';
 import { RequireAuth } from './auth/RequireAuth';
 
 export const router = createBrowserRouter([
