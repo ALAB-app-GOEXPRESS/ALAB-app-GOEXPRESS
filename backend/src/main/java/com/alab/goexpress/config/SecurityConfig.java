@@ -4,6 +4,8 @@ import com.alab.goexpress.account.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,46 +91,24 @@ public class SecurityConfig {
     Authentication authentication
   ) throws IOException {
     try {
-      // 認証に成功したユーザ情報を取得
       DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
-
-      // ユーザのIDトークンを取得
       String idToken = oidcUser.getIdToken().getTokenValue();
-
-      // クレーム（ユーザ属性）情報を取得
-      // 基本的にはIDトークンから取得される
-      // 利用可能な場合、userInfoエンドポイントにもアクセスして追加の情報を取得する
-      Map<String, Object> attributes = oidcUser.getClaims();
-
-      // クレーム情報から名前とメールアドレスを取得
-      String username = (String) attributes.get("name");
-      String email = (String) attributes.get("email");
-
-      // ユーザ情報を業務DBに保存し、ユーザIDを取得
+      String email = (String) oidcUser.getClaims().get("email");
       Integer userId = accountService.findUserByEmailAddres(email).getAccountId();
 
-      // レスポンスをJSON形式で書き込む
-      writeJsonResponse(response, idToken, userId);
+      String redirect =
+        originUri +
+        "/login/callback" +
+        "#id_token=" +
+        URLEncoder.encode(idToken, StandardCharsets.UTF_8) +
+        "&user_id=" +
+        userId;
 
-      // HTTPステータスコードを200 OKに設定
-      response.setStatus(HttpServletResponse.SC_OK);
+      response.setStatus(HttpServletResponse.SC_FOUND);
+      response.setHeader("Location", redirect);
     } catch (Exception e) {
-      // エラーハンドリング：認証処理が失敗した場合、エラーメッセージをレスポンスとして返却する
-      // ※本来は例外発生箇所に応じてエラー処理を分けるべきですが、今回は本質ではないため、簡易的なエラーハンドリングを実装しています
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       response.getWriter().write("{\"error\": \"Authentication failed\"}");
     }
-  }
-
-  private void writeJsonResponse(HttpServletResponse response, String idToken, Integer userId) throws IOException {
-    // レスポンスのContent-TypeをJSONに設定
-    response.setContentType("application/json");
-
-    // レスポンスの文字エンコーディングをUTF-8に設定
-    response.setCharacterEncoding("UTF-8");
-
-    // IDトークンとユーザIDをJSON形式の文字列に変換して書き込む
-    String jsonResponse = String.format("{\"idToken\": \"%s\", \"userId\": %d}", idToken, userId);
-    response.getWriter().write(jsonResponse);
   }
 }
