@@ -1,17 +1,22 @@
 spring:
+  config:
+    import: classpath:application.properties
   security:
     oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${auth.issuer-uri}
       client:
         registration:
           cognito:
-            client-id: s0ksgqnpm35f0a3jlnkqc329d
-            client-secret: <client secret>
+            client-id: ${auth.clientId}
+            client-secret: ${auth.clientSecret}
             scope:
               - email
               - openid
               - phone
-            redirect-uri: https://d84l1y8p4kdic.cloudfront.net
+            redirect-uri: ${auth.redirect-uri}
         provider:
           cognito:
-            issuerUri: https://cognito-idp.ap-northeast-1.amazonaws.com/ap-northeast-1_uSOiCgi0X
+            issuerUri: ${auth.issuer-uri}
             user-name-attribute: username
