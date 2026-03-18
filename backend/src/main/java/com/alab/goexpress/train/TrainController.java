@@ -30,11 +30,10 @@ public class TrainController {
    * 列車詳細情報を取得するAPIエンドポイント
    * 例: GET /api/trains/2026-02-24/T0001/detail?from=S01&to=S02
    *
+   * @param date 出発日 (パス変数)
    * @param trainCd 列車コード (パス変数)
    * @param fromStationCd 出発駅コード (クエリパラメータ)
    * @param toStationCd 到着駅コード (クエリパラメータ)
-   * @param date 出発日 (クエリパラメータ)
-   * @param time 出発時刻 (クエリパラメータ)
    * @return 列車詳細情報
    */
   @GetMapping("/{date}/{trainCd}/detail")
