@@ -24,7 +24,7 @@ export const router = createBrowserRouter([
       { path: 'reservation-detail', element: <ReservationDetailPage /> },
       { path: 'seat-map', element: <SeatMapPage /> },
       { path: 'reservation-confirm', element: <ReservationConfirmPage /> },
-      { path: 'login-page', element: <LoginPage /> },
+      { path: 'login', element: <LoginPage /> },
       { path: 'login/callback', element: <LoginCallbackPage /> },
     ],
   },
