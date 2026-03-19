@@ -1,6 +1,3 @@
-// ファイル名: GlobalExceptionHandler.java
-// パス: com/alab/goexpress/config/GlobalExceptionHandler.java
-
 package com.alab.goexpress.config;
 
 import com.alab.goexpress.reservation.application.service.SeatAlreadyReservedException;
