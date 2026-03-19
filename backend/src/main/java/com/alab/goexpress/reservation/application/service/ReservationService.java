@@ -15,6 +15,7 @@ import com.alab.goexpress.seat.dto.SelectedSeatDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -65,14 +66,20 @@ public class ReservationService {
     SelectedSeatDto[] selectedSeats = req.getSelectedSeat();
 
     boolean areSeatsAvailable = seatRepository.areSeatsAvailable(trainCd, depDate, selectedSeats);
-
     if (!areSeatsAvailable) {
-      throw new SeatAlreadyReservedException("選択された座席は既に予約されています。再度座席を選択してください。");
+      throw new SeatAlreadyReservedException("選択された座席の一部は既に予約されています。再度座席を選択してください。");
     }
 
     String trainTypeCd = masterQuery.getTrainTypeCd(trainCd);
+    if (Objects.isNull(trainTypeCd)) {
+      throw new IllegalStateException("指定された列車の列車種別が見つかりません。trainCd: " + trainCd);
+    }
 
     BuyerAccount buyer = accountQuery.findBuyerAccount(userEmail);
+    if (Objects.isNull(buyer)) {
+      throw new IllegalStateException("購入者のアカウント情報が見つかりません。email: " + userEmail);
+    }
+
     Reservation r = new Reservation();
     r.setInvalidFlg(false);
     r.setAccountId(buyer.accountId());
