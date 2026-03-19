@@ -23,6 +23,7 @@ public class SeatRepositoryImpl implements SeatRepositoryPort {
 
   private final TrainCarMasterJpaRepository trainCarRepo;
   private final SeatReservationJpaRepository seatRepo;
+  private final SeatMapper seatMapper;
   
   @Override
   public boolean areSeatsAvailable(String trainCd, LocalDate depDate, SelectedSeatDto[] seats) {
@@ -36,7 +37,8 @@ public class SeatRepositoryImpl implements SeatRepositoryPort {
         .collect(Collectors.toList());
 
     // JpaRepositoryを呼び出して、予約済みの座席数を取得
-    long reservedCount = seatRepo.countReservedSeatsInList(trainCd, depDate, seatIdentifiers);
+    long reservedCount = seatMapper
+    .countReservedSeatsInList(trainCd, depDate, seatIdentifiers);
 
     // 予約済みの座席数が0であれば、すべての座席が利用可能
     return reservedCount == 0;

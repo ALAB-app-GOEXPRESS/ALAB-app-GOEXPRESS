@@ -1,4 +1,4 @@
-package com.alab.goexpress.config;
+package com.alab.goexpress.reservation.adapter.in.web;
 
 import com.alab.goexpress.reservation.application.service.SeatAlreadyReservedException;
 import org.springframework.http.HttpStatus;
@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class ReservationExceptionHandler {
 
     @ExceptionHandler(SeatAlreadyReservedException.class)
     public ResponseEntity<Object> handleSeatAlreadyReservedException(
