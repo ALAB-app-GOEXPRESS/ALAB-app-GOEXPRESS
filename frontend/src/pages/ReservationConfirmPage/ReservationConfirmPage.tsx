@@ -126,7 +126,7 @@ export const ReservationConfirmPage: React.FC = () => {
                   onClick={() => navigate(-1)}
                   className='p-0 text-sm'
                 >
-                  座席選択に戻る
+                  座席を再選択する
                 </Button>
                 <div className='space-y-3'>
                   {selectedSeats.map((seat, index) => (
