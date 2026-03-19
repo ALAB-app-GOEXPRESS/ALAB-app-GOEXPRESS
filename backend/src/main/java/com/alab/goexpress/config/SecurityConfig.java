@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -71,10 +70,6 @@ public class SecurityConfig {
       // HTTPリクエストの認可設定
       .authorizeHttpRequests(authorize ->
         authorize
-          // OPTIONSメソッド（事前リクエスト）の全てのパスへのアクセスを認証なしで許可
-          .requestMatchers(HttpMethod.OPTIONS, "/**")
-          .permitAll()
-          //非会員でも予約可能にするため、上記以外のリクエストも認証なしで許可
           .anyRequest()
           .permitAll()
       )
