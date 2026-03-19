@@ -73,8 +73,13 @@ export const ReservationConfirmPage: React.FC = () => {
       });
     } catch (error) {
       console.error(error);
-      alert(error instanceof Error ? error.message : '予期せぬエラーが発生しました。');
-      setIsSubmitting(false);
+
+      toast.error('選択した座席は既に予約されています。再度座席を選択してください。', {
+        position: 'bottom-right',
+        duration: 5000,
+      });
+
+      navigate(-1);
     }
   };
 
