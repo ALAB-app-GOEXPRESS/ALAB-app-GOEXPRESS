@@ -37,10 +37,25 @@ export const Header: React.FC = () => {
             <Ticket />
             予約確認
           </NavLink>
-          <div className='flex items-center gap-1'>
-            <CircleUser />
-            <p>{userName}</p>
-          </div>
+          {userName !== null && (
+            <div className='flex items-center gap-2'>
+              <CircleUser />
+              <p>{userName}</p>
+            </div>
+          )}
+          {userName === null && (
+            <NavLink
+              to='login'
+              className={({ isActive }) =>
+                isActive
+                  ? 'py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg bg-primary/10 cursor-default'
+                  : 'py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg'
+              }
+            >
+              <CircleUser />
+              <p>ログイン</p>
+            </NavLink>
+          )}
         </nav>
       </div>
     </header>
