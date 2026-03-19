@@ -38,4 +38,14 @@ public interface SeatReservationJpaRepository extends JpaRepository<Seat, SeatId
     @Param("date") LocalDate date,
     @Param("seatTypeCd") String seatTypeCd
   );
+
+  @Query("SELECT COUNT(s) FROM Seat s " +
+         "WHERE s.trainCd = :trainCd " +
+         "AND s.departureDate = :depDate " +
+         "AND CONCAT(s.trainCarCd, s.seatCd) IN :seatIdentifiers")
+  long countReservedSeatsInList(
+      @Param("trainCd") String trainCd,
+      @Param("depDate") LocalDate depDate,
+      @Param("seatIdentifiers") List<String> seatIdentifiers
+  );
 }

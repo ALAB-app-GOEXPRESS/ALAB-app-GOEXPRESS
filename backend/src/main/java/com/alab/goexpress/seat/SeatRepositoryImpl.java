@@ -2,10 +2,15 @@ package com.alab.goexpress.seat;
 
 import com.alab.goexpress.master.train.TrainCarMasterJpaRepository;
 import com.alab.goexpress.model.entity.master.TrainCar;
+import com.alab.goexpress.seat.dto.SelectedSeatDto;
+
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
@@ -18,6 +23,24 @@ public class SeatRepositoryImpl implements SeatRepositoryPort {
 
   private final TrainCarMasterJpaRepository trainCarRepo;
   private final SeatReservationJpaRepository seatRepo;
+  
+  @Override
+  public boolean areSeatsAvailable(String trainCd, LocalDate depDate, SelectedSeatDto[] seats) {
+    if (seats == null || seats.length == 0) {
+        return true; // チェック対象がなければ常にtrue
+    }
+
+    // フロントから来た座席配列を、(号車+座席コード)の文字列リストに変換
+    List<String> seatIdentifiers = Arrays.stream(seats)
+        .map(seat -> String.format("%02d", Integer.parseInt(seat.getCarNumber())) + seat.getSeatCd())
+        .collect(Collectors.toList());
+
+    // JpaRepositoryを呼び出して、予約済みの座席数を取得
+    long reservedCount = seatRepo.countReservedSeatsInList(trainCd, depDate, seatIdentifiers);
+
+    // 予約済みの座席数が0であれば、すべての座席が利用可能
+    return reservedCount == 0;
+  }
 
   @Override
   public SeatChoice chooseSeat(String trainCd, LocalDate depDate) {
