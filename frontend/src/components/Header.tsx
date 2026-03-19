@@ -1,14 +1,18 @@
 import { NavLink } from 'react-router-dom';
 import { Ticket, TrainFront, CircleUser } from 'lucide-react';
 import { toast } from 'sonner';
+import { useState } from 'react';
+import { getUserNavigator } from '@/utils/userNavigator';
 
 export const Header: React.FC = () => {
-  const userName = sessionStorage.getItem('userName');
+  const [userName, setUserName] = useState(getUserNavigator());
 
   const logout = () => {
     sessionStorage.removeItem('idToken');
     sessionStorage.removeItem('userId');
     sessionStorage.removeItem('userName');
+
+    setUserName(null);
 
     toast.success('ログアウトしました', { position: 'bottom-right' });
   }
@@ -48,7 +52,7 @@ export const Header: React.FC = () => {
           </NavLink>
           {userName !== null && (
             <NavLink to='search'
-            className='flex items-center gap-2'
+            className='py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg'
             onClick={logout}>
               <CircleUser />
               <p>{userName}</p>
@@ -57,11 +61,7 @@ export const Header: React.FC = () => {
           {userName === null && (
             <NavLink
               to='login'
-              className={({ isActive }) =>
-                isActive
-                  ? 'py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg bg-primary/10 cursor-default'
-                  : 'py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg'
-              }
+              className='py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg'
             >
               <CircleUser />
               <p>ログイン</p>
