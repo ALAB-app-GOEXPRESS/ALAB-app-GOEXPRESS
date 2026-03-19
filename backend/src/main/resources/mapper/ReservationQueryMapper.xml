@@ -15,6 +15,7 @@
         buyer_name     AS buyerName,
         email_address  AS emailAddress
         FROM T_RESERVATION
+        WHERE account_id = #{accountId}
         ORDER BY
         <choose>
             <when test="sort == 'buyDatetime,asc'">buy_datetime ASC</when>

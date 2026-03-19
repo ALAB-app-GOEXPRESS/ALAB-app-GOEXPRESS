@@ -62,6 +62,8 @@ public class SecurityConfig {
     // CSRF対策の設定
     http
       .csrf(Customizer.withDefaults())
+      //未ログイン時でも予約可能にするため、予約時はCSRF対策を無視
+      .csrf(csrf -> csrf.ignoringRequestMatchers("/api/reservations"))
       // CORSの設定を適用
       .cors(c -> c.configurationSource(corsConfigurationSource()))
       // セッションをサーバ側で保持しない（ステートレス）ように設定
@@ -74,7 +76,8 @@ public class SecurityConfig {
           .permitAll()
           // 上記以外のリクエストは認証を必要とする設定
           .anyRequest()
-          .authenticated()
+          // .authenticated()
+          .permitAll()
       )
       // OAuth2ログインの設定で、ログイン成功時の処理を指定
       .oauth2Login(oauth2 -> oauth2.successHandler(this::handleOAuth2LoginSuccess))

@@ -11,7 +11,7 @@ public interface ReservationStorePort {
   Optional<Reservation> findById(ReservationId reservationId);
   void deleteById(ReservationId reservationId);
 
-  ReservationListView listAllWithTicketsAndOperation(int page, int size, String sortKey);
+  ReservationListView listAllWithTicketsAndOperation(int page, int size, String sortKey, int accountId);
 
   ReservationListItemView findItemWithTicketsAndOperationById(
     int reservationId
