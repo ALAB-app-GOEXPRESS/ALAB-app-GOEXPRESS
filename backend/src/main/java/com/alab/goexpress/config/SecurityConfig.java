@@ -74,9 +74,8 @@ public class SecurityConfig {
           // OPTIONSメソッド（事前リクエスト）の全てのパスへのアクセスを認証なしで許可
           .requestMatchers(HttpMethod.OPTIONS, "/**")
           .permitAll()
-          // 上記以外のリクエストは認証を必要とする設定
+          //非会員でも予約可能にするため、上記以外のリクエストも認証なしで許可
           .anyRequest()
-          // .authenticated()
           .permitAll()
       )
       // OAuth2ログインの設定で、ログイン成功時の処理を指定
