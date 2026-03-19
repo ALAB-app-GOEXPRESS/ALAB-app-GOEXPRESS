@@ -55,7 +55,7 @@ public class ReservationService {
   }
 
   @Transactional
-  public ReservationListItemView createReservationWithTicketAndSeat(TicketReservationRequest req) {
+  public ReservationListItemView createReservationWithTicketAndSeat(TicketReservationRequest req, String userEmail) {
     String trainCd = req.getTrainCd();
     LocalDate depDate = req.getDepartureDate();
     String depSt = req.getDepartureStationCd();
@@ -66,7 +66,7 @@ public class ReservationService {
 
     String trainTypeCd = masterQuery.getTrainTypeCd(trainCd);
 
-    BuyerAccount buyer = accountQuery.getDefaultBuyerAccount();
+    BuyerAccount buyer = accountQuery.findBuyerAccount(userEmail);
     Reservation r = new Reservation();
     r.setInvalidFlg(false);
     r.setAccountId(buyer.accountId());

@@ -1,19 +1,21 @@
 package com.alab.goexpress.reservation.adapter.in.web;
 
 import com.alab.goexpress.model.request.TicketReservationRequest;
-import com.alab.goexpress.reservation.application.query.ReservationListItemView;
 import com.alab.goexpress.reservation.adapter.in.web.dto.*;
 import com.alab.goexpress.reservation.adapter.in.web.mapper.ReservationMapper;
+import com.alab.goexpress.reservation.application.query.ReservationListItemView;
 import com.alab.goexpress.reservation.application.service.ReservationService;
 import com.alab.goexpress.reservation.domain.model.Reservation;
 import com.alab.goexpress.reservation.domain.model.ReservationId;
 import jakarta.validation.Valid;
-import java.net.URI;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import java.net.URI;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -46,8 +48,12 @@ public class ReservationController {
   }
 
   @PostMapping
-  public ResponseEntity<ReservationListItemDto> create(@Valid @RequestBody TicketReservationRequest req) {
-    ReservationListItemView view = service.createReservationWithTicketAndSeat(req);
+  public ResponseEntity<ReservationListItemDto> create(
+    @Valid @RequestBody TicketReservationRequest req,
+    @AuthenticationPrincipal Jwt jwt
+  ) {
+    String userEmail = jwt.getClaim("email");
+    ReservationListItemView view = service.createReservationWithTicketAndSeat(req, userEmail);
     URI location = URI.create("/api/reservations/" + view.reservationId());
     return ResponseEntity.created(location).body(toItemDto(view));
   }
@@ -159,5 +165,4 @@ public class ReservationController {
       new LinksDto(v.links().self(), v.links().tickets())
     );
   }
-
 }

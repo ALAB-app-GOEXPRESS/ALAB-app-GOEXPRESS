@@ -1,0 +1,22 @@
+spring:
+  config:
+    import: classpath:application.properties
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${auth.issuer-uri}
+      client:
+        registration:
+          cognito:
+            client-id: ${auth.clientId}
+            client-secret: ${auth.clientSecret}
+            scope:
+              - email
+              - openid
+              - phone
+            redirect-uri: ${auth.redirect-uri}
+        provider:
+          cognito:
+            issuerUri: ${auth.issuer-uri}
+            user-name-attribute: username
