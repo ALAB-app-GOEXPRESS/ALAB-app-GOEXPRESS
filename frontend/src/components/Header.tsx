@@ -1,8 +1,17 @@
 import { NavLink } from 'react-router-dom';
 import { Ticket, TrainFront, CircleUser } from 'lucide-react';
+import { toast } from 'sonner';
 
 export const Header: React.FC = () => {
-  const userName = localStorage.getItem('userName');
+  const userName = sessionStorage.getItem('userName');
+
+  const logout = () => {
+    sessionStorage.removeItem('idToken');
+    sessionStorage.removeItem('userId');
+    sessionStorage.removeItem('userName');
+
+    toast.success('ログアウトしました', { position: 'bottom-right' });
+  }
 
   return (
     <header className='sticky top-0 z-50 border-b bg-white'>
@@ -38,10 +47,12 @@ export const Header: React.FC = () => {
             予約確認
           </NavLink>
           {userName !== null && (
-            <div className='flex items-center gap-2'>
+            <NavLink to='search'
+            className='flex items-center gap-2'
+            onClick={logout}>
               <CircleUser />
               <p>{userName}</p>
-            </div>
+            </NavLink>
           )}
           {userName === null && (
             <NavLink

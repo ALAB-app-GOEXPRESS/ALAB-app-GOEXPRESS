@@ -15,7 +15,7 @@ public interface ReservationQueryMapper {
     @Param("accountId") int accountId
   );
 
-  long countReservations();
+  long countReservations(@Param ("accountId") int accountId);
 
   List<TicketOperationRow> selectTicketsWithOperationByReservationIds(
     @Param("reservationIds") List<Integer> reservationIds

@@ -49,7 +49,7 @@ public class ReservationStoreAdapter implements ReservationStorePort {
     int offset = (page - 1) * size;
 
     var headers = queryMapper.selectReservationHeaders(size, offset, sortKey, accountId);
-    long total = queryMapper.countReservations();
+    long total = queryMapper.countReservations(accountId);
 
     if (headers.isEmpty()) {
       return ReservationListView.empty(page, size, total, "/api/reservations?page=" + page + "&size=" + size);

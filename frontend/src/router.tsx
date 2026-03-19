@@ -10,14 +10,12 @@ import { SeatMapPage } from './pages/SeatMapPage/SeatMapPage';
 import { ReservationConfirmPage } from './pages/ReservationConfirmPage/ReservationConfirmPage';
 import { LoginPage } from './pages/LoginPage/LoginPage';
 import { LoginCallbackPage } from './pages/LoginPage/LoginCallbackPage';
-// import { RequireAuth } from './auth/RequireAuth';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
     children: [
-      // 認証不要ルート
       { path: 'login', element: <LoginPage /> },
       { path: 'login/callback', element: <LoginCallbackPage /> },
       { path: 'search', element: <TrainSearchPage /> },
@@ -28,25 +26,6 @@ export const router = createBrowserRouter([
       { path: 'reservation-detail', element: <ReservationDetailPage /> },
       { path: 'seat-map', element: <SeatMapPage /> },
       { path: 'reservation-confirm', element: <ReservationConfirmPage /> },
-      { path: 'login', element: <LoginPage /> },
-      { path: 'login/callback', element: <LoginCallbackPage /> },
-
-      // ここから下はログイン必須
-      // {
-      //   element: <RequireAuth />,
-      //   children: [
-      //     { path: 'search', element: <TrainSearchPage /> },
-      //     { path: 'results', element: <SearchResultPage /> },
-      //     { path: 'train-detail', element: <TrainDetailPage /> },
-      //     { path: 'reservation-result', element: <ReservationResultPage /> },
-      //     { path: 'reservation-list', element: <ReservationListPage /> },
-      //     { path: 'reservation-detail', element: <ReservationDetailPage /> },
-      //     { path: 'seat-map', element: <SeatMapPage /> },
-      //     { path: 'reservation-confirm', element: <ReservationConfirmPage /> },
-      //     { path: 'login-page', element: <LoginPage /> },
-      //     { path: 'login/callback', element: <LoginCallbackPage /> },
-      //   ],
-      // },
     ],
   },
 ]);
