@@ -80,7 +80,13 @@ export const ReservationConfirmPage: React.FC = () => {
           duration: 5000,
         });
 
-        navigate(-1);
+        navigate(`/seat-map`, {
+          replace: true,
+          state: {
+            seatClasses: trainDetailResult.seatClasses,
+            trainDetail: trainDetailResult,
+          },
+        });
       } else {
         setIsSubmitting(false);
       }
