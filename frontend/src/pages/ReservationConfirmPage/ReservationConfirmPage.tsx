@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -15,40 +15,51 @@ import { useTypedLocation } from '@/lib/router';
 import type { StationCode } from '@/types/Station';
 import { Badge } from '@/components/ui/badge';
 import { specifyTrainTypeIconColor } from '@/utils/train';
+import { useForm } from 'react-hook-form';
 
 type ReservationConfirmState = {
   trainDetailResult: TrainDetailResult;
   selectedSeats: SelectedSeat[];
 };
 
+type FormValues = {
+  buyerName: string;
+  emailAddress: string;
+};
+
 export const ReservationConfirmPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useTypedLocation<ReservationConfirmState | undefined>();
-
-  const [buyerName, setName] = useState('');
-  const [emailAddress, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const state = location.state;
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormValues>({
+    mode: 'onChange',
+    defaultValues: {
+      buyerName: '',
+      emailAddress: '',
+    },
+  });
+
+  React.useEffect(() => {
+    if (!state) {
+      navigate(-1);
+    }
+  }, [state, navigate]);
+
   if (!state) {
-    navigate(-1);
-    return <></>;
+    return null;
   }
 
   const trainDetailResult = state.trainDetailResult;
   const selectedSeats = state.selectedSeats;
   const totalPrice = selectedSeats.reduce((sum, item) => sum + item.price, 0);
 
-  const handleReserve = async () => {
-    if (!buyerName || !emailAddress) {
-      alert('購入者氏名とメールアドレスを入力してください。');
-      return;
-    }
-
+  const onSubmit = async (data: FormValues) => {
     if (!trainDetailResult) return;
-
-    setIsSubmitting(true);
 
     try {
       const reservationDetails = await createReservation(
@@ -59,8 +70,8 @@ export const ReservationConfirmPage: React.FC = () => {
           departureStationCd: trainDetailResult.departureStationCd as StationCode,
           arrivalStationCd: trainDetailResult.arrivalStationCd as StationCode,
           trackNumber: trainDetailResult.trackNumber,
-          buyerName: buyerName,
-          emailAddress: emailAddress,
+          buyerName: data.buyerName,
+          emailAddress: data.emailAddress,
           selectedSeat: selectedSeats,
         },
         trainDetailResult.date,
@@ -73,8 +84,6 @@ export const ReservationConfirmPage: React.FC = () => {
       });
     } catch (error) {
       console.error(error);
-      alert(error instanceof Error ? error.message : '予期せぬエラーが発生しました。');
-      setIsSubmitting(false);
     }
   };
 
@@ -143,64 +152,93 @@ export const ReservationConfirmPage: React.FC = () => {
                 <CardTitle>予約内容の確認</CardTitle>
                 <p className='text-sm text-gray-600'>内容をご確認の上、予約を確定してください。</p>
               </CardHeader>
-              <CardContent className='space-y-6'>
-                <div className='space-y-2'>
-                  <Label htmlFor='name'>購入者氏名</Label>
-                  <div className='relative'>
-                    <User className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400' />
-                    <Input
-                      id='name'
-                      placeholder='例：東日本 太朗'
-                      value={buyerName}
-                      onChange={(e) => setName(e.target.value)}
-                      className='pl-9'
-                    />
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                noValidate
+              >
+                <CardContent className='space-y-6'>
+                  <div className='space-y-2'>
+                    <Label htmlFor='name'>購入者氏名</Label>
+                    <div className='relative'>
+                      <User className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400' />
+                      <Input
+                        id='name'
+                        placeholder='例：東日本 太朗'
+                        aria-invalid={!!errors.buyerName}
+                        aria-describedby={errors.buyerName ? 'name-error' : undefined}
+                        className={`pl-9 ${errors.buyerName ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
+                        {...register('buyerName', {
+                          required: '氏名が入力されていません',
+                          setValueAs: (v: string) => (typeof v === 'string' ? v.trim() : v),
+                        })}
+                      />
+                    </div>
+                    {errors.buyerName && (
+                      <p
+                        id='name-error'
+                        className='mt-1 text-sm text-red-600'
+                      >
+                        {errors.buyerName.message}
+                      </p>
+                    )}
                   </div>
-                </div>
-                <div className='space-y-2'>
-                  <Label htmlFor='email'>メールアドレス</Label>
-                  <div className='relative'>
-                    <Mail className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400' />
-                    <Input
-                      id='email'
-                      type='email'
-                      placeholder='例：higasinihon@example.com'
-                      value={emailAddress}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className='pl-9'
-                    />
+                  <div className='space-y-2'>
+                    <Label htmlFor='email'>メールアドレス</Label>
+                    <div className='relative'>
+                      <Mail className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400' />
+                      <Input
+                        id='email'
+                        type='email'
+                        placeholder='例：higasinihon@example.com'
+                        aria-invalid={!!errors.emailAddress}
+                        aria-describedby={errors.emailAddress ? 'email-error' : undefined}
+                        className={`pl-9 ${errors.emailAddress ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
+                        {...register('emailAddress', {
+                          required: 'メールアドレスが入力されていません',
+                          setValueAs: (v: string) => (typeof v === 'string' ? v.trim() : v),
+                        })}
+                      />
+                    </div>
+                    {errors.emailAddress && (
+                      <p
+                        id='email-error'
+                        className='mt-1 text-sm text-red-600'
+                      >
+                        {errors.emailAddress.message}
+                      </p>
+                    )}
                   </div>
-                </div>
-                <Separator className='mb-4' />
-                <div className='grid grid-cols-2 items-center text-sm'>
-                  <p className='text-gray-600'>座席数合計:</p>
-                  <p className='text-right'>{selectedSeats.length}席</p>
-                </div>{' '}
-                <div className='grid grid-cols-2 items-center font-bold text-xl'>
-                  <p>お支払い合計:</p>
-                  <p className='text-right text-primary text-3xl'>¥{totalPrice.toLocaleString()}</p>
-                </div>
-                <Button
-                  onClick={handleReserve}
-                  className='w-full'
-                  size='lg'
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                      予約処理中...
-                    </>
-                  ) : (
-                    '予約を確定'
+                  <Separator className='mb-4' />
+                  <div className='grid grid-cols-2 items-center text-sm'>
+                    <p className='text-gray-600'>座席数合計:</p>
+                    <p className='text-right'>{selectedSeats.length}席</p>
+                  </div>{' '}
+                  <div className='grid grid-cols-2 items-center font-bold text-xl'>
+                    <p>お支払い合計:</p>
+                    <p className='text-right text-primary text-3xl'>¥{totalPrice.toLocaleString()}</p>
+                  </div>
+                  <Button
+                    type='submit'
+                    className='w-full'
+                    size='lg'
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                        予約処理中...
+                      </>
+                    ) : (
+                      '予約を確定'
+                    )}
+                  </Button>
+                  {isSubmitting && (
+                    <p className='mt-2 text-sm text-center text-muted-foreground'>
+                      画面を閉じず、しばらくお待ちください。
+                    </p>
                   )}
-                </Button>
-                {isSubmitting && (
-                  <p className='mt-2 text-sm text-center text-muted-foreground'>
-                    画面を閉じず、しばらくお待ちください。
-                  </p>
-                )}
-              </CardContent>
+                </CardContent>
+              </form>
             </Card>
           </div>
         </div>
