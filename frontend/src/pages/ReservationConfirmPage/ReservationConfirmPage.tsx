@@ -96,8 +96,6 @@ export const ReservationConfirmPage: React.FC = () => {
             trainDetail: trainDetailResult,
           },
         });
-      } else {
-        setIsSubmitting(false);
       }
     }
   };
