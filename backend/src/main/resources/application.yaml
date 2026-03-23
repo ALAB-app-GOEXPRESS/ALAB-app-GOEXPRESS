@@ -16,5 +16,5 @@ spring:
             redirect-uri: ${REDIRECT_URI}
         provider:
           cognito:
-            issuerUri: ${ISSUER_URI}
+            issuer-uri: ${ISSUER_URI}
             user-name-attribute: username
