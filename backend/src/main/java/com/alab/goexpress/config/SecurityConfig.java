@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -68,11 +69,7 @@ public class SecurityConfig {
       // セッションをサーバ側で保持しない（ステートレス）ように設定
       .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
       // HTTPリクエストの認可設定
-      .authorizeHttpRequests(authorize ->
-        authorize
-          .anyRequest()
-          .permitAll()
-      )
+      .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
       // OAuth2ログインの設定で、ログイン成功時の処理を指定
       .oauth2Login(oauth2 -> oauth2.successHandler(this::handleOAuth2LoginSuccess))
       // AuthorizationヘッダのJWTを検証する設定
@@ -94,7 +91,7 @@ public class SecurityConfig {
 
       String redirect =
         originUri +
-        "/login/callback" +
+        "/login-callback" +
         "#id_token=" +
         URLEncoder.encode(idToken, StandardCharsets.UTF_8) +
         "&user_id=" +
