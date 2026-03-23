@@ -4,17 +4,18 @@ import com.alab.goexpress.model.request.TicketReservationRequest;
 import com.alab.goexpress.reservation.application.port.out.AccountQueryPort;
 import com.alab.goexpress.reservation.application.port.out.MasterQueryPort;
 import com.alab.goexpress.reservation.application.port.out.ReservationStorePort;
-import com.alab.goexpress.reservation.application.port.out.SeatReservationPort;
 import com.alab.goexpress.reservation.application.port.out.TicketCommandPort;
 import com.alab.goexpress.reservation.application.port.out.model.BuyerAccount;
 import com.alab.goexpress.reservation.application.query.ReservationListItemView;
 import com.alab.goexpress.reservation.application.query.ReservationListView;
 import com.alab.goexpress.reservation.domain.model.Reservation;
 import com.alab.goexpress.reservation.domain.model.ReservationId;
+import com.alab.goexpress.seat.SeatRepositoryPort;
 import com.alab.goexpress.seat.dto.SelectedSeatDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class ReservationService {
   private final ReservationStorePort store;
   private final TicketCommandPort ticketCommand;
   private final MasterQueryPort masterQuery;
-  private final SeatReservationPort seatReservation;
+  private final SeatRepositoryPort seatRepository;
   private final AccountQueryPort accountQuery;
   private final ReservationMailService reservationMailService;
 
@@ -62,11 +63,23 @@ public class ReservationService {
     String arrSt = req.getArrivalStationCd();
     String buyerName = req.getBuyerName();
     String emailAddress = req.getEmailAddress();
-    SelectedSeatDto selectedSeat[] = req.getSelectedSeat();
+    SelectedSeatDto[] selectedSeats = req.getSelectedSeat();
+
+    boolean areSeatsAvailable = seatRepository.areSeatsAvailable(trainCd, depDate, selectedSeats);
+    if (!areSeatsAvailable) {
+      throw new SeatAlreadyReservedException("選択された座席の一部は既に予約されています。再度座席を選択してください。");
+    }
 
     String trainTypeCd = masterQuery.getTrainTypeCd(trainCd);
+    if (Objects.isNull(trainTypeCd)) {
+      throw new IllegalStateException("指定された列車の列車種別が見つかりません。trainCd: " + trainCd);
+    }
 
     BuyerAccount buyer = accountQuery.findBuyerAccount(userEmail);
+    if (Objects.isNull(buyer)) {
+      throw new IllegalStateException("購入者のアカウント情報が見つかりません。email: " + userEmail);
+    }
+
     Reservation r = new Reservation();
     r.setInvalidFlg(false);
     r.setAccountId(buyer.accountId());
@@ -77,7 +90,7 @@ public class ReservationService {
     r.setExpirationDate(buyer.expirationDate());
     Reservation savedReservation = store.save(r);
 
-    for (SelectedSeatDto seat : selectedSeat) {
+    for (SelectedSeatDto seat : selectedSeats) {
       int charge = masterQuery.getCharge(depSt, arrSt, trainTypeCd, "10"); // 指定席で固定
 
       ticketCommand.createTicket(
@@ -93,7 +106,7 @@ public class ReservationService {
         savedReservation.getEmailAddress()
       );
 
-      seatReservation.reserveSeat(
+      seatRepository.insertSeat(
         trainCd,
         depDate,
         String.format("%02d", Integer.parseInt(seat.getCarNumber())),

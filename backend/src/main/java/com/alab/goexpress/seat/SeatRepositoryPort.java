@@ -2,6 +2,8 @@ package com.alab.goexpress.seat;
 
 import java.time.LocalDate;
 
+import com.alab.goexpress.seat.dto.SelectedSeatDto;
+
 public interface SeatRepositoryPort {
   SeatChoice chooseSeat(String trainCd, LocalDate depDate);
 
@@ -14,4 +16,6 @@ public interface SeatRepositoryPort {
     String arrSt,
     Integer reservationId
   );
+
+  boolean areSeatsAvailable(String trainCd, LocalDate depDate, SelectedSeatDto[] seats);
 }

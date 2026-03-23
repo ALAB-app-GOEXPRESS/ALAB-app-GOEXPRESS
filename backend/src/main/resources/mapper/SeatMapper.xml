@@ -14,4 +14,19 @@
         ORDER BY seat_cd
     </select>
 
+    <select id="countReservedSeatsInList" resultType="long">
+        SELECT
+            COUNT(*)
+        FROM
+            T_SEAT
+        WHERE
+            train_cd = #{trainCd}
+            AND departure_date = #{depDate}
+            AND CONCAT(train_car_cd, seat_cd) IN
+        <foreach item="item" collection="seatIdentifiers" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
 </mapper>
+ 
