@@ -26,7 +26,7 @@ class ReservationControllerTest {
 
   @Test
   void list_shouldReturnOk() throws Exception {
-    when(reservationService.listAllInOne(anyInt(), anyInt(), anyString())).thenReturn(
+    when(reservationService.listAllInOne(anyInt(), anyInt(), anyString(), anyString())).thenReturn(
       ReservationListView.empty(0, 20, 0, "/api/reservations")
     );
 

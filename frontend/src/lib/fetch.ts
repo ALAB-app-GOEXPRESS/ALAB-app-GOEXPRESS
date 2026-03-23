@@ -21,7 +21,7 @@ export class ApiError extends Error {
 }
 
 export async function fetchJSON<T>(url: string, init?: RequestInit): Promise<T> {
-  const token = localStorage.getItem('idToken');
+  const token = sessionStorage.getItem('idToken');
   const headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',

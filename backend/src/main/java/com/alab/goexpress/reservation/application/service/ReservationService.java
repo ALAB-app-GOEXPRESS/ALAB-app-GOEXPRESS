@@ -51,8 +51,10 @@ public class ReservationService {
   }
 
   @Transactional(readOnly = true)
-  public ReservationListView listAllInOne(int page, int size, String sortKey) {
-    return store.listAllWithTicketsAndOperation(page, size, sortKey);
+  public ReservationListView listAllInOne(int page, int size, String sortKey, String userEmail) {
+    int accountId = accountQuery.findBuyerAccount(userEmail).accountId();
+
+    return store.listAllWithTicketsAndOperation(page, size, sortKey, accountId);
   }
 
   @Transactional

@@ -11,10 +11,11 @@ public interface ReservationQueryMapper {
   List<ReservationHeaderRow> selectReservationHeaders(
     @Param("size") int size,
     @Param("offset") int offset,
-    @Param("sort") String sort
+    @Param("sort") String sort,
+    @Param("accountId") int accountId
   );
 
-  long countReservations();
+  long countReservations(@Param ("accountId") int accountId);
 
   List<TicketOperationRow> selectTicketsWithOperationByReservationIds(
     @Param("reservationIds") List<Integer> reservationIds

@@ -45,11 +45,11 @@ public class ReservationStoreAdapter implements ReservationStorePort {
 
   @Override
   @Transactional(readOnly = true)
-  public ReservationListView listAllWithTicketsAndOperation(int page, int size, String sortKey) {
+  public ReservationListView listAllWithTicketsAndOperation(int page, int size, String sortKey, int accountId) {
     int offset = (page - 1) * size;
 
-    var headers = queryMapper.selectReservationHeaders(size, offset, sortKey);
-    long total = queryMapper.countReservations();
+    var headers = queryMapper.selectReservationHeaders(size, offset, sortKey, accountId);
+    long total = queryMapper.countReservations(accountId);
 
     if (headers.isEmpty()) {
       return ReservationListView.empty(page, size, total, "/api/reservations?page=" + page + "&size=" + size);

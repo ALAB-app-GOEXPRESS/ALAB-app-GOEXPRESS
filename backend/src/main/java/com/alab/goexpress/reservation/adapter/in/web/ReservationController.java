@@ -29,11 +29,13 @@ public class ReservationController {
   public ResponseEntity<ReservationListResponse> list(
     @RequestParam(defaultValue = "0") @Min(0) int page,
     @RequestParam(defaultValue = "20") @Min(1) @Max(200) int size,
-    @RequestParam(defaultValue = "buyDatetime,desc") String sort
+    @RequestParam(defaultValue = "buyDatetime,desc") String sort,
+    @AuthenticationPrincipal Jwt jwt
   ) {
     String normalizedSort = SortUtil.normalize(sort, Set.of("buyDatetime", "departureDate"));
+    String userEmail = jwt != null ? jwt.getClaim("email") : "ko-izumi@example.com";
 
-    var view = service.listAllInOne(page, size, normalizedSort);
+    var view = service.listAllInOne(page, size, normalizedSort, userEmail);
 
     return ResponseEntity.ok(toResponse(view));
   }
@@ -52,7 +54,7 @@ public class ReservationController {
     @Valid @RequestBody TicketReservationRequest req,
     @AuthenticationPrincipal Jwt jwt
   ) {
-    String userEmail = jwt.getClaim("email");
+    String userEmail = jwt != null ? jwt.getClaim("email") : "ko-izumi@example.com";
     ReservationListItemView view = service.createReservationWithTicketAndSeat(req, userEmail);
     URI location = URI.create("/api/reservations/" + view.reservationId());
     return ResponseEntity.created(location).body(toItemDto(view));

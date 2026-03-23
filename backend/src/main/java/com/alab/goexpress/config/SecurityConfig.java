@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -62,6 +61,8 @@ public class SecurityConfig {
     // CSRF対策の設定
     http
       .csrf(Customizer.withDefaults())
+      //未ログイン時でも予約可能にするため、予約時はCSRF対策を無視
+      .csrf(csrf -> csrf.ignoringRequestMatchers("/api/reservations"))
       // CORSの設定を適用
       .cors(c -> c.configurationSource(corsConfigurationSource()))
       // セッションをサーバ側で保持しない（ステートレス）ように設定
@@ -69,12 +70,8 @@ public class SecurityConfig {
       // HTTPリクエストの認可設定
       .authorizeHttpRequests(authorize ->
         authorize
-          // OPTIONSメソッド（事前リクエスト）の全てのパスへのアクセスを認証なしで許可
-          .requestMatchers(HttpMethod.OPTIONS, "/**")
-          .permitAll()
-          // 上記以外のリクエストは認証を必要とする設定
           .anyRequest()
-          .authenticated()
+          .permitAll()
       )
       // OAuth2ログインの設定で、ログイン成功時の処理を指定
       .oauth2Login(oauth2 -> oauth2.successHandler(this::handleOAuth2LoginSuccess))
