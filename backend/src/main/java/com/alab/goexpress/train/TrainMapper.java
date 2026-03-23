@@ -4,7 +4,6 @@ import com.alab.goexpress.master.DepartureInfo;
 import com.alab.goexpress.train.dto.SeatTypeInfoDTO;
 import com.alab.goexpress.train.dto.TrainDto;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
