@@ -11,4 +11,6 @@ public interface SeatMapper {
     @Param("trainCd") String trainCd,
     @Param("departureDate") LocalDate departureDate
   );
+
+  long countReservedSeatsInList( @Param("trainCd") String trainCd, @Param("depDate") LocalDate depDate, @Param("seatIdentifiers") List<String> seatIdentifiers );
 }
