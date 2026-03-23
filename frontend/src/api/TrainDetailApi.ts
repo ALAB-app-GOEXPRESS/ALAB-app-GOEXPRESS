@@ -47,8 +47,8 @@ export type TrainDetailResult = {
   departureStationName: string;
   arrivalStationName: string;
   trackNumber: string;
-  date: string;
   seatClasses: SeatClassDetail[];
+  date: string;
 };
 
 export type TrainDetailParams = {
