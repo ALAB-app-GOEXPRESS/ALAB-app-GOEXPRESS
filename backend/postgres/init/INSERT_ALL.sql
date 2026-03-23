@@ -1,4 +1,3 @@
-
 INSERT INTO
     M_STATION (station_cd, station_name)
 VALUES
@@ -44,73 +43,107 @@ SELECT dep.station_cd, arr.station_cd, tt.train_type_cd, st.seat_type_cd, ABS(de
 FROM station_order dep JOIN station_order arr ON dep.station_cd <> arr.station_cd
 CROSS JOIN M_TRAIN_TYPE tt CROSS JOIN M_SEAT_TYPE st;
 
-CREATE OR REPLACE FUNCTION generate_all_train_data(
-    train_prefix CHAR(1),
-    train_type CHAR(2),
-    start_hour INT,
-    end_hour INT,
-    interval_minutes INT,
-    station_order_direction TEXT,
-    travel_time_per_station INT,
-    start_minute_offset INT
-) RETURNS void AS $$
-DECLARE
-    train_number_counter INT := 1;
-    start_time_val TIMESTAMP;
-BEGIN
-    FOR start_time_val IN SELECT generate_series(
-        ('2000-01-01 ' || start_hour || ':00:00')::timestamp + (start_minute_offset || ' minutes')::interval,
-        ('2000-01-01 ' || end_hour || ':00:00')::timestamp,
-        (interval_minutes || ' minutes')::interval
-    )
-    LOOP
-        INSERT INTO M_TRAIN (train_cd, train_type_cd, train_number)
-        VALUES (train_prefix || LPAD(train_number_counter::text, 4, '0'), train_type, LPAD(train_number_counter::text, 4, '0'));
 
-        WITH car_definitions AS (
-            SELECT '01' AS train_car_cd, '10' AS seat_type_cd, 75 AS max_seat_number UNION ALL
-            SELECT '02' AS train_car_cd, '20' AS seat_type_cd, 56 AS max_seat_number UNION ALL
-            SELECT '03' AS train_car_cd, '30' AS seat_type_cd, 18 AS max_seat_number
-        )
-        INSERT INTO M_TRAIN_CAR (train_cd, train_car_cd, seat_type_cd, max_seat_number)
-        SELECT train_prefix || LPAD(train_number_counter::text, 4, '0'), cd.train_car_cd, cd.seat_type_cd, cd.max_seat_number
-        FROM car_definitions cd;
+-- =================================================================
+-- はやぶさ (01) 下り
+-- パラメータ: ('H', '01', 6, 22, 20, 'ASC', 10, 0)
+-- =================================================================
+WITH time_series AS (SELECT start_time_val, ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '0 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '20 minutes'::interval) AS t(start_time_val))
+INSERT INTO M_TRAIN (train_cd, train_type_cd, train_number) SELECT 'H' || LPAD(ts.train_number_counter::text, 4, '0'), '01', LPAD(ts.train_number_counter::text, 4, '0') FROM time_series ts;
 
-        WITH station_orders AS (
-            SELECT station_cd, ROW_NUMBER() OVER (ORDER BY CASE WHEN station_order_direction = 'ASC' THEN station_cd END ASC, CASE WHEN station_order_direction = 'DESC' THEN station_cd END DESC) AS station_order
-            FROM M_STATION
-        ),
-        plan_candidates AS (
-            SELECT
-                so.station_cd,
-                (start_time_val::time + (so.station_order - 1) * (travel_time_per_station || ' minutes')::interval) AS arrival,
-                (start_time_val::time + (so.station_order - 1) * (travel_time_per_station || ' minutes')::interval + '50 seconds'::interval) AS departure
-            FROM station_orders so
-        )
-        INSERT INTO M_PLAN (train_cd, arrival_station_cd, arrival_time, departure_time, track_number)
-        SELECT
-            train_prefix || LPAD(train_number_counter::text, 4, '0'),
-            pc.station_cd,
-            pc.arrival,
-            pc.departure,
-            '15'
-        FROM plan_candidates pc
-        WHERE pc.arrival >= start_time_val::time;
+WITH time_series AS (SELECT ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '0 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '20 minutes'::interval) AS t(start_time_val))
+INSERT INTO M_TRAIN_CAR (train_cd, train_car_cd, seat_type_cd, max_seat_number) SELECT 'H' || LPAD(ts.train_number_counter::text, 4, '0'), cd.train_car_cd, cd.seat_type_cd, cd.max_seat_number FROM time_series ts CROSS JOIN (VALUES ('01', '10', 75), ('02', '20', 56), ('03', '30', 18)) AS cd(train_car_cd, seat_type_cd, max_seat_number);
 
-        train_number_counter := train_number_counter + 1;
-    END LOOP;
-END;
-$$ LANGUAGE plpgsql;
+WITH time_series AS (SELECT start_time_val, ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '0 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '20 minutes'::interval) AS t(start_time_val)), station_orders AS (SELECT station_cd, ROW_NUMBER() OVER (ORDER BY station_cd ASC) AS station_order FROM M_STATION)
+INSERT INTO M_PLAN (train_cd, arrival_station_cd, arrival_time, departure_time, track_number) SELECT 'H' || LPAD(ts.train_number_counter::text, 4, '0'), so.station_cd, (ts.start_time_val::time + (so.station_order - 1) * '10 minutes'::interval), (ts.start_time_val::time + (so.station_order - 1) * '10 minutes'::interval + '50 seconds'::interval), '15' FROM time_series ts CROSS JOIN station_orders so;
 
--- はやぶさ (01)
-SELECT generate_all_train_data('H', '01', 6, 22, 20, 'ASC', 10, 0); -- 下り
-SELECT generate_all_train_data('J', '01', 6, 22, 20, 'DESC', 10, 5);-- 上り
--- はやて (02)
-SELECT generate_all_train_data('T', '02', 6, 22, 25, 'ASC', 12, 2); -- 下り
-SELECT generate_all_train_data('U', '02', 6, 22, 25, 'DESC', 12, 7);-- 上り
--- やまびこ (03)
-SELECT generate_all_train_data('Y', '03', 6, 22, 15, 'ASC', 15, 3); -- 下り
-SELECT generate_all_train_data('Z', '03', 6, 22, 15, 'DESC', 15, 8);-- 上り
--- なすの (04)
-SELECT generate_all_train_data('N', '04', 6, 22, 30, 'ASC', 18, 1); -- 下り
-SELECT generate_all_train_data('M', '04', 6, 22, 30, 'DESC', 18, 6);-- 上り
+-- =================================================================
+-- はやぶさ (01) 上り
+-- パラメータ: ('J', '01', 6, 22, 20, 'DESC', 10, 5)
+-- =================================================================
+WITH time_series AS (SELECT start_time_val, ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '5 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '20 minutes'::interval) AS t(start_time_val))
+INSERT INTO M_TRAIN (train_cd, train_type_cd, train_number) SELECT 'J' || LPAD(ts.train_number_counter::text, 4, '0'), '01', LPAD(ts.train_number_counter::text, 4, '0') FROM time_series ts;
+
+WITH time_series AS (SELECT ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '5 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '20 minutes'::interval) AS t(start_time_val))
+INSERT INTO M_TRAIN_CAR (train_cd, train_car_cd, seat_type_cd, max_seat_number) SELECT 'J' || LPAD(ts.train_number_counter::text, 4, '0'), cd.train_car_cd, cd.seat_type_cd, cd.max_seat_number FROM time_series ts CROSS JOIN (VALUES ('01', '10', 75), ('02', '20', 56), ('03', '30', 18)) AS cd(train_car_cd, seat_type_cd, max_seat_number);
+
+WITH time_series AS (SELECT start_time_val, ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '5 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '20 minutes'::interval) AS t(start_time_val)), station_orders AS (SELECT station_cd, ROW_NUMBER() OVER (ORDER BY station_cd DESC) AS station_order FROM M_STATION)
+INSERT INTO M_PLAN (train_cd, arrival_station_cd, arrival_time, departure_time, track_number) SELECT 'J' || LPAD(ts.train_number_counter::text, 4, '0'), so.station_cd, (ts.start_time_val::time + (so.station_order - 1) * '10 minutes'::interval), (ts.start_time_val::time + (so.station_order - 1) * '10 minutes'::interval + '50 seconds'::interval), '15' FROM time_series ts CROSS JOIN station_orders so;
+
+-- =================================================================
+-- はやて (02) 下り
+-- パラメータ: ('T', '02', 6, 22, 25, 'ASC', 12, 2)
+-- =================================================================
+WITH time_series AS (SELECT start_time_val, ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '2 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '25 minutes'::interval) AS t(start_time_val))
+INSERT INTO M_TRAIN (train_cd, train_type_cd, train_number) SELECT 'T' || LPAD(ts.train_number_counter::text, 4, '0'), '02', LPAD(ts.train_number_counter::text, 4, '0') FROM time_series ts;
+
+WITH time_series AS (SELECT ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '2 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '25 minutes'::interval) AS t(start_time_val))
+INSERT INTO M_TRAIN_CAR (train_cd, train_car_cd, seat_type_cd, max_seat_number) SELECT 'T' || LPAD(ts.train_number_counter::text, 4, '0'), cd.train_car_cd, cd.seat_type_cd, cd.max_seat_number FROM time_series ts CROSS JOIN (VALUES ('01', '10', 75), ('02', '20', 56), ('03', '30', 18)) AS cd(train_car_cd, seat_type_cd, max_seat_number);
+
+WITH time_series AS (SELECT start_time_val, ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '2 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '25 minutes'::interval) AS t(start_time_val)), station_orders AS (SELECT station_cd, ROW_NUMBER() OVER (ORDER BY station_cd ASC) AS station_order FROM M_STATION)
+INSERT INTO M_PLAN (train_cd, arrival_station_cd, arrival_time, departure_time, track_number) SELECT 'T' || LPAD(ts.train_number_counter::text, 4, '0'), so.station_cd, (ts.start_time_val::time + (so.station_order - 1) * '12 minutes'::interval), (ts.start_time_val::time + (so.station_order - 1) * '12 minutes'::interval + '50 seconds'::interval), '15' FROM time_series ts CROSS JOIN station_orders so;
+
+-- =================================================================
+-- はやて (02) 上り
+-- パラメータ: ('U', '02', 6, 22, 25, 'DESC', 12, 7)
+-- =================================================================
+WITH time_series AS (SELECT start_time_val, ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '7 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '25 minutes'::interval) AS t(start_time_val))
+INSERT INTO M_TRAIN (train_cd, train_type_cd, train_number) SELECT 'U' || LPAD(ts.train_number_counter::text, 4, '0'), '02', LPAD(ts.train_number_counter::text, 4, '0') FROM time_series ts;
+
+WITH time_series AS (SELECT ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '7 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '25 minutes'::interval) AS t(start_time_val))
+INSERT INTO M_TRAIN_CAR (train_cd, train_car_cd, seat_type_cd, max_seat_number) SELECT 'U' || LPAD(ts.train_number_counter::text, 4, '0'), cd.train_car_cd, cd.seat_type_cd, cd.max_seat_number FROM time_series ts CROSS JOIN (VALUES ('01', '10', 75), ('02', '20', 56), ('03', '30', 18)) AS cd(train_car_cd, seat_type_cd, max_seat_number);
+
+WITH time_series AS (SELECT start_time_val, ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '7 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '25 minutes'::interval) AS t(start_time_val)), station_orders AS (SELECT station_cd, ROW_NUMBER() OVER (ORDER BY station_cd DESC) AS station_order FROM M_STATION)
+INSERT INTO M_PLAN (train_cd, arrival_station_cd, arrival_time, departure_time, track_number) SELECT 'U' || LPAD(ts.train_number_counter::text, 4, '0'), so.station_cd, (ts.start_time_val::time + (so.station_order - 1) * '12 minutes'::interval), (ts.start_time_val::time + (so.station_order - 1) * '12 minutes'::interval + '50 seconds'::interval), '15' FROM time_series ts CROSS JOIN station_orders so;
+
+-- =================================================================
+-- やまびこ (03) 下り
+-- パラメータ: ('Y', '03', 6, 22, 15, 'ASC', 15, 3)
+-- =================================================================
+WITH time_series AS (SELECT start_time_val, ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '3 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '15 minutes'::interval) AS t(start_time_val))
+INSERT INTO M_TRAIN (train_cd, train_type_cd, train_number) SELECT 'Y' || LPAD(ts.train_number_counter::text, 4, '0'), '03', LPAD(ts.train_number_counter::text, 4, '0') FROM time_series ts;
+
+WITH time_series AS (SELECT ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '3 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '15 minutes'::interval) AS t(start_time_val))
+INSERT INTO M_TRAIN_CAR (train_cd, train_car_cd, seat_type_cd, max_seat_number) SELECT 'Y' || LPAD(ts.train_number_counter::text, 4, '0'), cd.train_car_cd, cd.seat_type_cd, cd.max_seat_number FROM time_series ts CROSS JOIN (VALUES ('01', '10', 75), ('02', '20', 56), ('03', '30', 18)) AS cd(train_car_cd, seat_type_cd, max_seat_number);
+
+WITH time_series AS (SELECT start_time_val, ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '3 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '15 minutes'::interval) AS t(start_time_val)), station_orders AS (SELECT station_cd, ROW_NUMBER() OVER (ORDER BY station_cd ASC) AS station_order FROM M_STATION)
+INSERT INTO M_PLAN (train_cd, arrival_station_cd, arrival_time, departure_time, track_number) SELECT 'Y' || LPAD(ts.train_number_counter::text, 4, '0'), so.station_cd, (ts.start_time_val::time + (so.station_order - 1) * '15 minutes'::interval), (ts.start_time_val::time + (so.station_order - 1) * '15 minutes'::interval + '50 seconds'::interval), '15' FROM time_series ts CROSS JOIN station_orders so;
+
+-- =================================================================
+-- やまびこ (03) 上り
+-- パラメータ: ('Z', '03', 6, 22, 15, 'DESC', 15, 8)
+-- =================================================================
+WITH time_series AS (SELECT start_time_val, ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '8 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '15 minutes'::interval) AS t(start_time_val))
+INSERT INTO M_TRAIN (train_cd, train_type_cd, train_number) SELECT 'Z' || LPAD(ts.train_number_counter::text, 4, '0'), '03', LPAD(ts.train_number_counter::text, 4, '0') FROM time_series ts;
+
+WITH time_series AS (SELECT ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '8 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '15 minutes'::interval) AS t(start_time_val))
+INSERT INTO M_TRAIN_CAR (train_cd, train_car_cd, seat_type_cd, max_seat_number) SELECT 'Z' || LPAD(ts.train_number_counter::text, 4, '0'), cd.train_car_cd, cd.seat_type_cd, cd.max_seat_number FROM time_series ts CROSS JOIN (VALUES ('01', '10', 75), ('02', '20', 56), ('03', '30', 18)) AS cd(train_car_cd, seat_type_cd, max_seat_number);
+
+WITH time_series AS (SELECT start_time_val, ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '8 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '15 minutes'::interval) AS t(start_time_val)), station_orders AS (SELECT station_cd, ROW_NUMBER() OVER (ORDER BY station_cd DESC) AS station_order FROM M_STATION)
+INSERT INTO M_PLAN (train_cd, arrival_station_cd, arrival_time, departure_time, track_number) SELECT 'Z' || LPAD(ts.train_number_counter::text, 4, '0'), so.station_cd, (ts.start_time_val::time + (so.station_order - 1) * '15 minutes'::interval), (ts.start_time_val::time + (so.station_order - 1) * '15 minutes'::interval + '50 seconds'::interval), '15' FROM time_series ts CROSS JOIN station_orders so;
+
+-- =================================================================
+-- なすの (04) 下り
+-- パラメータ: ('N', '04', 6, 22, 30, 'ASC', 18, 1)
+-- =================================================================
+WITH time_series AS (SELECT start_time_val, ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '1 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '30 minutes'::interval) AS t(start_time_val))
+INSERT INTO M_TRAIN (train_cd, train_type_cd, train_number) SELECT 'N' || LPAD(ts.train_number_counter::text, 4, '0'), '04', LPAD(ts.train_number_counter::text, 4, '0') FROM time_series ts;
+
+WITH time_series AS (SELECT ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '1 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '30 minutes'::interval) AS t(start_time_val))
+INSERT INTO M_TRAIN_CAR (train_cd, train_car_cd, seat_type_cd, max_seat_number) SELECT 'N' || LPAD(ts.train_number_counter::text, 4, '0'), cd.train_car_cd, cd.seat_type_cd, cd.max_seat_number FROM time_series ts CROSS JOIN (VALUES ('01', '10', 75), ('02', '20', 56), ('03', '30', 18)) AS cd(train_car_cd, seat_type_cd, max_seat_number);
+
+WITH time_series AS (SELECT start_time_val, ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '1 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '30 minutes'::interval) AS t(start_time_val)), station_orders AS (SELECT station_cd, ROW_NUMBER() OVER (ORDER BY station_cd ASC) AS station_order FROM M_STATION)
+INSERT INTO M_PLAN (train_cd, arrival_station_cd, arrival_time, departure_time, track_number) SELECT 'N' || LPAD(ts.train_number_counter::text, 4, '0'), so.station_cd, (ts.start_time_val::time + (so.station_order - 1) * '18 minutes'::interval), (ts.start_time_val::time + (so.station_order - 1) * '18 minutes'::interval + '50 seconds'::interval), '15' FROM time_series ts CROSS JOIN station_orders so;
+
+-- =================================================================
+-- なすの (04) 上り
+-- パラメータ: ('M', '04', 6, 22, 30, 'DESC', 18, 6)
+-- =================================================================
+WITH time_series AS (SELECT start_time_val, ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '6 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '30 minutes'::interval) AS t(start_time_val))
+INSERT INTO M_TRAIN (train_cd, train_type_cd, train_number) SELECT 'M' || LPAD(ts.train_number_counter::text, 4, '0'), '04', LPAD(ts.train_number_counter::text, 4, '0') FROM time_series ts;
+
+WITH time_series AS (SELECT ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '6 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '30 minutes'::interval) AS t(start_time_val))
+INSERT INTO M_TRAIN_CAR (train_cd, train_car_cd, seat_type_cd, max_seat_number) SELECT 'M' || LPAD(ts.train_number_counter::text, 4, '0'), cd.train_car_cd, cd.seat_type_cd, cd.max_seat_number FROM time_series ts CROSS JOIN (VALUES ('01', '10', 75), ('02', '20', 56), ('03', '30', 18)) AS cd(train_car_cd, seat_type_cd, max_seat_number);
+
+WITH time_series AS (SELECT start_time_val, ROW_NUMBER() OVER (ORDER BY start_time_val) AS train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '6 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '30 minutes'::interval) AS t(start_time_val)), station_orders AS (SELECT station_cd, ROW_NUMBER() OVER (ORDER BY station_cd DESC) AS station_order FROM M_STATION)
+INSERT INTO M_PLAN (train_cd, arrival_station_cd, arrival_time, departure_time, track_number) SELECT 'M' || LPAD(ts.train_number_counter::text, 4, '0'), so.station_cd, (ts.start_time_val::time + (so.station_order - 1) * '18 minutes'::interval), (ts.start_time_val::time + (so.station_order - 1) * '18 minutes'::interval + '50 seconds'::interval), '15' FROM time_series ts CROSS JOIN station_orders so;
