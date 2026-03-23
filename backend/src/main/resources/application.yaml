@@ -1,22 +1,20 @@
 spring:
-  config:
-    import: classpath:application.properties
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${auth.issuer-uri}
+          issuer-uri: ${ISSUER_URI}
       client:
         registration:
           cognito:
-            client-id: ${auth.clientId}
-            client-secret: ${auth.clientSecret}
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
             scope:
               - email
               - openid
               - phone
-            redirect-uri: ${auth.redirect-uri}
+            redirect-uri: ${REDIRECT_URI}
         provider:
           cognito:
-            issuerUri: ${auth.issuer-uri}
+            issuerUri: ${ISSUER_URI}
             user-name-attribute: username
