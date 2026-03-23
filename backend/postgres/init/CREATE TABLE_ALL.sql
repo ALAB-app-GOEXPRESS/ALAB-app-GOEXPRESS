@@ -130,9 +130,7 @@ CREATE TABLE
             train_cd,
             departure_date,
             train_car_cd,
-            seat_cd,
-            departure_station_cd,
-            arrival_station_cd
+            seat_cd
         ),
         FOREIGN KEY (reservation_id) REFERENCES T_RESERVATION (reservation_id),
         FOREIGN KEY (train_cd, train_car_cd) REFERENCES M_TRAIN_CAR (train_cd, train_car_cd),
@@ -149,14 +147,7 @@ CREATE TABLE
         departure_station_cd CHAR(2),
         arrival_station_cd CHAR(2),
         reservation_id INT NOT NULL,
-        PRIMARY KEY (
-            train_cd,
-            departure_date,
-            train_car_cd,
-            seat_cd,
-            departure_station_cd,
-            arrival_station_cd
-        ),
+        PRIMARY KEY (train_cd, departure_date, train_car_cd, seat_cd),
         FOREIGN KEY (train_cd, train_car_cd) REFERENCES M_TRAIN_CAR (train_cd, train_car_cd),
         FOREIGN KEY (departure_station_cd) REFERENCES M_STATION (station_cd),
         FOREIGN KEY (arrival_station_cd) REFERENCES M_STATION (station_cd),
