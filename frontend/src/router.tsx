@@ -17,7 +17,7 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       { path: 'login', element: <LoginPage /> },
-      { path: 'login/callback', element: <LoginCallbackPage /> },
+      { path: 'login-callback', element: <LoginCallbackPage /> },
       { path: 'search', element: <TrainSearchPage /> },
       { path: 'results', element: <SearchResultPage /> },
       { path: 'train-detail', element: <TrainDetailPage /> },
