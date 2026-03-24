@@ -1,7 +1,5 @@
-import { toHHMM } from '@/utils/dateTime';
 import { normalizeTrainNumber } from '@/utils/train';
 export type { SeatClass } from '@/utils/seat';
-import { fetchJSON } from '@/lib/fetch';
 import type { StationCode } from '@/types/Station';
 
 export type TrainBetweenApiItem = {
@@ -16,6 +14,11 @@ export type TrainBetweenApiItem = {
   departureTime: string;
   arrivalTime: string;
   trackNumber: string;
+  seatAvailability: {
+    reserved: number;
+    green: number;
+    grandclass: number;
+  };
 };
 
 export type TrainSearchParams = {
@@ -36,22 +39,74 @@ export type TrainResult = {
   trackNumber: string;
 };
 
-/**
- * 実API：列車一覧取得（ページング + seatClassFilter 対応）
- * - GET /api/trains/between?from=xx&to=yy を叩く
- * - APIの配列レスポンスを TrainResult[] に変換
- * - results はフィルタ後に limit / offset した最大 limit 件
- */
-export async function fetchTrains(params: TrainSearchParams): Promise<TrainResult[]> {
-  const endpoint = `/api/trains?from=${encodeURIComponent(params.from)}&to=${encodeURIComponent(
-    params.to,
-  )}&date=${encodeURIComponent(params.date)}&time=${encodeURIComponent(params.time)}`;
+export type TrainSearchResult = TrainResult & {
+  seatAvailability: {
+    reserved: number;
+    green: number;
+    grandclass: number;
+  };
+};
 
-  const data = await fetchJSON<TrainBetweenApiItem[]>(endpoint);
+const TRAIN_TYPES = [
+  { cd: '01', name: 'はやぶさ' },
+  { cd: '02', name: 'はやて' },
+  { cd: '03', name: 'やまびこ' },
+  { cd: '04', name: 'なすの' },
+];
 
-  const converted: TrainResult[] = data.map((item) => {
-    const departureTime = toHHMM(item.departureTime);
-    const arrivalTime = toHHMM(item.arrivalTime);
+const SEAT_MAX_COUNT = {
+  reserved: 75,
+  green: 56,
+  grandclass: 18,
+};
+
+const createMockTrainData = (params: TrainSearchParams): TrainBetweenApiItem[] => {
+  const mockData: TrainBetweenApiItem[] = [];
+  const baseTime = new Date(`${params.date}T${params.time}`);
+
+  for (let i = 0; i < 30; i++) {
+    const depTime = new Date(baseTime.getTime() + i * 15 * 60000);
+    const arrTime = new Date(depTime.getTime() + (90 + (i % 3) * 10) * 60000);
+    const trainType = TRAIN_TYPES[i % TRAIN_TYPES.length];
+
+    mockData.push({
+      trainCd: `${trainType.name.charAt(0).toUpperCase()}${100 + i}`,
+      trainNumber: `${200 + i}`,
+      trainTypeCd: trainType.cd,
+      trainTypeName: trainType.name,
+      fromStationCd: params.from,
+      fromStationName: '東京',
+      toStationCd: params.to,
+      toStationName: '仙台',
+      departureTime: depTime.toISOString(),
+      arrivalTime: arrTime.toISOString(),
+      trackNumber: `${14 + (i % 4)}`,
+      seatAvailability: {
+        reserved: i % 5 === 0 ? 0 : Math.floor(Math.random() * SEAT_MAX_COUNT.reserved) + 1,
+        green: Math.floor(Math.random() * SEAT_MAX_COUNT.green),
+        grandclass: Math.floor(Math.random() * SEAT_MAX_COUNT.grandclass),
+      },
+    });
+  }
+  return mockData;
+};
+
+export async function fetchTrains(params: TrainSearchParams): Promise<TrainSearchResult[]> {
+  const data = createMockTrainData(params);
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  // ▼▼▼ ISO文字列からHH:MM形式に変換するヘルパー関数 ▼▼▼
+  const formatToHHMM = (isoString: string): string => {
+    const date = new Date(isoString);
+    const hh = String(date.getHours()).padStart(2, '0');
+    const mm = String(date.getMinutes()).padStart(2, '0');
+    return `${hh}:${mm}`;
+  };
+
+  const converted: TrainSearchResult[] = data.map((item) => {
+    // ▼▼▼ ヘルパー関数を使って正しく時刻をフォーマットする ▼▼▼
+    const departureTime = formatToHHMM(item.departureTime);
+    const arrivalTime = formatToHHMM(item.arrivalTime);
 
     return {
       trainCd: item.trainCd,
@@ -62,6 +117,7 @@ export async function fetchTrains(params: TrainSearchParams): Promise<TrainResul
       departureStationCd: item.fromStationCd as StationCode,
       arrivalStationCd: item.toStationCd as StationCode,
       trackNumber: item.trackNumber,
+      seatAvailability: item.seatAvailability,
     };
   });
 

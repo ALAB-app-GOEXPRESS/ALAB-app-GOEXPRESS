@@ -8,12 +8,13 @@ import { Card, CardContent } from '@/components/ui/card';
 // import { Separator } from '@/components/ui/separator';
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 // import { Clock } from 'lucide-react';
-import { type TrainSearchParams, type TrainResult } from '@/api/TrainListApi';
+import { type TrainSearchParams, type TrainSearchResult } from '@/api/TrainListApi';
 import { useSearchResults } from './useSearchResults';
 import { type SeatClass } from '@/utils/seat';
 import { TrainCard } from './TrainCard';
 import { StationNameMap } from '@/constants/Station';
 import { TrainCardSkeleton } from './TrainCardSkeleton';
+import { formatJapaneseDate } from '@/utils/dateTime';
 
 type SeatClassFilter = 'all' | SeatClass;
 
@@ -37,6 +38,8 @@ export const SearchResultPage: React.FC = () => {
       time: searchParams.get('time')!,
     } as TrainSearchParams;
   }, [searchParams]);
+
+  // const [paramsUi] = React.useState(paramsFromQuery);
 
   const pageSize = 10;
 
@@ -63,7 +66,14 @@ export const SearchResultPage: React.FC = () => {
   const departureStationName = StationNameMap[paramsFromQuery.from];
   const arrivalStationName = StationNameMap[paramsFromQuery.to];
 
-  const handleDetailClick = async (train: TrainResult) => {
+  const formattedDateWithDay = useMemo(() => {
+    if (!paramsFromQuery.date) return '';
+    const date = new Date(paramsFromQuery.date);
+    const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'][date.getDay()];
+    return `${formatJapaneseDate(paramsFromQuery.date)}(${dayOfWeek})`;
+  }, [paramsFromQuery.date]);
+
+  const handleDetailClick = async (train: TrainSearchResult) => {
     navigate('/train-detail', {
       state: {
         trainCd: train.trainCd,
@@ -76,6 +86,14 @@ export const SearchResultPage: React.FC = () => {
       },
     });
   };
+
+  // const handleMockReseacrhClick = () => {
+  //   const next = new URLSearchParams(searchParams);
+  //   next.set('date', paramsUi.date);
+  //   next.set('time', paramsUi.time);
+  //   next.delete('page');
+  //   setSearchParams(next);
+  // };
 
   const PaginationButtons = () => (
     <div className='flex items-center justify-between'>
@@ -109,7 +127,9 @@ export const SearchResultPage: React.FC = () => {
           </div>
         </div>
 
-        {/* <Card className='mt-4 border-muted/60 shadow-sm'>
+        {/* ▼▼▼ ご要望通り、再検索UIはコメントアウトされています ▼▼▼ */}
+        {/*
+        <Card className='mt-4 border-muted/60 shadow-sm'>
           <CardContent className='p-4'>
             <div className='grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto] md:items-end'>
               <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
@@ -158,20 +178,14 @@ export const SearchResultPage: React.FC = () => {
             <div className='flex flex-col gap-3 md:flex-row md:items-center md:justify-between'>
               <div className='w-full md:max-w-[260px] space-y-1.5'>
                 <Label>クラス</Label>
-                <Select
-                  value={seatClassFilter}
-                  onValueChange={handleSeatClassFilterChange}
-                >
+                <Select value={seatClassFilter} onValueChange={handleSeatClassFilterChange}>
                   <SelectTrigger className='bg-muted/40'>
                     <SelectValue placeholder='全クラス' />
                   </SelectTrigger>
                   <SelectContent>
                     {seatClassFilterOptions.map((option) => {
                       return (
-                        <SelectItem
-                          key={option.value}
-                          value={option.value}
-                        >
+                        <SelectItem key={option.value} value={option.value}>
                           {option.label}
                         </SelectItem>
                       );
@@ -185,7 +199,8 @@ export const SearchResultPage: React.FC = () => {
               </div>
             </div>
           </CardContent>
-        </Card> */}
+        </Card>
+        */}
 
         {apiErrorMessage && (
           <div className='mt-4'>
@@ -232,6 +247,7 @@ export const SearchResultPage: React.FC = () => {
                         arrivalTime={result.arrivalTime}
                         departureStation={departureName}
                         arrivalStation={arrivalName}
+                        seatAvailability={result.seatAvailability}
                         onClickDetail={() => handleDetailClick(result)}
                       />
                     </li>
