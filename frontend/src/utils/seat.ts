@@ -79,3 +79,11 @@ export const formatSeats = (seatCdList: string[]): string[] => {
     return seatCdList;
   }
 };
+
+export const calculateCarNumber = (seatCd: string) => {
+  const seatNumberInt = parseInt(seatCd, 10);
+    if (isNaN(seatNumberInt) || seatNumberInt < 1) {
+      return seatCd;
+    }
+    return Math.floor((seatNumberInt - 1) / 75) + 1;
+};
