@@ -9,6 +9,7 @@ import { calculateAvailableSeat } from '@/utils/seat';
 import type { SelectedSeat } from '@/types/Seat';
 import { SelectedSeatsInfo } from './selectedSeatsInfo';
 import { SeatMapPageSkeleton } from './SeatMapPageSkeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const TOTAL_CARS = 8;
 
@@ -69,45 +70,87 @@ export const SeatMapPage: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className='w-full'>
-                <div className='flex flex-col overflow-x-auto whitespace-nowrap pb-2 -mb-2'>
-                  <span className='text-base text-black/50 mb-2'>号車を選択</span>
-                  <div className='inline-flex gap-2'>
-                    {Array.from({ length: TOTAL_CARS }, (_, i) => i + 1).map((carNumber) => (
-                      <Button
-                        key={carNumber}
-                        variant={activeCar === carNumber ? 'default' : 'outline'}
-                        className={[
-                          'border',
-                          activeCar === carNumber
-                            ? 'disabled:bg-primary/10 disabled:text-primary border-primary'
-                            : 'border-border',
-                          'px-3 py-1 sm:px-4 h-16 w-16 border-3',
-                        ].join(' ')}
-                        onClick={() => setActiveCar(carNumber)}
-                        aria-pressed={activeCar === carNumber}
-                        disabled={activeCar === carNumber}
-                      >
-                        <div className='flex flex-col'>
-                          <span>{carNumber}</span>
-                          <span className='text-xs text-black/50'>
-                            {calculateAvailableSeat(reservedSeats, carNumber)}席
-                          </span>
-                        </div>
-                      </Button>
-                    ))}
+              <Tabs
+                defaultValue='reserved'
+                className='w-186.5'
+              >
+                <TabsList className='w-186.5'>
+                  <TabsTrigger value='reserved'>指定席</TabsTrigger>
+                  <TabsTrigger value='green'>グリーン車</TabsTrigger>
+                  <TabsTrigger value='grandclass'>グランクラス</TabsTrigger>
+                </TabsList>
+                <TabsContent value='reserved'>
+                  <div className='w-full'>
+                    <div className='flex flex-col overflow-x-auto whitespace-nowrap pb-2 -mb-2'>
+                      <span className='text-base text-black/50 mb-2'>号車を選択</span>
+                      <div className='inline-flex gap-2'>
+                        {Array.from({ length: TOTAL_CARS }, (_, i) => i + 1).map((carNumber) => (
+                          <Button
+                            key={carNumber}
+                            variant={activeCar === carNumber ? 'default' : 'outline'}
+                            className={[
+                              'border',
+                              activeCar === carNumber
+                                ? 'disabled:bg-primary/10 disabled:text-primary border-primary'
+                                : 'border-border',
+                              'px-3 py-1 sm:px-4 h-16 w-16 border-3',
+                            ].join(' ')}
+                            onClick={() => setActiveCar(carNumber)}
+                            aria-pressed={activeCar === carNumber}
+                            disabled={activeCar === carNumber}
+                          >
+                            <div className='flex flex-col'>
+                              <span>{carNumber}</span>
+                              <span className='text-xs text-black/50'>
+                                {calculateAvailableSeat(reservedSeats, carNumber, 75) /*TODO 埋め込み解消したい */}席
+                              </span>
+                            </div>
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className='mt-4'>
+                      <SeatMapTab
+                        reservedSeats={reservedSeats}
+                        carNumber={activeCar}
+                        seatClasses={seatClasses}
+                        selectedSeats={selectedSeats}
+                        setSelectedSeats={setSelectedSeats}
+                        seatType='reserved'
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className='mt-4'>
-                  <SeatMapTab
-                    reservedSeats={reservedSeats}
-                    carNumber={activeCar}
-                    seatClasses={seatClasses}
-                    selectedSeats={selectedSeats}
-                    setSelectedSeats={setSelectedSeats}
-                  />
-                </div>
-              </div>
+                </TabsContent>
+                <TabsContent value='green'>
+                  <div className='w-full'>
+                    <div className='mt-4'>
+                      <SeatMapTab
+                        reservedSeats={reservedSeats}
+                        carNumber={9} //TODO 値の渡し方検討
+                        seatClasses={seatClasses}
+                        selectedSeats={selectedSeats}
+                        setSelectedSeats={setSelectedSeats}
+                        seatType='green'
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+                <TabsContent value='grandclass'>
+                  <div className='w-full'>
+                    <div className='mt-4'>
+                      <SeatMapTab
+                        reservedSeats={reservedSeats}
+                        carNumber={10} //TODO 値の渡し方検討
+                        seatClasses={seatClasses}
+                        selectedSeats={selectedSeats}
+                        setSelectedSeats={setSelectedSeats}
+                        seatType='grandclass'
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
+
               <div className='flex mt-4 items-center'>
                 <Button
                   variant='outline'

@@ -44,9 +44,9 @@ export const convertRowColToSeatCd = (carNumber: number, row: number, col: strin
   return String(seatIndex + 1).padStart(3, '0');
 };
 
-export const calculateAvailableSeat = (reservedSeats: ReservedSeat[], carNumber: number) => {
+export const calculateAvailableSeat = (reservedSeats: ReservedSeat[], carNumber: number, totalSeats: number) => {
   return (
-    75 -
+    totalSeats -
     reservedSeats.filter((seat) => {
       return seat.carNumber === carNumber;
     }).length
