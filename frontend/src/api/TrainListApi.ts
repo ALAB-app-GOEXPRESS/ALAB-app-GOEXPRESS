@@ -82,9 +82,10 @@ const createMockTrainData = (params: TrainSearchParams): TrainBetweenApiItem[] =
       arrivalTime: arrTime.toISOString(),
       trackNumber: `${14 + (i % 4)}`,
       seatAvailability: {
+        // ▼▼▼ 全ての席種で満席(0)になるケースを追加 ▼▼▼
         reserved: i % 5 === 0 ? 0 : Math.floor(Math.random() * SEAT_MAX_COUNT.reserved) + 1,
-        green: Math.floor(Math.random() * SEAT_MAX_COUNT.green),
-        grandclass: Math.floor(Math.random() * SEAT_MAX_COUNT.grandclass),
+        green: i % 7 === 0 ? 0 : Math.floor(Math.random() * SEAT_MAX_COUNT.green),
+        grandclass: i % 4 === 0 ? 0 : Math.floor(Math.random() * SEAT_MAX_COUNT.grandclass),
       },
     });
   }
@@ -95,7 +96,6 @@ export async function fetchTrains(params: TrainSearchParams): Promise<TrainSearc
   const data = createMockTrainData(params);
   await new Promise((resolve) => setTimeout(resolve, 500));
 
-  // ▼▼▼ ISO文字列からHH:MM形式に変換するヘルパー関数 ▼▼▼
   const formatToHHMM = (isoString: string): string => {
     const date = new Date(isoString);
     const hh = String(date.getHours()).padStart(2, '0');
@@ -104,7 +104,6 @@ export async function fetchTrains(params: TrainSearchParams): Promise<TrainSearc
   };
 
   const converted: TrainSearchResult[] = data.map((item) => {
-    // ▼▼▼ ヘルパー関数を使って正しく時刻をフォーマットする ▼▼▼
     const departureTime = formatToHHMM(item.departureTime);
     const arrivalTime = formatToHHMM(item.arrivalTime);
 

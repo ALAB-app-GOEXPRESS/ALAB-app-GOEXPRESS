@@ -3,11 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-// import { Input } from '@/components/ui/input';
-// import { Label } from '@/components/ui/label';
-// import { Separator } from '@/components/ui/separator';
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-// import { Clock } from 'lucide-react';
 import { type TrainSearchParams, type TrainSearchResult } from '@/api/TrainListApi';
 import { useSearchResults } from './useSearchResults';
 import { type SeatClass } from '@/utils/seat';
@@ -39,29 +34,17 @@ export const SearchResultPage: React.FC = () => {
     } as TrainSearchParams;
   }, [searchParams]);
 
-  // const [paramsUi] = React.useState(paramsFromQuery);
-
   const pageSize = 10;
 
-  const {
-    // seatClassFilter,
-    // handleSeatClassFilterChange,
-    currentPage,
-    setPageToQuery,
-    isLoading,
-    apiErrorMessage,
-    // totalCount,
-    pageResults,
-    blGoToPrev,
-    blGoToNext,
-  } = useSearchResults({
-    defaultParams: paramsFromQuery,
-    pageSize,
-    seatClassFilterOptions: seatClassFilterOptions as ReadonlyArray<{
-      value: SeatClassFilter;
-      label: string;
-    }>,
-  });
+  const { currentPage, setPageToQuery, isLoading, apiErrorMessage, pageResults, blGoToPrev, blGoToNext } =
+    useSearchResults({
+      defaultParams: paramsFromQuery,
+      pageSize,
+      seatClassFilterOptions: seatClassFilterOptions as ReadonlyArray<{
+        value: SeatClassFilter;
+        label: string;
+      }>,
+    });
 
   const departureStationName = StationNameMap[paramsFromQuery.from];
   const arrivalStationName = StationNameMap[paramsFromQuery.to];
@@ -86,14 +69,6 @@ export const SearchResultPage: React.FC = () => {
       },
     });
   };
-
-  // const handleMockReseacrhClick = () => {
-  //   const next = new URLSearchParams(searchParams);
-  //   next.set('date', paramsUi.date);
-  //   next.set('time', paramsUi.time);
-  //   next.delete('page');
-  //   setSearchParams(next);
-  // };
 
   const PaginationButtons = () => (
     <div className='flex items-center justify-between'>
@@ -126,81 +101,6 @@ export const SearchResultPage: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* ▼▼▼ ご要望通り、再検索UIはコメントアウトされています ▼▼▼ */}
-        {/*
-        <Card className='mt-4 border-muted/60 shadow-sm'>
-          <CardContent className='p-4'>
-            <div className='grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto] md:items-end'>
-              <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
-                <div className='space-y-1.5'>
-                  <Label htmlFor='date'>出発日</Label>
-                  <Input
-                    id='date'
-                    type='date'
-                    value={paramsUi.date}
-                    onChange={(event) => {
-                      setParamsUi((prev) => {
-                        return { ...prev, date: event.target.value };
-                      });
-                    }}
-                    className='bg-background'
-                  />
-                </div>
-
-                <div className='space-y-1.5'>
-                  <Label htmlFor='time'>出発時刻</Label>
-                  <Input
-                    id='time'
-                    type='time'
-                    value={paramsUi.time}
-                    onChange={(event) => {
-                      setParamsUi((prev) => {
-                        return { ...prev, time: event.target.value };
-                      });
-                    }}
-                    className='bg-background'
-                  />
-                </div>
-              </div>
-
-              <Button
-                type='button'
-                className='h-10 bg-emerald-600 text-white hover:bg-emerald-700'
-                onClick={handleMockReseacrhClick}
-              >
-                日時指定
-              </Button>
-            </div>
-
-            <Separator className='my-4' />
-
-            <div className='flex flex-col gap-3 md:flex-row md:items-center md:justify-between'>
-              <div className='w-full md:max-w-[260px] space-y-1.5'>
-                <Label>クラス</Label>
-                <Select value={seatClassFilter} onValueChange={handleSeatClassFilterChange}>
-                  <SelectTrigger className='bg-muted/40'>
-                    <SelectValue placeholder='全クラス' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {seatClassFilterOptions.map((option) => {
-                      return (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className='text-sm text-muted-foreground'>
-                {isLoading ? '検索中...' : `${totalCount}件の列車が見つかりました（表示 ${pageResults.length} 件）`}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        */}
 
         {apiErrorMessage && (
           <div className='mt-4'>
