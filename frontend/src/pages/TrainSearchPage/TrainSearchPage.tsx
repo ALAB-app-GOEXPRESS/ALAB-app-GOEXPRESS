@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { nowHHMM, todayYYYYMMDD } from '@/utils/dateTime';
 import { isValidDateYYYYMMDD, isValidTimeHHMM } from '@/utils/validators';
 import { StationNameMap } from '@/constants/Station';
+import { TimePickerSelect } from '@/components/TimePickerSelect';
 
 type TrainSearchParams = {
   from: string;
@@ -27,13 +28,24 @@ const toQueryString = (p: TrainSearchParams) => {
   return sp.toString();
 };
 
+const roundToStepHHMM = (time: string, stepMinutes = 15): string => {
+  const m = /^(\d{2}):(\d{2})$/.exec(time);
+  if (!m) return '00:00';
+  const h = Number(m[1]);
+  const mm = Number(m[2]);
+  const total = Math.min(24 * 60 - stepMinutes, Math.round((h * 60 + mm) / stepMinutes) * stepMinutes);
+  const hh2 = String(Math.floor(total / 60)).padStart(2, '0');
+  const mm2 = String(total % 60).padStart(2, '0');
+  return `${hh2}:${mm2}`;
+};
+
 export const TrainSearchPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [from, setFrom] = useState<string>('');
   const [to, setTo] = useState<string>('');
   const [date, setDate] = useState<string>(todayYYYYMMDD());
-  const [time, setTime] = useState<string>(nowHHMM());
+  const [time, setTime] = useState<string>(() => roundToStepHHMM(nowHHMM(), 15));
 
   const [error, setError] = useState<string>('');
 
@@ -157,13 +169,10 @@ export const TrainSearchPage: React.FC = () => {
 
             <div className='space-y-2'>
               <Label htmlFor='time'>出発時刻</Label>
-              <Input
+              <TimePickerSelect
                 id='time'
-                name='time'
-                type='time'
                 value={time}
-                onChange={(e) => setTime(e.target.value)}
-                className='bg-background'
+                onChange={setTime}
               />
             </div>
           </div>
