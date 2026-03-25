@@ -1,4 +1,5 @@
 import type { ReservedSeat } from '@/api/SeatApi';
+import type { SelectedSeat } from '@/types/Seat';
 
 /**
  * 座席クラスの種別
@@ -82,14 +83,21 @@ export const formatSeats = (seatCdList: string[]): string[] => {
 
 export const calculateCarNumber = (seatCd: string) => {
   const seatNumberInt = parseInt(seatCd, 10);
-  if (isNaN(seatNumberInt) || seatNumberInt < 1) {
-    return seatCd;
-  }
+
   return Math.floor((seatNumberInt - 1) / 75) + 1;
 };
 
-export const calculateSeatTypeCd = (carNumbar: string) => {
-  if(carNumbar === '9') return '20';
-  if(carNumbar === '10') return '30';
-  return '10';
+export const getSeatTypeName = (carNumbar: string) => {
+  if(carNumbar === '9') return 'グリーン席';
+  if(carNumbar === '10') return 'グランクラス';
+  return '指定席';
 }
+
+export const formatSelectedSeat = (seatCd: string): SelectedSeat => {
+  return {
+    carNumber: calculateCarNumber(seatCd),
+    seatCd: seatCd,
+    seatTypeName: getSeatTypeName(seatCd),
+    price: 1000
+  };
+};

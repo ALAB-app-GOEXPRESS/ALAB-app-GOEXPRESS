@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
 import { SeatMapTab } from './SeatMapTab';
 import { useSeatMap } from '@/pages/SeatMapPage/useSeatMap';
-import { calculateAvailableSeat } from '@/utils/seat';
+import { calculateAvailableSeat, formatSelectedSeat } from '@/utils/seat';
 import type { SelectedSeat } from '@/types/Seat';
 import { SelectedSeatsInfo } from './selectedSeatsInfo';
 import { SeatMapPageSkeleton } from './SeatMapPageSkeleton';
+import { toast } from 'sonner';
 
 const TOTAL_CARS = 8;
 
@@ -25,6 +26,32 @@ export const SeatMapPage: React.FC = () => {
     trainCd: trainDetail.trainCd,
     departureDate: trainDetail.date,
   });
+
+  useEffect(() => {
+    const selectedSeatsNumber = Number(sessionStorage.getItem('selectedSeatsNumber'));
+
+    if (selectedSeatsNumber) {
+      const selectedSeatCdList: string[] = [];
+
+      for (let i: number = 0; i <= selectedSeatsNumber; i++) {
+        const currentSeatCd = sessionStorage.getItem(`selectedSeat${i}`);
+
+        if (reservedSeats.find((seat) => seat.seatCd === currentSeatCd)) {
+          toast.error('選択した座席は既に予約されています。再度座席を選択してください。', {
+            position: 'bottom-right',
+            duration: 5000,
+          });
+          
+          [...Array(selectedSeatsNumber + 1).keys()].forEach((key) => {sessionStorage.removeItem(`selectedSeat${key}`)});
+          return;
+        }
+
+        if(currentSeatCd) selectedSeatCdList.push(currentSeatCd);
+      }
+
+      setSelectedSeats(selectedSeatCdList.map((seatCd) => formatSelectedSeat(seatCd)));
+    }
+  }, []);
 
   if (isLoading) {
     return <SeatMapPageSkeleton />;
