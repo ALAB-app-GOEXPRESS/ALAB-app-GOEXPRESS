@@ -36,6 +36,7 @@ export const SeatMapTab: React.FC<props> = ({ reservedSeats, carNumber, seatClas
       return;
     } else {
       setSelectedSeats((prev) => [...prev, { carNumber, seatCd, seatTypeName: seatClasses[0].name, price: seatClasses[0].price }]);
+      sessionStorage.setItem(`selectedSeat${selectedSeats.length + 1}`, seatCd);
     };
 
     console.log()
