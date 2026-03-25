@@ -82,8 +82,14 @@ export const formatSeats = (seatCdList: string[]): string[] => {
 
 export const calculateCarNumber = (seatCd: string) => {
   const seatNumberInt = parseInt(seatCd, 10);
-    if (isNaN(seatNumberInt) || seatNumberInt < 1) {
-      return seatCd;
-    }
-    return Math.floor((seatNumberInt - 1) / 75) + 1;
+  if (isNaN(seatNumberInt) || seatNumberInt < 1) {
+    return seatCd;
+  }
+  return Math.floor((seatNumberInt - 1) / 75) + 1;
 };
+
+export const calculateSeatTypeCd = (carNumbar: string) => {
+  if(carNumbar === '9') return '20';
+  if(carNumbar === '10') return '30';
+  return '10';
+}
