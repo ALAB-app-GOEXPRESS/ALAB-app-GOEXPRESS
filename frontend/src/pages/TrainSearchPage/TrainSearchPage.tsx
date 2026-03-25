@@ -7,9 +7,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import { nowHHMM, todayYYYYMMDD } from '@/utils/dateTime';
+import { nowHHMM, todayYYYYMMDD, roundToStepHHMM } from '@/utils/dateTime';
 import { isValidDateYYYYMMDD, isValidTimeHHMM } from '@/utils/validators';
 import { StationNameMap } from '@/constants/Station';
+import { TimePickerSelect } from '@/components/TimePickerSelect';
 
 type TrainSearchParams = {
   from: string;
@@ -33,7 +34,7 @@ export const TrainSearchPage: React.FC = () => {
   const [from, setFrom] = useState<string>('');
   const [to, setTo] = useState<string>('');
   const [date, setDate] = useState<string>(todayYYYYMMDD());
-  const [time, setTime] = useState<string>(nowHHMM());
+  const [time, setTime] = useState<string>(() => roundToStepHHMM(nowHHMM(), 15));
 
   const [error, setError] = useState<string>('');
 
@@ -157,13 +158,10 @@ export const TrainSearchPage: React.FC = () => {
 
             <div className='space-y-2'>
               <Label htmlFor='time'>出発時刻</Label>
-              <Input
+              <TimePickerSelect
                 id='time'
-                name='time'
-                type='time'
                 value={time}
-                onChange={(e) => setTime(e.target.value)}
-                className='bg-background'
+                onChange={setTime}
               />
             </div>
           </div>
