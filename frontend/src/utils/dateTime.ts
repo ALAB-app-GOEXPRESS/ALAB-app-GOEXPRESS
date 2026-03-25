@@ -57,3 +57,24 @@ export function timeToMinutes(time: string): number {
   const [hours, minutes] = time.split(':').map(Number);
   return hours * 60 + minutes;
 }
+
+export function roundToStepHHMM(time: string, stepMinutes = 15): string {
+  if (!/^\d{2}:\d{2}$/.test(time)) return time;
+
+  const [h, m] = time.split(':').map(Number);
+  let total = h * 60 + m;
+
+  const rem = total % stepMinutes;
+  if (rem !== 0) total += stepMinutes - rem;
+
+  const dayMinutes = 24 * 60;
+  const lastStep = dayMinutes - stepMinutes;
+
+  if (total >= dayMinutes) {
+    total = lastStep;
+  }
+
+  const hh = String(Math.floor(total / 60)).padStart(2, '0');
+  const mm = String(total % 60).padStart(2, '0');
+  return `${hh}:${mm}`;
+}
