@@ -26,7 +26,7 @@ export const TrainCard: React.FC<Props> = ({
 }) => {
   return (
     <Card
-      className='mb-4 border-brand-green-light cursor-pointer transition-colors transition-shadow duration-200 shadow-sm hover:shadow-lg hover:bg-input/50'
+      className='mb-4 border-brand-green-light cursor-pointer transition-colors transition-shadow duration-200 shadow-sm hover:shadow-lg'
       onClick={onClickDetail}
     >
       <CardContent className='px-4'>
