@@ -1,7 +1,7 @@
 package com.alab.goexpress.train;
 
 import com.alab.goexpress.train.dto.TrainDetailResponse;
-import com.alab.goexpress.train.dto.TrainDto;
+import com.alab.goexpress.train.dto.TrainSearchResultDto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -18,7 +18,7 @@ public class TrainController {
   private final TrainService service;
 
   @GetMapping
-  public List<TrainDto> get(
+  public List<TrainSearchResultDto> get(
     @RequestParam("from") String fromStationCd,
     @RequestParam("to") String toStationCd,
     @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,

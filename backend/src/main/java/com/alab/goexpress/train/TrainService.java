@@ -5,8 +5,11 @@ import com.alab.goexpress.train.dto.SeatTypeInfoDTO;
 import com.alab.goexpress.train.dto.SeatClassDto;
 import com.alab.goexpress.train.dto.TrainDetailResponse;
 import com.alab.goexpress.train.dto.TrainDto;
+import com.alab.goexpress.train.dto.SeatAvailabilityDto;
+import com.alab.goexpress.train.dto.TrainSearchResultDto;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,28 +23,65 @@ public class TrainService {
 
   private final TrainMapper mapper;
 
+  private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+
   @Transactional(readOnly = true)
-  public List<TrainDto> find(String fromStationCd, String toStationCd, LocalDate date, LocalTime time) {
+  public List<TrainSearchResultDto> find(String fromStationCd, String toStationCd, LocalDate date, LocalTime time) {
     List<TrainDto> allTrains = mapper.selectTrainList(fromStationCd, toStationCd);
 
-    final LocalTime boundary = LocalTime.of(6, 0);
+    List<TrainSearchResultDto> results = allTrains.stream()
+      .map(train -> {
+        DepartureInfo departureInfo = mapper.findDepartureInfo(train.trainCd(), fromStationCd);
+        String trackNumber = (departureInfo != null) ? departureInfo.trackNumber() : "";
 
-    // 6時を日付の境界とみなし、それより前の時刻はリストの後方に配置するソート
-    return allTrains.stream()
+        // ▼▼▼ ここをデータベースの情報に合わせて修正しました！ ▼▼▼
+        int reservedSeats = calculateRemainingSeats(train.trainCd(), date, "10"); // 指定席
+        int greenSeats = calculateRemainingSeats(train.trainCd(), date, "20");    // グリーン車
+        int grandclassSeats = calculateRemainingSeats(train.trainCd(), date, "30"); // グランクラス
+
+        SeatAvailabilityDto seatAvailability = new SeatAvailabilityDto(reservedSeats, greenSeats, grandclassSeats);
+
+        return new TrainSearchResultDto(
+          train.trainCd(),
+          train.trainTypeName(),
+          train.trainNumber(),
+          train.departureTime().format(TIME_FORMATTER),
+          train.arrivalTime().format(TIME_FORMATTER),
+          train.fromStationCd(),
+          train.toStationCd(),
+          trackNumber,
+          seatAvailability
+        );
+      })
+      .collect(Collectors.toList());
+
+    final LocalTime boundary = LocalTime.of(6, 0);
+    return results.stream()
       .sorted(Comparator.comparing(
-          (TrainDto train) -> train.departureTime().isBefore(boundary)
-        ).thenComparing(TrainDto::departureTime))
+          (TrainSearchResultDto train) -> LocalTime.parse(train.departureTime()).isBefore(boundary)
+        ).thenComparing(TrainSearchResultDto::departureTime))
       .collect(Collectors.toList());
   }
 
   /**
+   * 空席数を計算するためのヘルパーメソッド
+   */
+  private int calculateRemainingSeats(String trainCd, LocalDate date, String seatTypeCd) {
+    Long maxSeatsResult = mapper.sumMaxSeatNumber(trainCd, seatTypeCd);
+    long maxSeats = (maxSeatsResult != null) ? maxSeatsResult : 0L;
+
+    if (maxSeats == 0) {
+      return 0;
+    }
+
+    long reservedSeats = mapper.countReservedSeatsBySeatType(trainCd, date, seatTypeCd);
+    int remainingSeats = (int) (maxSeats - reservedSeats);
+
+    return Math.max(0, remainingSeats);
+  }
+
+  /**
    * 列車詳細情報を取得するビジネスロジック
-   *
-   * @param date 出発日
-   * @param trainCd 列車コード
-   * @param fromStationCd 出発駅コード
-   * @param toStationCd 到着駅コード
-   * @return 画面表示用の列車詳細情報
    */
   @Transactional(readOnly = true)
   public TrainDetailResponse getTrainDetail(LocalDate date, String trainCd, String fromStationCd, String toStationCd) {
@@ -61,12 +101,8 @@ public class TrainService {
         Integer chargeResult = mapper.findCharge(fromStationCd, toStationCd, trainTypeCd, seatType.getSeatTypeCd());
         int charge = (chargeResult != null) ? chargeResult : 0;
 
-        Long maxSeatsResult = mapper.sumMaxSeatNumber(trainCd, seatType.getSeatTypeCd());
-        long maxSeats = (maxSeatsResult != null) ? maxSeatsResult : 0L;
-
-        long reservedSeats = mapper.countReservedSeatsBySeatType(trainCd, date, seatType.getSeatTypeCd());
-
-        int remainingSeats = (int) (maxSeats - reservedSeats);
+        // ★ こちらも共通のヘルパーメソッドを使うように修正
+        int remainingSeats = calculateRemainingSeats(trainCd, date, seatType.getSeatTypeCd());
 
         return new SeatClassDto(seatType.getSeatTypeCd(), seatType.getSeatTypeName(), charge, remainingSeats);
       })
@@ -75,3 +111,4 @@ public class TrainService {
     return new TrainDetailResponse(trainBasicInfo, departureInfo.trackNumber(), seatClasses, date);
   }
 }
+ 

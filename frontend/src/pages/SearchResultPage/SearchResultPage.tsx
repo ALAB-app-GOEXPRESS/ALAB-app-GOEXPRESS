@@ -9,7 +9,6 @@ import { type SeatClass } from '@/utils/seat';
 import { TrainCard } from './TrainCard';
 import { StationNameMap } from '@/constants/Station';
 import { TrainCardSkeleton } from './TrainCardSkeleton';
-import { formatJapaneseDate } from '@/utils/dateTime';
 
 type SeatClassFilter = 'all' | SeatClass;
 
@@ -48,13 +47,6 @@ export const SearchResultPage: React.FC = () => {
 
   const departureStationName = StationNameMap[paramsFromQuery.from];
   const arrivalStationName = StationNameMap[paramsFromQuery.to];
-
-  const formattedDateWithDay = useMemo(() => {
-    if (!paramsFromQuery.date) return '';
-    const date = new Date(paramsFromQuery.date);
-    const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'][date.getDay()];
-    return `${formatJapaneseDate(paramsFromQuery.date)}(${dayOfWeek})`;
-  }, [paramsFromQuery.date]);
 
   const handleDetailClick = async (train: TrainSearchResult) => {
     navigate('/train-detail', {
