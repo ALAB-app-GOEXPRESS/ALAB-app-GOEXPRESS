@@ -17,7 +17,7 @@ export const SeatMapPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { seatClasses, trainDetail, seatType } = location.state || {};
+  const { seatClasses, trainDetail, initialSeatType } = location.state || {};
 
   const [selectedSeats, setSelectedSeats] = useState<SelectedSeat[]>([]);
   const [activeCar, setActiveCar] = useState<number>(1);
@@ -45,7 +45,7 @@ export const SeatMapPage: React.FC = () => {
   };
 
   const handleReserve = () => {
-    navigate('/reservation-confirm', { state: { trainDetailResult: trainDetail, selectedSeats, seatType } });
+    navigate('/reservation-confirm', { state: { trainDetailResult: trainDetail, selectedSeats, initialSeatType } });
   };
 
   return (
@@ -71,12 +71,12 @@ export const SeatMapPage: React.FC = () => {
             </CardHeader>
             <CardContent>
               <Tabs
-                defaultValue={seatType}
+                defaultValue={initialSeatType}
                 className='w-186.5'
               >
                 <TabsList className='w-186.5'>
                   <TabsTrigger value='reserved'>指定席</TabsTrigger>
-                  <TabsTrigger value='green'>グリーン車</TabsTrigger>
+                  <TabsTrigger value='green'>グリーン席</TabsTrigger>
                   <TabsTrigger value='grandclass'>グランクラス</TabsTrigger>
                 </TabsList>
                 <TabsContent value='reserved'>

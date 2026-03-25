@@ -59,7 +59,7 @@ export const SeatMapTab: React.FC<Props> = ({
 
   const rowList = useMemo(() => Array.from({ length: rows }, (_, i) => i + 1), [rows]);
 
-  const seatClassDetail = seatClasses[0];
+  const seatClassDetail = seatClasses.find((seatClass) => seatClass.type === seatType) ?? seatClasses[0];
 
   const isReservedSeat = (carNumber: number, seatCd: string) =>
     reservedSeats.some((s) => s.carNumber === carNumber && s.seatCd === seatCd);
