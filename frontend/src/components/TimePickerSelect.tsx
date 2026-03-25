@@ -43,9 +43,9 @@ export const TimePickerSelect: React.FC<Props> = ({ value, onChange, id, disable
         </SelectTrigger>
         <SelectContent
           position='popper'
-          side='top'
+          side='bottom'
           sideOffset={6}
-          className='max-h-60'
+          className='max-h-80'
         >
           {HOUR_OPTIONS.map((h) => (
             <SelectItem
@@ -75,7 +75,7 @@ export const TimePickerSelect: React.FC<Props> = ({ value, onChange, id, disable
         </SelectTrigger>
         <SelectContent
           position='popper'
-          side='top'
+          side='bottom'
           sideOffset={6}
           className='max-h-80'
         >
