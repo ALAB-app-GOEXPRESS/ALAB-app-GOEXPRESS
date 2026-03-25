@@ -13,8 +13,10 @@ export const SeatClassCard: React.FC<{
 
   const seatInfo = seatClasses[index];
 
+  const seatType = seatInfo.type;
+
   const handleSelect = () => {
-    navigate('/seat-map', { state: { seatClasses, trainDetail } });
+    navigate('/seat-map', { state: { seatClasses, trainDetail, seatType } });
   };
 
   return (
