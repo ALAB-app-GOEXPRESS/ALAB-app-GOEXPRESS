@@ -13,8 +13,8 @@ interface SeatButtonProps {
   isSelectedMax: boolean;
 }
 
-const getSeatDisplayInfo = (seatId: string) => {
-  const seatIndex = parseInt(seatId, 10) - 1;
+const getSeatDisplayInfo = (seatCd: string) => {
+  const seatIndex = parseInt(seatCd, 10) - 1;
   const row = Math.floor(seatIndex / SEATS_PER_ROW) + 1;
   const col = SEAT_COLUMNS[seatIndex % SEATS_PER_ROW];
   return {
