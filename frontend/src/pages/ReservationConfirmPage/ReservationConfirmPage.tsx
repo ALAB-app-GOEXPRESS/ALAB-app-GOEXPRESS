@@ -16,7 +16,6 @@ import type { StationCode } from '@/types/Station';
 import { Badge } from '@/components/ui/badge';
 import { specifyTrainTypeIconColor } from '@/utils/train';
 import { useForm } from 'react-hook-form';
-import type { ReservedSeat } from '@/api/SeatApi';
 
 type ReservationConfirmState = {
   trainDetailResult: TrainDetailResult;

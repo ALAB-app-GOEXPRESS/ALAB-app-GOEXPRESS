@@ -30,8 +30,8 @@ export const SeatMapPage: React.FC = () => {
   const [selectedSeatsNumber, setSelectedSeatsNumber] = useState(Number(sessionStorage.getItem('selectedSeatsNumber')));
 
   useEffect(() => {
-    console.log(selectedSeatsNumber);
     if (selectedSeatsNumber) {
+
       const selectedSeatCdList: string[] = [];
 
       for (let i: number = 0; i < selectedSeatsNumber; i++) {
@@ -45,9 +45,9 @@ export const SeatMapPage: React.FC = () => {
           });
 
           setSelectedSeats([]);
-          [...Array(selectedSeatsNumber + 1).keys()].forEach((key) => {
-            sessionStorage.removeItem(`selectedSeat${key}`);
-          });
+          for(let i = 0; i < selectedSeatsNumber; i++) {
+            sessionStorage.removeItem(`selectedSeat${i}`);
+          }
           sessionStorage.removeItem('selectedSeatsNumber');
           setSelectedSeatsNumber(0);
           break;
@@ -59,7 +59,7 @@ export const SeatMapPage: React.FC = () => {
       setSelectedSeats(selectedSeatCdList.map((seatCd) => formatSelectedSeat(seatCd)));
     }
     return;
-  }, []);
+  }, [reservedSeats, location]);
 
   if (isLoading) {
     return <SeatMapPageSkeleton />;
@@ -79,9 +79,9 @@ export const SeatMapPage: React.FC = () => {
   };
 
   const handleReserve = () => {
-    [...Array(selectedSeatsNumber + 1).keys()].forEach((key) => {
-      sessionStorage.removeItem(`selectedSeat${key}`);
-    });
+    for (let i = 0; i < selectedSeatsNumber; i++) {
+      sessionStorage.removeItem(`selectedSeat${i}`);
+    }
     selectedSeats.forEach((seat, index) => sessionStorage.setItem(`selectedSeat${index}`, seat.seatCd));
     sessionStorage.setItem('selectedSeatsNumber', selectedSeats.length.toString());
     navigate('/reservation-confirm', { state: { trainDetailResult: trainDetail, selectedSeats } });
