@@ -7,10 +7,12 @@ export const LoginCallbackPage: React.FC = () => {
     const idToken = params.get('id_token');
     const userId = params.get('user_id');
     const userName = params.get('user_name');
+    const email = params.get('email');
 
     if (idToken) sessionStorage.setItem('idToken', idToken);
     if (userId) sessionStorage.setItem('userId', userId || '');
     if (userName) sessionStorage.setItem('userName', userName || '');
+    if (email) sessionStorage.setItem('email', email || '');
 
     // トークンを保存したら任意の画面へ遷移
     window.location.replace('/search');
