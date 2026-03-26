@@ -59,7 +59,7 @@ export const TrainCard: React.FC<Props> = ({
         'mb-4 overflow-hidden py-0 gap-0',
         isAllSoldOut
           ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
-          : 'border-brand-green-light cursor-pointer',
+          : 'border-brand-green-light cursor-pointer transition-colors duration-200 shadow-sm hover:shadow-lg',
       )}
       onClick={isAllSoldOut ? undefined : onClickDetail}
     >
