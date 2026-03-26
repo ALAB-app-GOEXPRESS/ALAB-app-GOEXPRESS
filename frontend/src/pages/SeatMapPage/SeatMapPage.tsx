@@ -9,11 +9,8 @@ import { calculateAvailableSeat, formatSelectedSeat } from '@/utils/seat';
 import type { SelectedSeat } from '@/types/Seat';
 import { SelectedSeatsInfo } from './selectedSeatsInfo';
 import { SeatMapPageSkeleton } from './SeatMapPageSkeleton';
-<<<<<<< HEAD
 import { toast } from 'sonner';
-=======
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
->>>>>>> origin/main
 
 const TOTAL_CARS_RESERVED = 8;
 const GREEN_CAR_NUMBER = TOTAL_CARS_RESERVED + 1;
