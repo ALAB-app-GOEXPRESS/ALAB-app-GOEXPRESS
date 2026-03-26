@@ -76,7 +76,7 @@ export const SeatMapPage: React.FC = () => {
               >
                 <TabsList className='w-186.5'>
                   <TabsTrigger value='reserved'>指定席</TabsTrigger>
-                  <TabsTrigger value='green'>グリーン席</TabsTrigger>
+                  <TabsTrigger value='green'>グリーン車</TabsTrigger> {/*TODO 埋め込み回避？*/}
                   <TabsTrigger value='grandclass'>グランクラス</TabsTrigger>
                 </TabsList>
                 <TabsContent value='reserved'>
