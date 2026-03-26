@@ -30,9 +30,6 @@ export const SEAT_CLASS_DESCRIPTIONS: Record<SeatClass, string> = {
   grandclass: '最上級のおもてなしと体験を',
 };
 
-export const ALL_COLUMNS = ['A', 'B', 'C', 'D', 'E'];
-export const SEATS_PER_ROW = ALL_COLUMNS.length;
-
 /**
  * 行番号と列名からseat_cdを計算する
  * @param row - 行番号 (例: 5)
@@ -40,14 +37,34 @@ export const SEATS_PER_ROW = ALL_COLUMNS.length;
  * @returns '021' のようなDBのseat_cd
  */
 export const convertRowColToSeatCd = (carNumber: number, row: number, col: string): string => {
-  const colIndex = ALL_COLUMNS.indexOf(col);
-  const seatIndex = (carNumber - 1) * 75 + (row - 1) * SEATS_PER_ROW + colIndex;
-  return String(seatIndex + 1).padStart(3, '0');
+  switch (carNumber) {
+    case 10: {
+      const ALL_COLUMNS = ['A', 'B', 'C'];
+      const SEATS_PER_ROW = ALL_COLUMNS.length;
+      const colIndex = ALL_COLUMNS.indexOf(col);
+      const seatIndex = 8 * 75 + 56 + (row - 1) * SEATS_PER_ROW + colIndex;
+      return String(seatIndex + 1).padStart(3, '0');
+    }
+    case 9: {
+      const ALL_COLUMNS = ['A', 'B', 'C', 'D'];
+      const SEATS_PER_ROW = ALL_COLUMNS.length;
+      const colIndex = ALL_COLUMNS.indexOf(col);
+      const seatIndex = 8 * 75 + (row - 1) * SEATS_PER_ROW + colIndex;
+      return String(seatIndex + 1).padStart(3, '0');
+    }
+    default: {
+      const ALL_COLUMNS = ['A', 'B', 'C', 'D', 'E'];
+      const SEATS_PER_ROW = ALL_COLUMNS.length;
+      const colIndex = ALL_COLUMNS.indexOf(col);
+      const seatIndex = (carNumber - 1) * 75 + (row - 1) * SEATS_PER_ROW + colIndex;
+      return String(seatIndex + 1).padStart(3, '0');
+    }
+  }
 };
 
-export const calculateAvailableSeat = (reservedSeats: ReservedSeat[], carNumber: number) => {
+export const calculateAvailableSeat = (reservedSeats: ReservedSeat[], carNumber: number, totalSeats: number) => {
   return (
-    75 -
+    totalSeats -
     reservedSeats.filter((seat) => {
       return seat.carNumber === carNumber;
     }).length

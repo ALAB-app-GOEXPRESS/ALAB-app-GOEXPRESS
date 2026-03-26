@@ -15,7 +15,7 @@ export const Header: React.FC = () => {
     setUserName(null);
 
     toast.success('ログアウトしました', { position: 'bottom-right' });
-  }
+  };
 
   return (
     <header className='sticky top-0 z-50 border-b bg-white'>
@@ -33,7 +33,7 @@ export const Header: React.FC = () => {
             className={({ isActive }) =>
               isActive
                 ? 'py-1.5 px-4 inline-flex items-center gap-2 text-13 rounded-lg bg-primary/10 cursor-default'
-                : 'py-1.5 px-4 inline-flex items-center gap-2 text-13 rounded-lg'
+                : 'py-1.5 px-4 inline-flex items-center gap-2 text-13 rounded-lg hover:bg-input/50'
             }
           >
             <TrainFront />
@@ -44,16 +44,18 @@ export const Header: React.FC = () => {
             className={({ isActive }) =>
               isActive
                 ? 'py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg bg-primary/10 cursor-default'
-                : 'py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg'
+                : 'py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg hover:bg-input/50'
             }
           >
             <Ticket />
             予約確認
           </NavLink>
           {userName !== null && (
-            <NavLink to='search'
-            className='py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg'
-            onClick={logout}>
+            <NavLink
+              to='search'
+              className='py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg hover:bg-input/50'
+              onClick={logout}
+            >
               <CircleUser />
               <p>{userName}</p>
             </NavLink>
@@ -61,7 +63,7 @@ export const Header: React.FC = () => {
           {userName === null && (
             <NavLink
               to='login'
-              className='py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg'
+              className='py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg hover:bg-input/50'
             >
               <CircleUser />
               <p>ログイン</p>

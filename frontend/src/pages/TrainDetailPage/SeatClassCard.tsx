@@ -14,9 +14,11 @@ export const SeatClassCard: React.FC<{
 
   const seatInfo = seatClasses[index];
 
+  const initialSeatType = seatInfo.type;
+
   const handleSelect = () => {
     removeSelectedSeatsSession();
-    navigate('/seat-map', { state: { seatClasses, trainDetail } });
+    navigate('/seat-map', { state: { seatClasses, trainDetail, initialSeatType } });
   };
 
   return (
@@ -30,7 +32,6 @@ export const SeatClassCard: React.FC<{
         <Button
           onClick={handleSelect}
           className='w-full'
-          disabled={seatInfo.name !== '指定席'}
         >
           座席を選択
         </Button>
