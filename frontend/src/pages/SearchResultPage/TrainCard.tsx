@@ -48,15 +48,12 @@ export const TrainCard: React.FC<Props> = ({
               </div>
             </div>
 
-            <div className='flex items-center'>
-              <div className='grid w-full grid-cols-[1fr_auto_1fr_auto] items-center '>
-                <div className='border-t-2 border-dashed' />
-                <div className='rounded-md px-3 text-base font-bold text-primary whitespace-nowrap'>
-                  {formatHM(calcDurationMin(departureTime, arrivalTime))}
-                </div>
-                <div className='border-t-2 border-dashed' />
-                <ArrowRight className='h-5 w-5 text-primary/40 justify-self-end' />
+            <div className='relative flex items-center justify-center'>
+              <div className='w-full border-t-2 border-dashed mr-5' />
+              <div className='absolute -top-3 rounded-md bg-white px-3 text-base font-bold text-primary'>
+                {formatHM(calcDurationMin(departureTime, arrivalTime))}
               </div>
+              <ArrowRight className='absolute right-0 h-5 w-5 text-primary/40' />
             </div>
 
             <div className='flex justify-center'>
