@@ -1,10 +1,18 @@
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { calcCarNumber } from '@/utils/seat';
 
 export type SeatStatus = 'available' | 'reserved' | 'selected';
 
-const SEAT_COLUMNS = ['A', 'B', 'C', 'D', 'E'];
-const SEATS_PER_ROW = SEAT_COLUMNS.length;
+const DEFAULT_COLUMNS = ['A', 'B', 'C', 'D', 'E'] as const;
+const GREEN_COLUMNS = ['A', 'B', 'C', 'D'] as const; // 9号車
+const GRAN_COLUMNS = ['A', 'B', 'C'] as const; // 10
+
+const getSeatColumnsByCar = (carNumber: number) => {
+  if (carNumber === 9) return GREEN_COLUMNS;
+  if (carNumber === 10) return GRAN_COLUMNS;
+  return DEFAULT_COLUMNS;
+};
 
 interface SeatButtonProps {
   seatCd: string;
@@ -14,9 +22,26 @@ interface SeatButtonProps {
 }
 
 const getSeatDisplayInfo = (seatCd: string) => {
-  const seatIndex = parseInt(seatCd, 10) - 1;
-  const row = Math.floor(seatIndex / SEATS_PER_ROW) + 1;
-  const col = SEAT_COLUMNS[seatIndex % SEATS_PER_ROW];
+  const columns = getSeatColumnsByCar(calcCarNumber(seatCd));
+  const seatsPerRow = columns.length;
+
+  let seatOffset = 1;
+
+  switch (calcCarNumber(seatCd)) {
+    case 10:
+      seatOffset = 657;
+      break;
+    case 9:
+      seatOffset = 601;
+      break;
+    default:
+      break;
+  }
+
+  const seatIndex = parseInt(seatCd, 10) - seatOffset;
+  console.log('seatInd:' + seatIndex);
+  const row = Math.floor(seatIndex / seatsPerRow) + 1;
+  const col = columns[seatIndex % seatsPerRow];
   return {
     row,
     col,
