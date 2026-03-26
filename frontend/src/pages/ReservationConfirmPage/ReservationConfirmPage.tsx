@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -16,6 +16,7 @@ import type { StationCode } from '@/types/Station';
 import { Badge } from '@/components/ui/badge';
 import { specifyTrainTypeIconColor } from '@/utils/train';
 import { useForm } from 'react-hook-form';
+import { getUserNavigator, getEmailNavigator } from '@/utils/userNavigator';
 
 type ReservationConfirmState = {
   trainDetailResult: TrainDetailResult;
@@ -31,6 +32,8 @@ export const ReservationConfirmPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useTypedLocation<ReservationConfirmState | undefined>();
   const state = location.state;
+  const [userName] = useState(getUserNavigator());
+  const [email] = useState(getEmailNavigator());
 
   const {
     register,
@@ -177,6 +180,7 @@ export const ReservationConfirmPage: React.FC = () => {
                       <Input
                         id='name'
                         placeholder='例：東日本 太朗'
+                        value={userName !== null ? userName : ''}
                         aria-invalid={!!errors.buyerName}
                         aria-describedby={errors.buyerName ? 'name-error' : undefined}
                         className={`pl-9 ${errors.buyerName ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
@@ -203,6 +207,7 @@ export const ReservationConfirmPage: React.FC = () => {
                         id='email'
                         type='email'
                         placeholder='例：higasinihon@example.com'
+                        value={email !== null ? email : ''}
                         aria-invalid={!!errors.emailAddress}
                         aria-describedby={errors.emailAddress ? 'email-error' : undefined}
                         className={`pl-9 ${errors.emailAddress ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
