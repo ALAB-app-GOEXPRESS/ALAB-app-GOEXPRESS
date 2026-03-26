@@ -42,8 +42,8 @@ export const ReservationConfirmPage: React.FC = () => {
   } = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: {
-      buyerName: '',
-      emailAddress: '',
+      buyerName: userName !== null ? userName : '',
+      emailAddress: email !== null ? email : '',
     },
   });
 
@@ -180,7 +180,6 @@ export const ReservationConfirmPage: React.FC = () => {
                       <Input
                         id='name'
                         placeholder='例：東日本 太朗'
-                        value={userName !== null ? userName : ''}
                         aria-invalid={!!errors.buyerName}
                         aria-describedby={errors.buyerName ? 'name-error' : undefined}
                         className={`pl-9 ${errors.buyerName ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
@@ -207,7 +206,6 @@ export const ReservationConfirmPage: React.FC = () => {
                         id='email'
                         type='email'
                         placeholder='例：higasinihon@example.com'
-                        value={email !== null ? email : ''}
                         aria-invalid={!!errors.emailAddress}
                         aria-describedby={errors.emailAddress ? 'email-error' : undefined}
                         className={`pl-9 ${errors.emailAddress ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
