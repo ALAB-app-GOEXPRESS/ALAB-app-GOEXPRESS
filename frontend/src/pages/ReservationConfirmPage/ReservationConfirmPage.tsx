@@ -84,8 +84,23 @@ export const ReservationConfirmPage: React.FC = () => {
       navigate('/reservation-result', {
         state: { reservationDetails },
       });
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      if (error?.status === 409) {
+        toast.error('選択した座席は既に予約されています。再度座席を選択してください。', {
+          position: 'bottom-right',
+          duration: 5000,
+        });
+
+        removeSelectedSeatsSession();
+
+        navigate(`/seat-map`, {
+          replace: true,
+          state: {
+            seatClasses: trainDetailResult.seatClasses,
+            trainDetail: trainDetailResult,
+          },
+        });
+      }
     }
   };
 
