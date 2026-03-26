@@ -79,6 +79,11 @@ export const ReservationConfirmPage: React.FC = () => {
 
       toast.success('予約が完了しました！', { position: 'bottom-right' });
 
+      for (let i = 0; i < Number(sessionStorage.getItem('selectedSeatsNumber')); i++) {
+        sessionStorage.removeItem(`selectedSeat${i}`);
+      }
+      sessionStorage.removeItem('selectedSeatsNumber')
+
       navigate('/reservation-result', {
         state: { reservationDetails },
       });
