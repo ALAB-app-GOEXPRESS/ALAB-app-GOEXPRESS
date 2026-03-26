@@ -16,6 +16,7 @@ import type { StationCode } from '@/types/Station';
 import { Badge } from '@/components/ui/badge';
 import { specifyTrainTypeIconColor } from '@/utils/train';
 import { useForm } from 'react-hook-form';
+import type { ReservedSeat } from '@/api/SeatApi';
 
 type ReservationConfirmState = {
   trainDetailResult: TrainDetailResult;
@@ -82,21 +83,8 @@ export const ReservationConfirmPage: React.FC = () => {
       navigate('/reservation-result', {
         state: { reservationDetails },
       });
-    } catch (error: any) {
-      if (error?.status === 409) {
-        toast.error('選択した座席は既に予約されています。再度座席を選択してください。', {
-          position: 'bottom-right',
-          duration: 5000,
-        });
-
-        navigate(`/seat-map`, {
-          replace: true,
-          state: {
-            seatClasses: trainDetailResult.seatClasses,
-            trainDetail: trainDetailResult,
-          },
-        });
-      }
+    } catch (error) {
+      console.error(error);
     }
   };
 

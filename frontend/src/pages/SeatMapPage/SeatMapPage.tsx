@@ -27,30 +27,38 @@ export const SeatMapPage: React.FC = () => {
     departureDate: trainDetail.date,
   });
 
-  useEffect(() => {
-    const selectedSeatsNumber = Number(sessionStorage.getItem('selectedSeatsNumber'));
+  const [selectedSeatsNumber, setSelectedSeatsNumber] = useState(Number(sessionStorage.getItem('selectedSeatsNumber')));
 
+  useEffect(() => {
+    console.log(selectedSeatsNumber);
     if (selectedSeatsNumber) {
       const selectedSeatCdList: string[] = [];
 
-      for (let i: number = 0; i <= selectedSeatsNumber; i++) {
+      for (let i: number = 0; i < selectedSeatsNumber; i++) {
         const currentSeatCd = sessionStorage.getItem(`selectedSeat${i}`);
+        console.log(currentSeatCd);
 
         if (reservedSeats.find((seat) => seat.seatCd === currentSeatCd)) {
           toast.error('選択した座席は既に予約されています。再度座席を選択してください。', {
             position: 'bottom-right',
             duration: 5000,
           });
-          
-          [...Array(selectedSeatsNumber + 1).keys()].forEach((key) => {sessionStorage.removeItem(`selectedSeat${key}`)});
-          return;
+
+          setSelectedSeats([]);
+          [...Array(selectedSeatsNumber + 1).keys()].forEach((key) => {
+            sessionStorage.removeItem(`selectedSeat${key}`);
+          });
+          sessionStorage.removeItem('selectedSeatsNumber');
+          setSelectedSeatsNumber(0);
+          break;
         }
 
-        if(currentSeatCd) selectedSeatCdList.push(currentSeatCd);
+        if (currentSeatCd) selectedSeatCdList.push(currentSeatCd);
       }
 
       setSelectedSeats(selectedSeatCdList.map((seatCd) => formatSelectedSeat(seatCd)));
     }
+    return;
   }, []);
 
   if (isLoading) {
@@ -71,6 +79,11 @@ export const SeatMapPage: React.FC = () => {
   };
 
   const handleReserve = () => {
+    [...Array(selectedSeatsNumber + 1).keys()].forEach((key) => {
+      sessionStorage.removeItem(`selectedSeat${key}`);
+    });
+    selectedSeats.forEach((seat, index) => sessionStorage.setItem(`selectedSeat${index}`, seat.seatCd));
+    sessionStorage.setItem('selectedSeatsNumber', selectedSeats.length.toString());
     navigate('/reservation-confirm', { state: { trainDetailResult: trainDetail, selectedSeats } });
   };
 
