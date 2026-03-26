@@ -88,16 +88,23 @@ export const calculateCarNumber = (seatCd: string) => {
 };
 
 export const getSeatTypeName = (carNumbar: string) => {
-  if(carNumbar === '9') return 'グリーン席';
-  if(carNumbar === '10') return 'グランクラス';
+  if (carNumbar === '9') return 'グリーン席';
+  if (carNumbar === '10') return 'グランクラス';
   return '指定席';
-}
+};
 
 export const formatSelectedSeat = (seatCd: string): SelectedSeat => {
   return {
     carNumber: calculateCarNumber(seatCd),
     seatCd: seatCd,
     seatTypeName: getSeatTypeName(seatCd),
-    price: 1000
+    price: 1000,
   };
+};
+
+export const removeSelectedSeatsSession = () => {
+  for (let i = 0; i < Number(sessionStorage.getItem('selectedSeatsNumber')); i++) {
+    sessionStorage.removeItem(`selectedSeat${i}`);
+  }
+  sessionStorage.removeItem('selectedSeatsNumber');
 };

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/utils/currency';
 import { useNavigate } from 'react-router-dom';
 import type { SeatClassDetail, TrainDetailResult } from '@/api/TrainDetailApi';
+import { removeSelectedSeatsSession } from '@/utils/seat';
 
 export const SeatClassCard: React.FC<{
   index: number;
@@ -14,6 +15,7 @@ export const SeatClassCard: React.FC<{
   const seatInfo = seatClasses[index];
 
   const handleSelect = () => {
+    removeSelectedSeatsSession();
     navigate('/seat-map', { state: { seatClasses, trainDetail } });
   };
 

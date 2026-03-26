@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { formatSeat } from '@/utils/seat';
+import { formatSeat, removeSelectedSeatsSession } from '@/utils/seat';
 import { Mail, User, Loader2, TramFront } from 'lucide-react';
 import { createReservation } from '@/api/ReservationApi';
 import { useNavigate } from 'react-router-dom';
@@ -79,10 +79,7 @@ export const ReservationConfirmPage: React.FC = () => {
 
       toast.success('予約が完了しました！', { position: 'bottom-right' });
 
-      for (let i = 0; i < Number(sessionStorage.getItem('selectedSeatsNumber')); i++) {
-        sessionStorage.removeItem(`selectedSeat${i}`);
-      }
-      sessionStorage.removeItem('selectedSeatsNumber')
+      removeSelectedSeatsSession();
 
       navigate('/reservation-result', {
         state: { reservationDetails },
