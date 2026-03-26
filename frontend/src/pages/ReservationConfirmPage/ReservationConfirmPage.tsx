@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -16,6 +16,7 @@ import type { StationCode } from '@/types/Station';
 import { Badge } from '@/components/ui/badge';
 import { specifyTrainTypeIconColor } from '@/utils/train';
 import { useForm } from 'react-hook-form';
+import { getUserNavigator, getEmailNavigator } from '@/utils/userNavigator';
 
 type ReservationConfirmState = {
   trainDetailResult: TrainDetailResult;
@@ -31,6 +32,8 @@ export const ReservationConfirmPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useTypedLocation<ReservationConfirmState | undefined>();
   const state = location.state;
+  const [userName] = useState(getUserNavigator());
+  const [email] = useState(getEmailNavigator());
 
   const {
     register,
@@ -39,8 +42,8 @@ export const ReservationConfirmPage: React.FC = () => {
   } = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: {
-      buyerName: '',
-      emailAddress: '',
+      buyerName: userName !== null ? userName : '',
+      emailAddress: email !== null ? email : '',
     },
   });
 

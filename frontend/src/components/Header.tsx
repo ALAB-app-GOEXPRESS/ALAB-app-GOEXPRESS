@@ -11,6 +11,7 @@ export const Header: React.FC = () => {
     sessionStorage.removeItem('idToken');
     sessionStorage.removeItem('userId');
     sessionStorage.removeItem('userName');
+    sessionStorage.removeItem('email');
 
     setUserName(null);
 
