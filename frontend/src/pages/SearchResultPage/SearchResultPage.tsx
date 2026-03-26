@@ -20,7 +20,7 @@ type SeatClassFilter = 'all' | SeatClass;
 const seatClassFilterOptions = [
   { value: 'all', label: '全クラス' },
   { value: 'reserved', label: '指定席' },
-  { value: 'green', label: 'グリーン' },
+  { value: 'green', label: 'グリーン車' },
   { value: 'grandclass', label: 'グランクラス' },
 ] as const;
 
