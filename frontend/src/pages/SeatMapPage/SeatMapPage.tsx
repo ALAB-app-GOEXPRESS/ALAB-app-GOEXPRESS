@@ -11,7 +11,9 @@ import { SelectedSeatsInfo } from './selectedSeatsInfo';
 import { SeatMapPageSkeleton } from './SeatMapPageSkeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-const TOTAL_CARS = 8;
+const TOTAL_CARS_RESERVED = 8;
+const GREEN_CAR_NUMBER = TOTAL_CARS_RESERVED + 1;
+const GRANDCLASS_CAR_NUMBER = GREEN_CAR_NUMBER + 1;
 
 export const SeatMapPage: React.FC = () => {
   const navigate = useNavigate();
@@ -76,7 +78,7 @@ export const SeatMapPage: React.FC = () => {
               >
                 <TabsList className='w-186.5'>
                   <TabsTrigger value='reserved'>指定席</TabsTrigger>
-                  <TabsTrigger value='green'>グリーン車</TabsTrigger> {/*TODO 埋め込み回避？*/}
+                  <TabsTrigger value='green'>グリーン車</TabsTrigger>
                   <TabsTrigger value='grandclass'>グランクラス</TabsTrigger>
                 </TabsList>
                 <TabsContent value='reserved'>
@@ -84,7 +86,7 @@ export const SeatMapPage: React.FC = () => {
                     <div className='flex flex-col overflow-x-auto whitespace-nowrap pb-2 -mb-2'>
                       <span className='text-base text-black/50 mb-2'>号車を選択</span>
                       <div className='inline-flex gap-2'>
-                        {Array.from({ length: TOTAL_CARS }, (_, i) => i + 1).map((carNumber) => (
+                        {Array.from({ length: TOTAL_CARS_RESERVED }, (_, i) => i + 1).map((carNumber) => (
                           <Button
                             key={carNumber}
                             variant={activeCar === carNumber ? 'default' : 'outline'}
@@ -102,7 +104,7 @@ export const SeatMapPage: React.FC = () => {
                             <div className='flex flex-col'>
                               <span>{carNumber}</span>
                               <span className='text-xs text-black/50'>
-                                {calculateAvailableSeat(reservedSeats, carNumber, 75) /*TODO 埋め込み解消したい */}席
+                                {calculateAvailableSeat(reservedSeats, carNumber, 75)}席
                               </span>
                             </div>
                           </Button>
@@ -126,7 +128,7 @@ export const SeatMapPage: React.FC = () => {
                     <div className='mt-4'>
                       <SeatMapTab
                         reservedSeats={reservedSeats}
-                        carNumber={9} //TODO 値の渡し方検討
+                        carNumber={GREEN_CAR_NUMBER}
                         seatClasses={seatClasses}
                         selectedSeats={selectedSeats}
                         setSelectedSeats={setSelectedSeats}
@@ -140,7 +142,7 @@ export const SeatMapPage: React.FC = () => {
                     <div className='mt-4'>
                       <SeatMapTab
                         reservedSeats={reservedSeats}
-                        carNumber={10} //TODO 値の渡し方検討
+                        carNumber={GRANDCLASS_CAR_NUMBER}
                         seatClasses={seatClasses}
                         selectedSeats={selectedSeats}
                         setSelectedSeats={setSelectedSeats}
