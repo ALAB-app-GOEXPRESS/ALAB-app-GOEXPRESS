@@ -21,7 +21,7 @@ export const SelectedSeatsInfo: React.FC<SelectedSeatsInfoProps> = ({
   handleReserve,
 }) => {
   return (
-    <Card className='w-66'>
+    <Card className='w-68'>
       <CardHeader>
         <CardTitle>選択中の座席</CardTitle>
         <div className='flex justify-between items-center h-7'>
@@ -37,7 +37,7 @@ export const SelectedSeatsInfo: React.FC<SelectedSeatsInfoProps> = ({
           )}
         </div>
       </CardHeader>
-      <CardContent className='flex flex-col overflow-y-auto w-65'>
+      <CardContent className='flex flex-col overflow-y-auto w-68'>
         {selectedSeats.length > 0 ? (
           <div className='min-w-max'>
             <ul className='space-y-2'>
@@ -47,7 +47,7 @@ export const SelectedSeatsInfo: React.FC<SelectedSeatsInfoProps> = ({
                   className='flex justify-between text-sm min-w-max'
                 >
                   <div className='flex min-w-38 justify-between'>
-                    <span>{formatSeat(seatCd)}</span>
+                    <span className='inline-block w-24 whitespace-nowrap'>{formatSeat(seatCd)}</span>
                     <Badge variant='outline'>{seatTypeName}</Badge>
                   </div>
                   <span className='font-bold '>{formatCurrency(price)}</span>
