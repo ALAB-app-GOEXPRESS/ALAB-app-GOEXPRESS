@@ -30,7 +30,6 @@ export const SeatClassCard: React.FC<{
         <Button
           onClick={handleSelect}
           className='w-full'
-          // disabled={seatInfo.name !== '指定席'} //TODO 満席だったら非表示にする
         >
           座席を選択
         </Button>
