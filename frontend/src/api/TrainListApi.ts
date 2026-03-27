@@ -1,22 +1,6 @@
-import { toHHMM } from '@/utils/dateTime';
 import { normalizeTrainNumber } from '@/utils/train';
 export type { SeatClass } from '@/utils/seat';
-import { fetchJSON } from '@/lib/fetch';
 import type { StationCode } from '@/types/Station';
-
-export type TrainBetweenApiItem = {
-  trainCd: string;
-  trainNumber: string;
-  trainTypeCd: string;
-  trainTypeName: string;
-  fromStationCd: string;
-  fromStationName: string;
-  toStationCd: string;
-  toStationName: string;
-  departureTime: string;
-  arrivalTime: string;
-  trackNumber: string;
-};
 
 export type TrainSearchParams = {
   from: StationCode;
@@ -29,41 +13,41 @@ export type TrainResult = {
   trainCd: string;
   trainTypeName: string;
   trainNumber: string;
-  departureTime: string; // "HH:MM"
-  arrivalTime: string; // "HH:MM"
+  departureTime: string;
+  arrivalTime: string;
   departureStationCd: StationCode;
   arrivalStationCd: StationCode;
   trackNumber: string;
 };
 
-/**
- * 実API：列車一覧取得（ページング + seatClassFilter 対応）
- * - GET /api/trains/between?from=xx&to=yy を叩く
- * - APIの配列レスポンスを TrainResult[] に変換
- * - results はフィルタ後に limit / offset した最大 limit 件
- */
-export async function fetchTrains(params: TrainSearchParams): Promise<TrainResult[]> {
-  const endpoint = `/api/trains?from=${encodeURIComponent(params.from)}&to=${encodeURIComponent(
-    params.to,
-  )}&date=${encodeURIComponent(params.date)}&time=${encodeURIComponent(params.time)}`;
+export type TrainSearchResult = TrainResult & {
+  seatAvailability: {
+    reserved: number;
+    green: number;
+    grandclass: number;
+  };
+};
 
-  const data = await fetchJSON<TrainBetweenApiItem[]>(endpoint);
-
-  const converted: TrainResult[] = data.map((item) => {
-    const departureTime = toHHMM(item.departureTime);
-    const arrivalTime = toHHMM(item.arrivalTime);
-
-    return {
-      trainCd: item.trainCd,
-      trainTypeName: item.trainTypeName,
-      trainNumber: `${normalizeTrainNumber(item.trainNumber)}号`,
-      departureTime,
-      arrivalTime,
-      departureStationCd: item.fromStationCd as StationCode,
-      arrivalStationCd: item.toStationCd as StationCode,
-      trackNumber: item.trackNumber,
-    };
+export async function fetchTrains(params: TrainSearchParams): Promise<TrainSearchResult[]> {
+  const query = new URLSearchParams({
+    from: params.from,
+    to: params.to,
+    date: params.date,
+    time: params.time,
   });
+
+  const response = await fetch(`/api/trains?${query.toString()}`);
+
+  if (!response.ok) {
+    throw new Error('APIリクエストに失敗しました');
+  }
+
+  const data: TrainSearchResult[] = await response.json();
+
+  const converted = data.map((item) => ({
+    ...item,
+    trainNumber: `${normalizeTrainNumber(item.trainNumber)}号`,
+  }));
 
   return converted;
 }
