@@ -18,3 +18,4 @@ spring:
           cognito:
             issuer-uri: ${ISSUER_URI}
             user-name-attribute: username
+            logout-uri: ${LOGOUT_REDIRECT_URI:http://localhost:5173/search}

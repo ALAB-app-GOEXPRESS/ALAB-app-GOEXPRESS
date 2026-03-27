@@ -28,7 +28,7 @@ INSERT INTO
 VALUES
     (101, 'tarou', '123@example.com', 'aiueo', '1234567890123456', '2026-02-10'),
     (102, 'jirou', 'aiueo@example.com', 'irohani', '3214321347902321', '2026-02-10'),
-    (103, 'hanako', '546@example.com', 'hoheto', '9218319461221498', '2026-02-10'),
+    (103, 'hanako', 'tsunohara@jeisryokai.onmicrosoft.com', 'hoheto', '9218319461221498', '2026-02-10'),
     (104, 'takeo', 'kikuchi@example.com', 'tirinuruw0', '1243249247821432', '2026-02-10'),
     (105, 'sanae', 'takaichi@example.com', 'yokoham@', '2159247829238412', '2026-02-10'),
     (106, 'shinjirou', 'ko-izumi@example.com', 'mIrai', '2361234062149821', '2026-02-10');
