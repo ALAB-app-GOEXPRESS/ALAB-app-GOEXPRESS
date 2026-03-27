@@ -74,15 +74,61 @@ export const calculateAvailableSeat = (reservedSeats: ReservedSeat[], carNumber:
 export const formatSeat = (seatCd: string): string => {
   try {
     const seatNumberInt = parseInt(seatCd, 10);
-    if (isNaN(seatNumberInt) || seatNumberInt < 1) {
+
+    if (Number.isNaN(seatNumberInt) || seatNumberInt < 1) {
       return seatCd;
     }
-    const carNumber = Math.floor((seatNumberInt - 1) / 75) + 1;
-    const seatAlphabetIndex = (seatNumberInt - 1) % 5;
-    const seatAlphabet = ['A', 'B', 'C', 'D', 'E'][seatAlphabetIndex];
-    const seatRowNumber = Math.floor(((seatNumberInt - 1) % 75) / 5) + 1;
 
-    return `${carNumber}号車 ${seatRowNumber}番${seatAlphabet}席`;
+    const seatIndex = seatNumberInt - 1;
+
+    const CAR_1_TO_8_SEATS_PER_CAR = 75;
+    const CAR9_START = 8 * CAR_1_TO_8_SEATS_PER_CAR; // 600
+    const CAR10_START = CAR9_START + 56; // 656 （= 8*75+56）
+
+    let carNumber: number;
+    let row: number;
+    let col: string;
+
+    if (seatIndex < CAR9_START) {
+      const ALL_COLUMNS = ['A', 'B', 'C', 'D', 'E'] as const;
+      const SEATS_PER_ROW = ALL_COLUMNS.length; // 5
+
+      carNumber = Math.floor(seatIndex / CAR_1_TO_8_SEATS_PER_CAR) + 1;
+
+      const inCarIndex = seatIndex % CAR_1_TO_8_SEATS_PER_CAR;
+      row = Math.floor(inCarIndex / SEATS_PER_ROW) + 1;
+
+      const colIndex = inCarIndex % SEATS_PER_ROW;
+      col = ALL_COLUMNS[colIndex];
+    } else if (seatIndex < CAR10_START) {
+      const ALL_COLUMNS = ['A', 'B', 'C', 'D'] as const;
+      const SEATS_PER_ROW = ALL_COLUMNS.length; // 4
+
+      carNumber = 9;
+
+      const inCarIndex = seatIndex - CAR9_START;
+      row = Math.floor(inCarIndex / SEATS_PER_ROW) + 1;
+
+      const colIndex = inCarIndex % SEATS_PER_ROW;
+      col = ALL_COLUMNS[colIndex];
+    } else {
+      const ALL_COLUMNS = ['A', 'B', 'C'] as const;
+      const SEATS_PER_ROW = ALL_COLUMNS.length; // 3
+
+      carNumber = 10;
+
+      const inCarIndex = seatIndex - CAR10_START;
+      row = Math.floor(inCarIndex / SEATS_PER_ROW) + 1;
+
+      const colIndex = inCarIndex % SEATS_PER_ROW;
+      col = ALL_COLUMNS[colIndex];
+    }
+
+    if (!col || row < 1 || carNumber < 1) {
+      return seatCd;
+    }
+
+    return `${carNumber}号車 ${row}番${col}席`;
   } catch (error) {
     console.error('座席コードのフォーマット中にエラーが発生しました:', error);
     return seatCd;
@@ -98,21 +144,46 @@ export const formatSeats = (seatCdList: string[]): string[] => {
   }
 };
 
-export const calculateCarNumber = (seatCd: string) => {
-  const seatNumberInt = parseInt(seatCd, 10);
-
-  return Math.floor((seatNumberInt - 1) / 75) + 1;
-};
-
 export const getSeatTypeName = (carNumbar: string) => {
   if (carNumbar === '9') return 'グリーン席';
   if (carNumbar === '10') return 'グランクラス';
   return '指定席';
 };
 
+export const calcCarNumber = (seatCd: string): number => {
+  try {
+    const seatNumberInt = parseInt(seatCd, 10);
+
+    if (Number.isNaN(seatNumberInt) || seatNumberInt < 1) {
+      throw 0;
+    }
+
+    const seatIndex = seatNumberInt - 1;
+
+    const CAR_1_TO_8_SEATS_PER_CAR = 75;
+    const CAR9_START = 8 * CAR_1_TO_8_SEATS_PER_CAR; // 600
+    const CAR10_START = CAR9_START + 56; // 656 （= 8*75+56）
+
+    let carNumber: number;
+
+    if (seatIndex < CAR9_START) {
+      carNumber = Math.floor(seatIndex / CAR_1_TO_8_SEATS_PER_CAR) + 1;
+    } else if (seatIndex < CAR10_START) {
+      carNumber = 9;
+    } else {
+      carNumber = 10;
+    }
+
+    return carNumber;
+  } catch (error) {
+    console.error('座席コードのフォーマット中にエラーが発生しました:', error);
+    return 0;
+  }
+};
+
 export const formatSelectedSeat = (seatCd: string): SelectedSeat => {
   return {
-    carNumber: calculateCarNumber(seatCd),
+    carNumber: calcCarNumber(seatCd),
     seatCd: seatCd,
     seatTypeName: getSeatTypeName(seatCd),
     price: 1000,
