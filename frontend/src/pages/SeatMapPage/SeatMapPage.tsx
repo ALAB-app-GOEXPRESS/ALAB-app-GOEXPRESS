@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ArrowLeft } from 'lucide-react';
 import { SeatMapTab } from './SeatMapTab';
 import { useSeatMap } from '@/pages/SeatMapPage/useSeatMap';
-import { calculateAvailableSeat, formatSelectedSeat } from '@/utils/seat';
+import { calculateAvailableSeat, formatSelectedSeat, removeSelectedSeatsSession } from '@/utils/seat';
 import type { SelectedSeat } from '@/types/Seat';
 import { SelectedSeatsInfo } from './selectedSeatsInfo';
 import { SeatMapPageSkeleton } from './SeatMapPageSkeleton';
@@ -39,7 +39,6 @@ export const SeatMapPage: React.FC = () => {
 
       for (let i: number = 0; i < selectedSeatsNumber; i++) {
         const currentSeatCd = sessionStorage.getItem(`selectedSeat${i}`);
-        console.log(currentSeatCd);
 
         if (reservedSeats.find((seat) => seat.seatCd === currentSeatCd)) {
           toast.error('選択した座席は既に予約されています。再度座席を選択してください。', {
@@ -48,10 +47,7 @@ export const SeatMapPage: React.FC = () => {
           });
 
           setSelectedSeats([]);
-          for(let i = 0; i < selectedSeatsNumber; i++) {
-            sessionStorage.removeItem(`selectedSeat${i}`);
-          }
-          sessionStorage.removeItem('selectedSeatsNumber');
+          removeSelectedSeatsSession();
           setSelectedSeatsNumber(0);
           break;
         }
