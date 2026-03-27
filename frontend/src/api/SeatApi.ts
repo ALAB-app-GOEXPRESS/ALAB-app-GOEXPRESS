@@ -1,4 +1,5 @@
 import { fetchJSON } from '@/lib/fetch';
+import { calcCarNumber } from '@/utils/seat';
 
 export type SeatBetweenApiItem = {
   seatCd: string;
@@ -22,7 +23,7 @@ export async function FetchSeats(params: SeatsParams) {
   const reservedSeats: ReservedSeat[] = data.map((seat) => {
     return {
       seatCd: seat.seatCd,
-      carNumber: Math.floor((parseInt(seat.seatCd) - 1) / 75) + 1,
+      carNumber: calcCarNumber(seat.seatCd),
     };
   });
 
