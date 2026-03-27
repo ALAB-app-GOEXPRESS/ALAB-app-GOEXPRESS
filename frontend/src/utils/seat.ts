@@ -1,4 +1,5 @@
 import type { ReservedSeat } from '@/api/SeatApi';
+import type { SelectedSeat } from '@/types/Seat';
 
 /**
  * 座席クラスの種別
@@ -143,6 +144,12 @@ export const formatSeats = (seatCdList: string[]): string[] => {
   }
 };
 
+export const getSeatTypeName = (carNumbar: string) => {
+  if (carNumbar === '9') return 'グリーン席';
+  if (carNumbar === '10') return 'グランクラス';
+  return '指定席';
+};
+
 export const calcCarNumber = (seatCd: string): number => {
   try {
     const seatNumberInt = parseInt(seatCd, 10);
@@ -172,4 +179,20 @@ export const calcCarNumber = (seatCd: string): number => {
     console.error('座席コードのフォーマット中にエラーが発生しました:', error);
     return 0;
   }
+};
+
+export const formatSelectedSeat = (seatCd: string): SelectedSeat => {
+  return {
+    carNumber: calcCarNumber(seatCd),
+    seatCd: seatCd,
+    seatTypeName: getSeatTypeName(seatCd),
+    price: 1000,
+  };
+};
+
+export const removeSelectedSeatsSession = () => {
+  for (let i = 0; i < Number(sessionStorage.getItem('selectedSeatsNumber')); i++) {
+    sessionStorage.removeItem(`selectedSeat${i}`);
+  }
+  sessionStorage.removeItem('selectedSeatsNumber');
 };
