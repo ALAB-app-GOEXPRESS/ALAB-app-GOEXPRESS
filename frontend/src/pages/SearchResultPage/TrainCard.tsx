@@ -135,10 +135,10 @@ export const TrainCard: React.FC<Props> = ({
         </div>
         <div className='flex h-full items-center border-l'>
           <SeatAvailabilityItem
-            icon={<Crown className='h-5 w-5 text-orange-500' />}
+            icon={<Crown className='h-5 w-5 text-[#C3753A]' />}
             label='グランクラス'
             count={seatAvailability.grandclass}
-            className='text-orange-500'
+            className='text-[#C3753A]'
           />
         </div>
       </div>
