@@ -26,7 +26,7 @@ VALUES
 INSERT INTO
     T_ACCOUNT (account_id, account_name, email_address, password, card_number, expiration_date)
 VALUES
-    (101, 'tarou', 'tsunohara@jeisryokai.onmicrosoft.com', 'aiueo', '1234567890123456', '2026-02-10'),
+    (101, 'tarou', '123@example.com', 'aiueo', '1234567890123456', '2026-02-10'),
     (102, 'jirou', 'aiueo@example.com', 'irohani', '3214321347902321', '2026-02-10'),
     (103, 'hanako', '546@example.com', 'hoheto', '9218319461221498', '2026-02-10'),
     (104, 'takeo', 'kikuchi@example.com', 'tirinuruw0', '1243249247821432', '2026-02-10'),
@@ -134,24 +134,23 @@ FROM time_series ts CROSS JOIN station_orders so WHERE (ts.start_time_val::time 
 
 
 -- =================================================================
--- 満席テストデータ作成
+-- 手順1: 満席データ投入用の一時的な関数を作成する
 -- =================================================================
-DO $$
+CREATE OR REPLACE FUNCTION insert_full_reservation_data() RETURNS TEXT AS $$
 DECLARE
     target_train RECORD;
     target_account RECORD;
     v_train_car_cds TEXT[];
     v_seat_cds TEXT[];
-    v_account_id INT;
     new_reservation_id INT;
     v_departure_date DATE := CURRENT_DATE;
     i INT;
+    v_train_count INT := 0;
     target_trains_cursor CURSOR FOR
         SELECT
             train_cd,
             train_number_counter % 8 AS pattern_type
         FROM (
-            -- 全車種の列車情報を結合
             SELECT 'H' || LPAD(ts.train_number_counter::text, 4, '0') AS train_cd, ts.train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp, '2000-01-01 22:00:00'::timestamp, '20 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter) UNION ALL
             SELECT 'J' || LPAD(ts.train_number_counter::text, 4, '0'), ts.train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '5 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '20 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter) UNION ALL
             SELECT 'T' || LPAD(ts.train_number_counter::text, 4, '0'), ts.train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '2 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '25 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter) UNION ALL
@@ -163,12 +162,16 @@ DECLARE
         ) AS all_trains
         WHERE (train_number_counter % 8) <> 0;
 BEGIN
+    -- 【修正箇所】予約アカウントを'sanae' (account_id=105) に固定する
+    SELECT * INTO target_account FROM T_ACCOUNT WHERE account_id = 105;
+
     OPEN target_trains_cursor;
     LOOP
         FETCH target_trains_cursor INTO target_train;
         EXIT WHEN NOT FOUND;
 
-        -- 1. 予約対象となる座席の「車両番号」と「座席番号」を、それぞれ別の配列に格納する
+        v_train_count := v_train_count + 1;
+
         SELECT
             array_agg(train_car_cd),
             array_agg(seat_cd)
@@ -196,14 +199,10 @@ BEGIN
             ORDER BY seat_cd
         ) AS seats;
 
-        -- 2. 配列に格納した座席を6席ずつのグループでループ処理
         IF array_length(v_seat_cds, 1) > 0 THEN
             FOR i IN 0..CEIL(array_length(v_seat_cds, 1) / 6.0) - 1
             LOOP
-                -- 3. グループごとに新しい予約を作成
-                v_account_id := 101 + ((target_train.pattern_type + i) % 6);
-                SELECT * INTO target_account FROM T_ACCOUNT WHERE account_id = v_account_id;
-
+                -- 【修正箇所】アカウントの使い回しロジックを削除し、sanaeさんの情報のみを使用する
                 INSERT INTO T_RESERVATION (
                     invalid_flg, account_id, departure_date, buy_datetime,
                     buyer_name, email_address, card_number, expiration_date
@@ -215,7 +214,6 @@ BEGIN
                 )
                 RETURNING reservation_id INTO new_reservation_id;
 
-                -- 4. 新しい予約番号に、該当グループの座席(最大6席)を紐づける
                 INSERT INTO T_SEAT (
                     train_cd, departure_date, train_car_cd, seat_cd,
                     departure_station_cd, arrival_station_cd, reservation_id
@@ -232,10 +230,50 @@ BEGIN
                         v_seat_cds[i*6 + 1 : (i+1)*6]
                     ) AS t(car_cd, s_cd);
 
+                INSERT INTO T_TICKET (
+                    reservation_id, train_cd, departure_date, train_car_cd, seat_cd,
+                    departure_station_cd, arrival_station_cd, charge, user_name,
+                    email_address, status
+                )
+                SELECT
+                    new_reservation_id,
+                    target_train.train_cd,
+                    v_departure_date,
+                    t.car_cd,
+                    t.s_cd,
+                    '01',
+                    '23',
+                    mc.charge,
+                    target_account.account_name,
+                    target_account.email_address,
+                    'unused'
+                FROM
+                    unnest(
+                        v_train_car_cds[i*6 + 1 : (i+1)*6],
+                        v_seat_cds[i*6 + 1 : (i+1)*6]
+                    ) AS t(car_cd, s_cd)
+                JOIN M_TRAIN mt ON mt.train_cd = target_train.train_cd
+                JOIN M_TRAIN_CAR mtc ON mtc.train_cd = target_train.train_cd AND mtc.train_car_cd = t.car_cd
+                JOIN M_CHARGE mc ON mc.departure_station_cd = '01'
+                                AND mc.arrival_station_cd = '23'
+                                AND mc.train_type_cd = mt.train_type_cd
+                                AND mc.seat_type_cd = mtc.seat_type_cd;
+
             END LOOP;
         END IF;
 
     END LOOP;
     CLOSE target_trains_cursor;
+    RETURN '満席データ投入完了。すべての予約者はsanaeさんです。対象列車数: ' || v_train_count;
 END;
-$$;
+$$ LANGUAGE plpgsql;
+
+-- =================================================================
+-- 手順2: 作成した関数を実行してデータ投入
+-- =================================================================
+SELECT insert_full_reservation_data();
+
+-- =================================================================
+-- 手順3: 役目を終えた一時的な関数を削除
+-- =================================================================
+DROP FUNCTION insert_full_reservation_data();
