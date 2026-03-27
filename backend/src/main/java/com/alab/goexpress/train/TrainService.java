@@ -34,7 +34,6 @@ public class TrainService {
         DepartureInfo departureInfo = mapper.findDepartureInfo(train.trainCd(), fromStationCd);
         String trackNumber = (departureInfo != null) ? departureInfo.trackNumber() : "";
 
-        // ▼▼▼ ここをデータベースの情報に合わせて修正しました！ ▼▼▼
         int reservedSeats = calculateRemainingSeats(train.trainCd(), date, "10"); // 指定席
         int greenSeats = calculateRemainingSeats(train.trainCd(), date, "20");    // グリーン車
         int grandclassSeats = calculateRemainingSeats(train.trainCd(), date, "30"); // グランクラス
@@ -101,7 +100,6 @@ public class TrainService {
         Integer chargeResult = mapper.findCharge(fromStationCd, toStationCd, trainTypeCd, seatType.getSeatTypeCd());
         int charge = (chargeResult != null) ? chargeResult : 0;
 
-        // ★ こちらも共通のヘルパーメソッドを使うように修正
         int remainingSeats = calculateRemainingSeats(trainCd, date, seatType.getSeatTypeCd());
 
         return new SeatClassDto(seatType.getSeatTypeCd(), seatType.getSeatTypeName(), charge, remainingSeats);
@@ -111,4 +109,3 @@ public class TrainService {
     return new TrainDetailResponse(trainBasicInfo, departureInfo.trackNumber(), seatClasses, date);
   }
 }
- 
