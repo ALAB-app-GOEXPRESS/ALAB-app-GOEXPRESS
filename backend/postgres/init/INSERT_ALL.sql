@@ -26,7 +26,7 @@ VALUES
 INSERT INTO
     T_ACCOUNT (account_id, account_name, email_address, password, card_number, expiration_date)
 VALUES
-    (101, 'tarou', '123@example.com', 'aiueo', '1234567890123456', '2026-02-10'),
+    (101, 'tarou', 'tsunohara@jeisryokai.onmicrosoft.com', 'aiueo', '1234567890123456', '2026-02-10'),
     (102, 'jirou', 'aiueo@example.com', 'irohani', '3214321347902321', '2026-02-10'),
     (103, 'hanako', '546@example.com', 'hoheto', '9218319461221498', '2026-02-10'),
     (104, 'takeo', 'kikuchi@example.com', 'tirinuruw0', '1243249247821432', '2026-02-10'),
@@ -134,106 +134,107 @@ FROM time_series ts CROSS JOIN station_orders so WHERE (ts.start_time_val::time 
 
 
 -- =================================================================
--- 満席テストデータ作成（全車種対応・当日データ版）
--- 全ての列車に対して、周期的に全7パターンの満席状態を作成
--- 出発日はこのスクリプトの実行日の【当日】に自動設定される
+-- 満席テストデータ作成
 -- =================================================================
 DO $$
 DECLARE
-    target_train RECORD; -- train_cdとpattern_typeを格納
+    target_train RECORD;
+    target_account RECORD;
+    v_train_car_cds TEXT[];
+    v_seat_cds TEXT[];
+    v_account_id INT;
     new_reservation_id INT;
-    v_departure_date DATE := CURRENT_DATE; -- 出発日を「今日（当日）」に設定
+    v_departure_date DATE := CURRENT_DATE;
+    i INT;
     target_trains_cursor CURSOR FOR
         SELECT
             train_cd,
             train_number_counter % 8 AS pattern_type
         FROM (
-            -- はやぶさ(下り)
-            SELECT 'H' || LPAD(ts.train_number_counter::text, 4, '0') AS train_cd, ts.train_number_counter
-            FROM generate_series('2000-01-01 06:00:00'::timestamp, '2000-01-01 22:00:00'::timestamp, '20 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter)
-            UNION ALL
-            -- はやぶさ(上り)
-            SELECT 'J' || LPAD(ts.train_number_counter::text, 4, '0') AS train_cd, ts.train_number_counter
-            FROM generate_series('2000-01-01 06:00:00'::timestamp + '5 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '20 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter)
-            UNION ALL
-            -- はやて(下り)
-            SELECT 'T' || LPAD(ts.train_number_counter::text, 4, '0') AS train_cd, ts.train_number_counter
-            FROM generate_series('2000-01-01 06:00:00'::timestamp + '2 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '25 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter)
-            UNION ALL
-            -- はやて(上り)
-            SELECT 'U' || LPAD(ts.train_number_counter::text, 4, '0') AS train_cd, ts.train_number_counter
-            FROM generate_series('2000-01-01 06:00:00'::timestamp + '7 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '25 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter)
-            UNION ALL
-            -- やまびこ(下り)
-            SELECT 'Y' || LPAD(ts.train_number_counter::text, 4, '0') AS train_cd, ts.train_number_counter
-            FROM generate_series('2000-01-01 06:00:00'::timestamp + '3 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '15 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter)
-            UNION ALL
-            -- やまびこ(上り)
-            SELECT 'Z' || LPAD(ts.train_number_counter::text, 4, '0') AS train_cd, ts.train_number_counter
-            FROM generate_series('2000-01-01 06:00:00'::timestamp + '8 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '15 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter)
-            UNION ALL
-            -- なすの(下り)
-            SELECT 'N' || LPAD(ts.train_number_counter::text, 4, '0') AS train_cd, ts.train_number_counter
-            FROM generate_series('2000-01-01 06:00:00'::timestamp + '1 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '30 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter)
-            UNION ALL
-            -- なすの(上り)
-            SELECT 'M' || LPAD(ts.train_number_counter::text, 4, '0') AS train_cd, ts.train_number_counter
-            FROM generate_series('2000-01-01 06:00:00'::timestamp + '6 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '30 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter)
+            -- 全車種の列車情報を結合
+            SELECT 'H' || LPAD(ts.train_number_counter::text, 4, '0') AS train_cd, ts.train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp, '2000-01-01 22:00:00'::timestamp, '20 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter) UNION ALL
+            SELECT 'J' || LPAD(ts.train_number_counter::text, 4, '0'), ts.train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '5 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '20 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter) UNION ALL
+            SELECT 'T' || LPAD(ts.train_number_counter::text, 4, '0'), ts.train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '2 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '25 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter) UNION ALL
+            SELECT 'U' || LPAD(ts.train_number_counter::text, 4, '0'), ts.train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '7 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '25 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter) UNION ALL
+            SELECT 'Y' || LPAD(ts.train_number_counter::text, 4, '0'), ts.train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '3 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '15 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter) UNION ALL
+            SELECT 'Z' || LPAD(ts.train_number_counter::text, 4, '0'), ts.train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '8 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '15 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter) UNION ALL
+            SELECT 'N' || LPAD(ts.train_number_counter::text, 4, '0'), ts.train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '1 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '30 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter) UNION ALL
+            SELECT 'M' || LPAD(ts.train_number_counter::text, 4, '0'), ts.train_number_counter FROM generate_series('2000-01-01 06:00:00'::timestamp + '6 minutes'::interval, '2000-01-01 22:00:00'::timestamp, '30 minutes'::interval) WITH ORDINALITY AS ts(start_time_val, train_number_counter)
         ) AS all_trains
-        WHERE (train_number_counter % 8) <> 0; -- 8本に1本は完全空席にするため、pattern_typeが0の列車は処理しない
+        WHERE (train_number_counter % 8) <> 0;
 BEGIN
-    -- 対象の列車をループで1件ずつ処理
     OPEN target_trains_cursor;
     LOOP
         FETCH target_trains_cursor INTO target_train;
         EXIT WHEN NOT FOUND;
 
-        -- 列車ごとにダミーの予約を1件作成し、そのIDを取得
-        INSERT INTO T_RESERVATION (
-            invalid_flg, account_id, departure_date, buy_datetime,
-            buyer_name, email_address, card_number, expiration_date
-        )
-        VALUES (
-            false, 101, v_departure_date, CURRENT_TIMESTAMP,
-            '満席 太郎', 'mansdeki@example.com', '9999999999999999', '2029-12-31'
-        )
-        RETURNING reservation_id INTO new_reservation_id;
-
-        -- 取得した予約IDとパターンタイプを使って、座席を予約済みにする
-        INSERT INTO T_SEAT (
-            train_cd, departure_date, train_car_cd, seat_cd,
-            departure_station_cd, arrival_station_cd, reservation_id
-        )
+        -- 1. 予約対象となる座席の「車両番号」と「座席番号」を、それぞれ別の配列に格納する
         SELECT
-            target_train.train_cd,
-            v_departure_date,
-            tc.train_car_cd,
-            LPAD(s.seat_num::text, 3, '0'),
-            '01', -- 出発駅は東京に固定
-            '23', -- 到着駅は新青森に固定
-            new_reservation_id
-        FROM
-            M_TRAIN_CAR tc
-        CROSS JOIN
-            LATERAL generate_series(1, tc.max_seat_number) AS s(seat_num)
-        WHERE
-            tc.train_cd = target_train.train_cd
-            AND (
-                -- pattern_type = 1: 指定席のみ
-                (target_train.pattern_type = 1 AND tc.seat_type_cd = '10') OR
-                -- pattern_type = 2: グリーン車のみ
-                (target_train.pattern_type = 2 AND tc.seat_type_cd = '20') OR
-                -- pattern_type = 3: グランクラスのみ
-                (target_train.pattern_type = 3 AND tc.seat_type_cd = '30') OR
-                -- pattern_type = 4: 指定席 + グリーン車
-                (target_train.pattern_type = 4 AND tc.seat_type_cd IN ('10', '20')) OR
-                -- pattern_type = 5: 指定席 + グランクラス
-                (target_train.pattern_type = 5 AND tc.seat_type_cd IN ('10', '30')) OR
-                -- pattern_type = 6: グリーン車 + グランクラス
-                (target_train.pattern_type = 6 AND tc.seat_type_cd IN ('20', '30')) OR
-                -- pattern_type = 7: 全席
-                (target_train.pattern_type = 7)
-            );
+            array_agg(train_car_cd),
+            array_agg(seat_cd)
+        INTO
+            v_train_car_cds,
+            v_seat_cds
+        FROM (
+            SELECT
+                co.train_car_cd,
+                LPAD((co.seat_offset + s.seat_num)::text, 3, '0') AS seat_cd
+            FROM
+                (SELECT train_car_cd, seat_type_cd, max_seat_number, SUM(max_seat_number) OVER (ORDER BY train_car_cd) - max_seat_number AS seat_offset FROM M_TRAIN_CAR WHERE train_cd = target_train.train_cd) co
+            CROSS JOIN
+                LATERAL generate_series(1, co.max_seat_number) AS s(seat_num)
+            WHERE
+                (
+                    (target_train.pattern_type = 1 AND co.seat_type_cd = '10') OR
+                    (target_train.pattern_type = 2 AND co.seat_type_cd = '20') OR
+                    (target_train.pattern_type = 3 AND co.seat_type_cd = '30') OR
+                    (target_train.pattern_type = 4 AND co.seat_type_cd IN ('10', '20')) OR
+                    (target_train.pattern_type = 5 AND co.seat_type_cd IN ('10', '30')) OR
+                    (target_train.pattern_type = 6 AND co.seat_type_cd IN ('20', '30')) OR
+                    (target_train.pattern_type = 7)
+                )
+            ORDER BY seat_cd
+        ) AS seats;
+
+        -- 2. 配列に格納した座席を6席ずつのグループでループ処理
+        IF array_length(v_seat_cds, 1) > 0 THEN
+            FOR i IN 0..CEIL(array_length(v_seat_cds, 1) / 6.0) - 1
+            LOOP
+                -- 3. グループごとに新しい予約を作成
+                v_account_id := 101 + ((target_train.pattern_type + i) % 6);
+                SELECT * INTO target_account FROM T_ACCOUNT WHERE account_id = v_account_id;
+
+                INSERT INTO T_RESERVATION (
+                    invalid_flg, account_id, departure_date, buy_datetime,
+                    buyer_name, email_address, card_number, expiration_date
+                )
+                VALUES (
+                    false, target_account.account_id, v_departure_date, CURRENT_TIMESTAMP,
+                    target_account.account_name, target_account.email_address,
+                    target_account.card_number, target_account.expiration_date
+                )
+                RETURNING reservation_id INTO new_reservation_id;
+
+                -- 4. 新しい予約番号に、該当グループの座席(最大6席)を紐づける
+                INSERT INTO T_SEAT (
+                    train_cd, departure_date, train_car_cd, seat_cd,
+                    departure_station_cd, arrival_station_cd, reservation_id
+                )
+                SELECT
+                    target_train.train_cd,
+                    v_departure_date,
+                    car_cd,
+                    s_cd,
+                    '01', '23', new_reservation_id
+                FROM
+                    unnest(
+                        v_train_car_cds[i*6 + 1 : (i+1)*6],
+                        v_seat_cds[i*6 + 1 : (i+1)*6]
+                    ) AS t(car_cd, s_cd);
+
+            END LOOP;
+        END IF;
+
     END LOOP;
     CLOSE target_trains_cursor;
 END;
