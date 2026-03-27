@@ -1,3 +1,6 @@
+-- =================================================================
+-- マスターデータおよび基本データ投入
+-- =================================================================
 INSERT INTO
     M_STATION (station_cd, station_name)
 VALUES
@@ -29,17 +32,6 @@ VALUES
     (104, 'takeo', 'kikuchi@example.com', 'tirinuruw0', '1243249247821432', '2026-02-10'),
     (105, 'sanae', 'takaichi@example.com', 'yokoham@', '2159247829238412', '2026-02-10'),
     (106, 'shinjirou', 'ko-izumi@example.com', 'mIrai', '2361234062149821', '2026-02-10');
-
-
-INSERT INTO
-    T_SEARCH_HISTORY (account_id, departure_date, departure_time, departure_station_cd, arrival_station_cd, search_datetime)
-VALUES
-    (101, CURRENT_DATE + interval '1 day', '11:25:00', '01', '04', CURRENT_TIMESTAMP - interval '1 day'),
-    (101, CURRENT_DATE + interval '1 day', '11:25:00', '01', '04', CURRENT_TIMESTAMP - interval '1 day' + interval '30 second'),
-    (101, CURRENT_DATE + interval '1 day', '11:25:00', '01', '04', CURRENT_TIMESTAMP - interval '1 day' + interval '1 minute'),
-    (102, CURRENT_DATE + interval '1 day', '08:20:00', '01', '04', CURRENT_TIMESTAMP),
-    (102, CURRENT_DATE + interval '1 day', '09:20:00', '01', '04', CURRENT_TIMESTAMP + interval '30 second'),
-    (103, CURRENT_DATE + interval '1 day', '08:25:00', '01', '04', CURRENT_TIMESTAMP - interval '1 day' + interval '1 hour');
 
 
 WITH station_order AS (SELECT station_cd, ROW_NUMBER() OVER (ORDER BY station_cd) AS ord FROM M_STATION)
@@ -142,14 +134,15 @@ FROM time_series ts CROSS JOIN station_orders so WHERE (ts.start_time_val::time 
 
 
 -- =================================================================
--- 満席テストデータ作成（全車種対応版）
+-- 満席テストデータ作成（全車種対応・当日データ版）
 -- 全ての列車に対して、周期的に全7パターンの満席状態を作成
+-- 出発日はこのスクリプトの実行日の【当日】に自動設定される
 -- =================================================================
 DO $$
 DECLARE
-    target_train RECORD;
+    target_train RECORD; -- train_cdとpattern_typeを格納
     new_reservation_id INT;
-    v_departure_date DATE := CURRENT_DATE + interval '1 day'; -- 出発日を「明日」に設定
+    v_departure_date DATE := CURRENT_DATE; -- 出発日を「今日（当日）」に設定
     target_trains_cursor CURSOR FOR
         SELECT
             train_cd,
@@ -245,4 +238,3 @@ BEGIN
     CLOSE target_trains_cursor;
 END;
 $$;
- 
