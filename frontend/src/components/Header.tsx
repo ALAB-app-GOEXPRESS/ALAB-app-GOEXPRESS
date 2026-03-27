@@ -15,6 +15,8 @@ export const Header: React.FC = () => {
 
     setUserName(null);
 
+    window.location.href = '/logout';
+
     toast.success('ログアウトしました', { position: 'bottom-right' });
   };
 
