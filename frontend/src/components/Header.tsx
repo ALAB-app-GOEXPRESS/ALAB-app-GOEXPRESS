@@ -3,6 +3,12 @@ import { Ticket, TrainFront, CircleUser } from 'lucide-react';
 import { toast } from 'sonner';
 import { useState } from 'react';
 import { getUserNavigator } from '@/utils/userNavigator';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export const Header: React.FC = () => {
   const [userName, setUserName] = useState(getUserNavigator());
@@ -54,14 +60,17 @@ export const Header: React.FC = () => {
             予約確認
           </NavLink>
           {userName !== null && (
-            <NavLink
-              to='search'
-              className='py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg hover:bg-input/50'
-              onClick={logout}
-            >
-              <CircleUser />
-              <p>{userName}</p>
-            </NavLink>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className='py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg hover:bg-input/50 cursor-pointer'>
+                  <CircleUser />
+                  <p>{userName}</p>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end'>
+                <DropdownMenuItem onClick={logout}>ログアウト</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
           {userName === null && (
             <NavLink
