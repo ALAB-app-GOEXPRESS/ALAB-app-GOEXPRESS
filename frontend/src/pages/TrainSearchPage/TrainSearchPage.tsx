@@ -41,7 +41,6 @@ export const TrainSearchPage: React.FC = () => {
 
   const [error, setError] = useState<string>('');
 
-  // ログアウト成功時のトースト表示
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.get('logout') === 'success' && !toastShownRef.current) {
@@ -50,7 +49,6 @@ export const TrainSearchPage: React.FC = () => {
         position: 'bottom-right',
         duration: 5000,
       });
-      // URLをクリア
       navigate('/search', { replace: true });
     }
   }, [location.search, navigate]);
