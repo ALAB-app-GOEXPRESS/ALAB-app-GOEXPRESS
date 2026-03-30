@@ -46,7 +46,7 @@ export const TrainSearchPage: React.FC = () => {
         position: 'bottom-right',
         duration: 5000,
       });
-      sessionStorage.removeItem('showLogoutToast');
+      // sessionStorage.removeItem('showLogoutToast');
     }
   }, []);
 
