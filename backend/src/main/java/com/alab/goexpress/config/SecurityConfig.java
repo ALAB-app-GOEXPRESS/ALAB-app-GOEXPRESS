@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,18 +16,22 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-  @Autowired
-  private AccountService accountService;
+  private final AccountService accountService;
+
+  private final ClientRegistrationRepository clientRegistrationRepository;
 
   @Value("${auth.origin-uri}")
   private String originUri;
@@ -64,13 +68,20 @@ public class SecurityConfig {
       // CORSの設定を適用
       .cors(c -> c.configurationSource(corsConfigurationSource()))
       // セッションをサーバ側で保持しない（ステートレス）ように設定
-      .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+      .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
       // HTTPリクエストの認可設定
       .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
       // OAuth2ログインの設定で、ログイン成功時の処理を指定
       .oauth2Login(oauth2 -> oauth2.successHandler(this::handleOAuth2LoginSuccess))
       // AuthorizationヘッダのJWTを検証する設定
-      .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+      .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+      .logout(logout ->
+        logout
+          .logoutSuccessHandler(oidcLogoutSuccessHandler())
+          .logoutUrl("/logout")
+          .invalidateHttpSession(true)
+          .clearAuthentication(true)
+      );
     return http.build();
   }
 
@@ -104,5 +115,13 @@ public class SecurityConfig {
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       response.getWriter().write("{\"error\": \"Authentication failed\"}");
     }
+  }
+
+  private LogoutSuccessHandler oidcLogoutSuccessHandler() {
+    CognitoLogoutSuccessHandler cognitoLogoutSuccessHandler = new CognitoLogoutSuccessHandler(
+      clientRegistrationRepository
+    );
+    cognitoLogoutSuccessHandler.setPostLogoutRedirectUri(originUri + "/search");
+    return cognitoLogoutSuccessHandler;
   }
 }

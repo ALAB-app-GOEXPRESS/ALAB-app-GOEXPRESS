@@ -30,6 +30,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+	implementation "org.jspecify:jspecify:0.3.0"
+
     implementation platform('software.amazon.awssdk:bom:2.42.9')
 	implementation("software.amazon.awssdk:sesv2")
 
