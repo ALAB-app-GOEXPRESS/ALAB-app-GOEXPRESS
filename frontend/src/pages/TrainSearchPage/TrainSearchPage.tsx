@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -37,6 +38,18 @@ export const TrainSearchPage: React.FC = () => {
   const [time, setTime] = useState<string>(() => roundToStepHHMM(nowHHMM(), 15));
 
   const [error, setError] = useState<string>('');
+
+  // ログアウト成功時のトースト表示
+  useEffect(() => {
+    const showLogoutToast = sessionStorage.getItem('showLogoutToast');
+    if (showLogoutToast === 'true') {
+      toast.success('ログアウトしました', {
+        position: 'bottom-right',
+        duration: 5000,
+      });
+      sessionStorage.removeItem('showLogoutToast');
+    }
+  }, []);
 
   const setAndFalse = (message: string) => {
     setError(message);

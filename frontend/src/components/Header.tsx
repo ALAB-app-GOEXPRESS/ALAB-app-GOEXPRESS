@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom';
 import { Ticket, TrainFront, CircleUser } from 'lucide-react';
-import { toast } from 'sonner';
 import { useState } from 'react';
 import { getUserNavigator } from '@/utils/userNavigator';
 import {
@@ -15,8 +14,6 @@ export const Header: React.FC = () => {
   const [userName, setUserName] = useState(getUserNavigator());
 
   const logout = () => {
-    handleLogout();
-
     sessionStorage.removeItem('idToken');
     sessionStorage.removeItem('userId');
     sessionStorage.removeItem('userName');
@@ -24,7 +21,8 @@ export const Header: React.FC = () => {
 
     setUserName(null);
 
-    toast.success('ログアウトしました', { position: 'bottom-right' });
+    // バックエンドのログアウト処理を実行
+    handleLogout();
   };
 
   return (
