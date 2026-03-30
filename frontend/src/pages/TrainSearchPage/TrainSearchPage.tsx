@@ -47,7 +47,6 @@ export const TrainSearchPage: React.FC = () => {
       toastShownRef.current = true;
       toast.success('ログアウトしました', {
         position: 'bottom-right',
-        duration: 5000,
       });
       navigate('/search', { replace: true });
     }
