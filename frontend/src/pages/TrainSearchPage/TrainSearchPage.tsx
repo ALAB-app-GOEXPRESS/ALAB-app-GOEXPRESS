@@ -39,7 +39,6 @@ export const TrainSearchPage: React.FC = () => {
 
   const [error, setError] = useState<string>('');
 
-  // ログアウト成功時のトースト表示
   useEffect(() => {
     const showLogoutToast = sessionStorage.getItem('showLogoutToast');
     if (showLogoutToast === 'true') {
