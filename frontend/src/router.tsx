@@ -8,15 +8,13 @@ import { ReservationListPage } from './pages/ReservationListPage/ReservationList
 import { ReservationDetailPage } from './pages/ReservationDetailPage/ReservationDetailPage';
 import { SeatMapPage } from './pages/SeatMapPage/SeatMapPage';
 import { ReservationConfirmPage } from './pages/ReservationConfirmPage/ReservationConfirmPage';
-import { LoginPage } from './pages/LoginPage/LoginPage';
-import { LoginCallbackPage } from './pages/LoginPage/LoginCallbackPage';
+import { LoginCallbackPage } from './pages/LoginCallbackPage/LoginCallbackPage';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
     children: [
-      { path: 'login', element: <LoginPage /> },
       { path: 'login-callback', element: <LoginCallbackPage /> },
       { path: 'search', element: <TrainSearchPage /> },
       { path: 'results', element: <SearchResultPage /> },
