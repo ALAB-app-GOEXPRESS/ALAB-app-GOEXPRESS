@@ -9,19 +9,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { handleLogout } from '@/utils/logout';
 
 export const Header: React.FC = () => {
   const [userName, setUserName] = useState(getUserNavigator());
 
   const logout = () => {
+    handleLogout();
+
     sessionStorage.removeItem('idToken');
     sessionStorage.removeItem('userId');
     sessionStorage.removeItem('userName');
     sessionStorage.removeItem('email');
 
     setUserName(null);
-
-    window.location.href = '/logout';
 
     toast.success('ログアウトしました', { position: 'bottom-right' });
   };

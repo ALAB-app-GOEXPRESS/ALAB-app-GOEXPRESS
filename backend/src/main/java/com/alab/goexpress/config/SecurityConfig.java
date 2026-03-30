@@ -64,7 +64,7 @@ public class SecurityConfig {
     http
       .csrf(Customizer.withDefaults())
       //未ログイン時でも予約可能にするため、予約時はCSRF対策を無視
-      .csrf(csrf -> csrf.ignoringRequestMatchers("/api/reservations"))
+      .csrf(csrf -> csrf.ignoringRequestMatchers("/api/reservations", "/logout"))
       // CORSの設定を適用
       .cors(c -> c.configurationSource(corsConfigurationSource()))
       // セッションをサーバ側で保持しない（ステートレス）ように設定
