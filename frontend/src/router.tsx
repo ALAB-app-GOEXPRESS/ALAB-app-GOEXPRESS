@@ -8,7 +8,7 @@ import { ReservationListPage } from './pages/ReservationListPage/ReservationList
 import { ReservationDetailPage } from './pages/ReservationDetailPage/ReservationDetailPage';
 import { SeatMapPage } from './pages/SeatMapPage/SeatMapPage';
 import { ReservationConfirmPage } from './pages/ReservationConfirmPage/ReservationConfirmPage';
-import { LoginCallbackPage } from './pages/LoginPage/LoginCallbackPage';
+import { LoginCallbackPage } from './pages/LoginCallbackPage/LoginCallbackPage';
 import { LogoutCallbackPage } from './pages/LogoutPage/LogoutCallbackPage';
 
 export const router = createBrowserRouter([
