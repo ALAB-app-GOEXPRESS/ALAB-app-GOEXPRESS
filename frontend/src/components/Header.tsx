@@ -14,14 +14,8 @@ export const Header: React.FC = () => {
   const [userName, setUserName] = useState(getUserNavigator());
 
   const logout = () => {
-    sessionStorage.removeItem('idToken');
-    sessionStorage.removeItem('userId');
-    sessionStorage.removeItem('userName');
-    sessionStorage.removeItem('email');
-
     setUserName(null);
 
-    // バックエンドのログアウト処理を実行
     handleLogout();
   };
 
