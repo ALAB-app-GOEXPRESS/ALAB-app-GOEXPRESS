@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom';
 import { Ticket, TrainFront, CircleUser } from 'lucide-react';
-import { toast } from 'sonner';
 import { useState } from 'react';
 import { getUserNavigator } from '@/utils/userNavigator';
 import {
@@ -23,8 +22,6 @@ export const Header: React.FC = () => {
     sessionStorage.removeItem('email');
 
     setUserName(null);
-
-    toast.success('ログアウトしました', { position: 'bottom-right' });
   };
 
   return (

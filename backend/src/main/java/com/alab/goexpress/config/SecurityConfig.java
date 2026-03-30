@@ -121,7 +121,7 @@ public class SecurityConfig {
     CognitoLogoutSuccessHandler cognitoLogoutSuccessHandler = new CognitoLogoutSuccessHandler(
       clientRegistrationRepository
     );
-    cognitoLogoutSuccessHandler.setPostLogoutRedirectUri(originUri + "/search");
+    cognitoLogoutSuccessHandler.setPostLogoutRedirectUri(originUri + "/callback-logout");
     return cognitoLogoutSuccessHandler;
   }
 }
