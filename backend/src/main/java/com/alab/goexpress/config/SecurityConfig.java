@@ -16,7 +16,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
@@ -122,7 +121,7 @@ public class SecurityConfig {
     CognitoLogoutSuccessHandler cognitoLogoutSuccessHandler = new CognitoLogoutSuccessHandler(
       clientRegistrationRepository
     );
-    cognitoLogoutSuccessHandler.setPostLogoutRedirectUri(originUri + "/login");
+    cognitoLogoutSuccessHandler.setPostLogoutRedirectUri(originUri + "/search");
     return cognitoLogoutSuccessHandler;
   }
 }

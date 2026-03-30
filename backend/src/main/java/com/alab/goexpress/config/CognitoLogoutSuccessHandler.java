@@ -69,7 +69,6 @@ public class CognitoLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
       if (clientRegistration != null) {
         URI endSessionEndpoint = this.endSessionEndpoint(clientRegistration);
         if (endSessionEndpoint != null) {
-          String idToken = idToken(authentication);
           String postLogoutRedirectUri = postLogoutRedirectUri(request, clientRegistration);
           targetUrl = endpointUri(endSessionEndpoint, clientRegistration, postLogoutRedirectUri);
         }
@@ -87,13 +86,6 @@ public class CognitoLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
       }
     }
     return null;
-  }
-
-  private String idToken(Authentication authentication) {
-    Object principal = authentication.getPrincipal();
-    String idToken = (principal instanceof OidcUser oidcUser) ? oidcUser.getIdToken().getTokenValue() : null;
-    Assert.notNull(idToken, "idToken cannot be null");
-    return idToken;
   }
 
   private @Nullable String postLogoutRedirectUri(
