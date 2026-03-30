@@ -15,7 +15,6 @@ export const Header: React.FC = () => {
 
   const logout = () => {
     setUserName(null);
-
     handleLogout();
   };
 
@@ -66,13 +65,13 @@ export const Header: React.FC = () => {
             </DropdownMenu>
           )}
           {userName === null && (
-            <NavLink
-              to='login'
+            <button
+              onClick={() => window.location.assign('oauth2/authorization/cognito')}
               className='py-1.5 px-3 inline-flex items-center gap-2 text-13 rounded-lg hover:bg-input/50'
             >
               <CircleUser />
               <p>ログイン</p>
-            </NavLink>
+            </button>
           )}
         </nav>
       </div>
