@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { Ticket, TrainFront, CircleUser } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { getUserNavigator } from '@/utils/userNavigator';
@@ -12,13 +12,14 @@ import { handleLogout } from '@/utils/logout';
 
 export const Header: React.FC = () => {
   const [userName, setUserName] = useState(getUserNavigator());
+  const location = useLocation();
 
   useEffect(() => {
-    const showLogoutToast = sessionStorage.getItem('showLogoutToast');
-    if (showLogoutToast === 'true') {
+    const params = new URLSearchParams(location.search);
+    if (params.get('logout') === 'success') {
       setUserName(null);
     }
-  }, []);
+  }, [location.search]);
 
   const logout = () => {
     setUserName(null);

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { Alert, AlertTitle } from '@/components/ui/alert';
@@ -31,6 +31,8 @@ const toQueryString = (p: TrainSearchParams) => {
 
 export const TrainSearchPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const toastShownRef = useRef(false);
 
   const [from, setFrom] = useState<string>('');
   const [to, setTo] = useState<string>('');
@@ -40,15 +42,15 @@ export const TrainSearchPage: React.FC = () => {
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    const showLogoutToast = sessionStorage.getItem('showLogoutToast');
-    if (showLogoutToast === 'true') {
+    const params = new URLSearchParams(location.search);
+    if (params.get('logout') === 'success' && !toastShownRef.current) {
+      toastShownRef.current = true;
       toast.success('ログアウトしました', {
         position: 'bottom-right',
-        duration: 5000,
       });
-      // sessionStorage.removeItem('showLogoutToast');
+      navigate('/search', { replace: true });
     }
-  }, []);
+  }, [location.search, navigate]);
 
   const setAndFalse = (message: string) => {
     setError(message);

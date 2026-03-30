@@ -9,9 +9,8 @@ export const LogoutCallbackPage: React.FC = () => {
     sessionStorage.removeItem('userId');
     sessionStorage.removeItem('userName');
     sessionStorage.removeItem('email');
-    sessionStorage.setItem('showLogoutToast', 'true');
 
-    navigate('/search');
+    navigate('/search?logout=success');
   }, [navigate]);
 
   return null;
