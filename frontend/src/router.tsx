@@ -9,7 +9,7 @@ import { ReservationDetailPage } from './pages/ReservationDetailPage/Reservation
 import { SeatMapPage } from './pages/SeatMapPage/SeatMapPage';
 import { ReservationConfirmPage } from './pages/ReservationConfirmPage/ReservationConfirmPage';
 import { LoginCallbackPage } from './pages/LoginCallbackPage/LoginCallbackPage';
-import { LogoutCallbackPage } from './pages/LogoutCallbackPage';
+import { LogoutCallbackPage } from './pages/LogoutPage/LogoutCallbackPage';
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +18,7 @@ export const router = createBrowserRouter([
     children: [
       { path: 'callback-logout', element: <LogoutCallbackPage /> },
       { path: 'login-callback', element: <LoginCallbackPage /> },
+      { path: 'callback-logout', element: <LogoutCallbackPage /> },
       { path: 'search', element: <TrainSearchPage /> },
       { path: 'results', element: <SearchResultPage /> },
       { path: 'train-detail', element: <TrainDetailPage /> },

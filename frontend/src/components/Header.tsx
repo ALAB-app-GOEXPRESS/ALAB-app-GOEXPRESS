@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { Ticket, TrainFront, CircleUser } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getUserNavigator } from '@/utils/userNavigator';
 import {
   DropdownMenu,
@@ -13,15 +13,16 @@ import { handleLogout } from '@/utils/logout';
 export const Header: React.FC = () => {
   const [userName, setUserName] = useState(getUserNavigator());
 
+  useEffect(() => {
+    const showLogoutToast = sessionStorage.getItem('showLogoutToast');
+    if (showLogoutToast === 'true') {
+      setUserName(null);
+    }
+  }, []);
+
   const logout = () => {
-    handleLogout();
-
-    sessionStorage.removeItem('idToken');
-    sessionStorage.removeItem('userId');
-    sessionStorage.removeItem('userName');
-    sessionStorage.removeItem('email');
-
     setUserName(null);
+    handleLogout();
   };
 
   return (
