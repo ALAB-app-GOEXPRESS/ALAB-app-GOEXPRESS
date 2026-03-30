@@ -78,7 +78,7 @@ public class SecurityConfig {
       .logout(logout ->
         logout
           .logoutSuccessHandler(oidcLogoutSuccessHandler())
-          .logoutUrl("/api/logout")
+          .logoutUrl("/logout")
           .invalidateHttpSession(true)
           .clearAuthentication(true)
       );
