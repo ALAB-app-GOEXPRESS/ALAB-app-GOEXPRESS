@@ -185,7 +185,7 @@ export const formatSelectedSeat = (seatCd: string): SelectedSeat => {
   return {
     carNumber: calcCarNumber(seatCd),
     seatCd: seatCd,
-    seatTypeName: getSeatTypeName(seatCd),
+    seatTypeName: getSeatTypeName(calcCarNumber(seatCd).toString()),
     price: 1000,
   };
 };

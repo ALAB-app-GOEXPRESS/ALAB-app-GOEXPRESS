@@ -82,6 +82,7 @@ export const SeatMapPage: React.FC = () => {
       sessionStorage.removeItem(`selectedSeat${i}`);
     }
     selectedSeats.forEach((seat, index) => sessionStorage.setItem(`selectedSeat${index}`, seat.seatCd));
+    selectedSeats.forEach((seat, index) => sessionStorage.setItem(`seatPrice${index}`, seat.price.toString()));
     sessionStorage.setItem('selectedSeatsNumber', selectedSeats.length.toString());
 
     navigate('/reservation-confirm', { state: { trainDetailResult: trainDetail, selectedSeats, initialSeatType } });
